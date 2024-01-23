@@ -17,6 +17,7 @@ import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.service.RideService;
 import com.example.rideservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import org.bouncycastle.jcajce.provider.asymmetric.rsa.CipherSpi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -121,8 +123,7 @@ public class RideServiceImpl implements RideService {
         long total = ridesPage.getTotalElements();
 
         List<RideResponse> rides = retrievedRides.stream()
-                .map(rideMapper::fromEntityToResponse)
-                .toList();
+                .map(rideMapper::fromEntityToResponse).toList();
 
         return RidePageResponse.builder()
                 .rideList(rides)
@@ -164,6 +165,18 @@ public class RideServiceImpl implements RideService {
         ride.setDriverId(driver.getDriverId());
 
         rideRepository.save(ride);
+    }
+
+    public void findRideForAvailableDriver(){
+        Optional<Ride> ride = rideRepository.findFirstByDriverIdIsNull();
+        ride.ifPresent(this::findDriverForRide);
+    }
+
+    private void findDriverForRide(Ride ride) {
+        RideForDriver rideForDriver = RideForDriver.builder()
+                .rideId(ride.getId())
+                .build();
+        rideProducer.sendMessage(rideForDriver);
     }
 
 }

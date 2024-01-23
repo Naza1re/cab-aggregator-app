@@ -9,6 +9,7 @@ import com.example.driverservice.dto.response.DriverPageResponse;
 import com.example.driverservice.dto.response.DriverRatingListResponse;
 import com.example.driverservice.dto.response.DriverResponse;
 import com.example.driverservice.exception.*;
+import com.example.driverservice.kafka.AvailableDriverProducer;
 import com.example.driverservice.kafka.DriverProducer;
 import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
@@ -35,6 +36,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriverMapper driverMapper;
     private final DriverProducer driverProducer;
     private final RatingClient ratingClient;
+    private final AvailableDriverProducer availableDriverProducer;
 
     public DriverResponse getDriverById(Long id) {
         Driver driver = getOrThrow(id);
@@ -174,6 +176,9 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = getOrThrow(driverId);
 
         driver.setAvailable(!driver.isAvailable());
+        if (driver.isAvailable()) {
+            availableDriverProducer.sendMessage("New drivers available");
+        }
         driverRepository.save(driver);
         return driverMapper.fromEntityToResponse(driver);
     }

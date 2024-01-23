@@ -25,4 +25,5 @@ public interface RideService {
 
     void setDriver(DriverForRide driver);
 
+    void findRideForAvailableDriver();
 }
