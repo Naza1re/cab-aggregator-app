@@ -13,4 +13,10 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+feign:
+  client:
+    passenger:
+      name: passenger
+      url: http://localhost:8081
+      path: /api/v1/passengers
 

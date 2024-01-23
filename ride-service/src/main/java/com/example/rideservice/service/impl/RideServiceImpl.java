@@ -1,6 +1,8 @@
 package com.example.rideservice.service.impl;
 
+import com.example.rideservice.client.PassengerClient;
 import com.example.rideservice.dto.request.RideRequest;
+import com.example.rideservice.dto.response.PassengerResponse;
 import com.example.rideservice.dto.response.RideListResponse;
 import com.example.rideservice.dto.response.RidePageResponse;
 import com.example.rideservice.dto.response.RideResponse;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +35,7 @@ public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
+    private final PassengerClient passengerClient;
 
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
@@ -128,7 +132,11 @@ public class RideServiceImpl implements RideService {
     public RideResponse findRide(RideRequest rideRequest) {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
+        PassengerResponse passenger = passengerClient.getPassenger(rideRequest.getPassengerId());
+        ride.setPrice(new BigDecimal(10));
+
         ride.setStatus(Status.CREATED);
+
         rideRepository.save(ride);
         //Логика отправки запроса на поездку лучшевму водителю
         return rideMapper.fromEntityToResponse(ride);
