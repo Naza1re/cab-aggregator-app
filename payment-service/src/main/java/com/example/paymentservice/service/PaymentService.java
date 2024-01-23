@@ -10,13 +10,11 @@ public interface PaymentService {
 
     CustomerResponse createCustomer(CustomerRequest customerRequest);
 
-    TokenResponse generateTokenByCard(CardRequest cardRequest);
+    CardTokenResponse generateTokenByCard(CardRequest cardRequest);
 
     StringResponse chargeCard(ChargeRequest chargeRequest);
 
     CustomerResponse retrieve(Long id);
-
-    BalanceResponse balance();
 
     ChargeResponse chargeFromCustomer(CustomerChargeRequest chargeRequest);
 

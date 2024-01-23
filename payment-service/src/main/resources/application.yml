@@ -1,6 +1,3 @@
-stripe:
-  public: pk_test_51OXOGhCZzkvZKSkRFBfqRHLJ5XdZrvNe6IJuBn9vPbDrZ8MkzFHyc7yEKJgyglrdDicHHPTthVxeqFrJgdbDAuc600HKtMSVIE
-  secret: sk_test_51OXOGhCZzkvZKSkR89DqcXJLpOE5E1uxvH0DiG86HVzd8a1p0d8Yo51ZqWD05HduT3N6cRRv8yYuSkh7Aj9zWlxu00CGkIoR4W
 spring:
   datasource:
     url: jdbc:mysql://localhost/payment

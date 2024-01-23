@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenResponse {
+public class CardTokenResponse {
     private String token;
 }
