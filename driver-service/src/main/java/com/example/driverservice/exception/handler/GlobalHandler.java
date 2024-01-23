@@ -15,7 +15,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalHandler {
 
-    @ExceptionHandler(DriverNotFoundException.class)
+    @ExceptionHandler({DriverNotFoundException.class,NotFoundException.class})
     public ResponseEntity<AppError> handleDriverNotFoundException(DriverNotFoundException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -29,7 +29,7 @@ public class GlobalHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({SortTypeException.class, PaginationParamException.class})
+    @ExceptionHandler({RatingException.class, SortTypeException.class, PaginationParamException.class})
     public ResponseEntity<AppError> handleBadRequestException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

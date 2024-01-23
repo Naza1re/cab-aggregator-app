@@ -2,7 +2,7 @@ package com.example.ratingservice.service.impl;
 
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
-import com.example.ratingservice.dto.responce.DriverListResponse;
+import com.example.ratingservice.dto.responce.DriverRatingListResponse;
 import com.example.ratingservice.dto.responce.DriverRatingResponse;
 import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
 import com.example.ratingservice.exception.DriverRatingNotFoundException;
@@ -64,12 +64,12 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         }
     }
 
-    public DriverListResponse getAllDriversRecords() {
+    public DriverRatingListResponse getAllDriversRecords() {
         List<DriverRatingResponse> driverRatings = driverRatingRepository.findAll()
                 .stream()
                 .map(driverMapper::fromEntityToResponse)
                 .toList();
-        return new DriverListResponse(driverRatings);
+        return new DriverRatingListResponse(driverRatings);
     }
 
     public DriverRating getOrThrowByDriverId(Long id) {

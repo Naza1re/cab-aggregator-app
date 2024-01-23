@@ -2,7 +2,7 @@ package com.example.ratingservice.controller;
 
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
-import com.example.ratingservice.dto.responce.DriverListResponse;
+import com.example.ratingservice.dto.responce.DriverRatingListResponse;
 import com.example.ratingservice.dto.responce.DriverRatingResponse;
 import com.example.ratingservice.service.DriverRatingService;
 import jakarta.validation.Valid;
@@ -12,13 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/driver-rating")
+@RequestMapping("/api/v1/rating/driver")
 @RequiredArgsConstructor
 public class DriverRatingController {
 
     private final DriverRatingService driverRatingService;
     @GetMapping("/list")
-    public ResponseEntity<DriverListResponse> getListOfDrivers() {
+    public ResponseEntity<DriverRatingListResponse> getListOfDrivers() {
         return ResponseEntity.ok(driverRatingService.getAllDriversRecords());
     }
 

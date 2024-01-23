@@ -22,4 +22,6 @@ public interface DriverService {
     DriverPageResponse getDriverPage(int page, int size, String orderBy);
 
     DriverResponse changeStatus(Long driverId);
+
+    void findDriver(Long rideId);
 }

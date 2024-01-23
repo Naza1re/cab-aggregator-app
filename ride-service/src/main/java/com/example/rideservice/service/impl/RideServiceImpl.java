@@ -1,15 +1,15 @@
 package com.example.rideservice.service.impl;
 
+import com.example.rideservice.client.DriverClient;
 import com.example.rideservice.client.PassengerClient;
+import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
-import com.example.rideservice.dto.response.PassengerResponse;
-import com.example.rideservice.dto.response.RideListResponse;
-import com.example.rideservice.dto.response.RidePageResponse;
-import com.example.rideservice.dto.response.RideResponse;
+import com.example.rideservice.dto.response.*;
 import com.example.rideservice.exception.PaginationParamException;
 import com.example.rideservice.exception.RideNotFoundException;
 import com.example.rideservice.exception.RideNotHaveDriverException;
 import com.example.rideservice.exception.SortTypeException;
+import com.example.rideservice.kafka.RideProducer;
 import com.example.rideservice.mapper.RideMapper;
 import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
@@ -36,6 +36,8 @@ public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
     private final PassengerClient passengerClient;
+    private final DriverClient driverClient;
+    private final RideProducer rideProducer;
 
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
@@ -136,30 +138,32 @@ public class RideServiceImpl implements RideService {
         ride.setPrice(new BigDecimal(10));
 
         ride.setStatus(Status.CREATED);
-
         rideRepository.save(ride);
-        //Логика отправки запроса на поездку лучшевму водителю
+
+        RideForDriver rideForDriver = createRideForDriver(ride);
+        rideProducer.sendMessage(rideForDriver);
+
         return rideMapper.fromEntityToResponse(ride);
     }
 
-    public RideResponse acceptRide(Long rideId, Long driverId) {
-        Ride ride = getOrThrow(rideId);
-
-        ride.setDriverId(driverId);
-        ride.setStatus(Status.ACCEPTED);
-        rideRepository.save(ride);
-        return rideMapper.fromEntityToResponse(ride);
-    }
-
-    public RideResponse cancelRide(Long rideId, Long driverId) {
-        Ride ride = getOrThrow(rideId);
-        //Логика отиправки запрос ана поездку следующему водителю
-        return rideMapper.fromEntityToResponse(ride);
+    private RideForDriver createRideForDriver(Ride ride) {
+        return RideForDriver.builder()
+                .rideId(ride.getId())
+                .build();
     }
 
     private Ride getOrThrow(Long id) {
         return rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    public void setDriver(DriverForRide driver) {
+        Ride ride = getOrThrow(driver.getRideId());
+        ride.setStatus(Status.ACCEPTED);
+        driverClient.changeStatus(driver.getDriverId());
+        ride.setDriverId(driver.getDriverId());
+
+        rideRepository.save(ride);
     }
 
 }

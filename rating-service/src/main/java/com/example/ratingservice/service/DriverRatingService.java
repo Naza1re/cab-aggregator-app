@@ -2,7 +2,7 @@ package com.example.ratingservice.service;
 
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
-import com.example.ratingservice.dto.responce.DriverListResponse;
+import com.example.ratingservice.dto.responce.DriverRatingListResponse;
 import com.example.ratingservice.dto.responce.DriverRatingResponse;
 
 public interface DriverRatingService {
@@ -15,5 +15,5 @@ public interface DriverRatingService {
 
     DriverRatingResponse deleteDriverRecord(Long driverId);
 
-    DriverListResponse getAllDriversRecords();
+    DriverRatingListResponse getAllDriversRecords();
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DriverListResponse {
+public class DriverRatingListResponse {
 
     private List<DriverRatingResponse> driverRatingResponseList;
 
