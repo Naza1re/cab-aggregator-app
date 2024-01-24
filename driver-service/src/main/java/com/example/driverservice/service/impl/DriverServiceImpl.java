@@ -1,6 +1,7 @@
 package com.example.driverservice.service.impl;
 
 import com.example.driverservice.client.RatingClient;
+import com.example.driverservice.dto.request.RatingRequest;
 import com.example.driverservice.dto.response.DriverRatingResponse;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
@@ -38,6 +39,7 @@ public class DriverServiceImpl implements DriverService {
     private final RatingClient ratingClient;
     private final AvailableDriverProducer availableDriverProducer;
 
+
     public DriverResponse getDriverById(Long id) {
         Driver driver = getOrThrow(id);
         return driverMapper.fromEntityToResponse(driver);
@@ -70,12 +72,19 @@ public class DriverServiceImpl implements DriverService {
         driver.setAvailable(false);
         Driver savedDriver = driverRepository.save(driver);
 
+        ratingClient.createDriverRecord(RatingRequest.builder()
+                .id(savedDriver.getId())
+                .build());
+
         return driverMapper.fromEntityToResponse(savedDriver);
     }
 
     public DriverResponse deleteDriver(Long id) {
         Driver driver = getOrThrow(id);
         driverRepository.delete(driver);
+
+        ratingClient.deleteDriverRating(id);
+
         return driverMapper.fromEntityToResponse(driver);
     }
 

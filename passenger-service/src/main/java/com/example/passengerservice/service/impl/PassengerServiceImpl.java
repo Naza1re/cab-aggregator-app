@@ -1,6 +1,8 @@
 package com.example.passengerservice.service.impl;
 
+import com.example.passengerservice.client.RatingClient;
 import com.example.passengerservice.dto.request.PassengerRequest;
+import com.example.passengerservice.dto.request.RatingRequest;
 import com.example.passengerservice.dto.response.PassengerListResponse;
 import com.example.passengerservice.dto.response.PassengerPageResponse;
 import com.example.passengerservice.dto.response.PassengerResponse;
@@ -26,12 +28,13 @@ public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final ModelMapper modelMapper;
+    private final RatingClient ratingClient;
 
-    private PassengerResponse fromEntityToResponse(Passenger passenger){
+    private PassengerResponse fromEntityToResponse(Passenger passenger) {
         return modelMapper.map(passenger, PassengerResponse.class);
     }
 
-    private Passenger fromRequestToEntity(PassengerRequest passengerRequest){
+    private Passenger fromRequestToEntity(PassengerRequest passengerRequest) {
         return modelMapper.map(passengerRequest, Passenger.class);
     }
 
@@ -41,8 +44,8 @@ public class PassengerServiceImpl implements PassengerService {
 
     }
 
-    public PassengerListResponse getAllPassengers(){
-          List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
+    public PassengerListResponse getAllPassengers() {
+        List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
                 .map(this::fromEntityToResponse)
                 .toList();
         return new PassengerListResponse(listOfPassengers);
@@ -56,6 +59,9 @@ public class PassengerServiceImpl implements PassengerService {
         Passenger passenger = fromRequestToEntity(passengerRequest);
         Passenger savedPassenger = passengerRepository.save(passenger);
 
+        ratingClient.createPassengerRecord(RatingRequest.builder()
+                .id(savedPassenger.getId())
+                .build());
         return fromEntityToResponse(savedPassenger);
     }
 
@@ -63,8 +69,8 @@ public class PassengerServiceImpl implements PassengerService {
 
         Passenger passenger = getOrThrow(id);
 
-        preUpdateEmailCheck(passenger,passengerRequest.getEmail());
-        preUpdatePhoneCheck(passenger,passengerRequest.getPhone());
+        preUpdateEmailCheck(passenger, passengerRequest.getEmail());
+        preUpdatePhoneCheck(passenger, passengerRequest.getPhone());
 
         passenger = fromRequestToEntity(passengerRequest);
         passenger.setId(id);
@@ -73,9 +79,12 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     public PassengerResponse deletePassenger(Long id) {
-       Passenger passenger = getOrThrow(id);
-            passengerRepository.delete(passenger);
-            return fromEntityToResponse(passenger);
+        Passenger passenger = getOrThrow(id);
+        passengerRepository.delete(passenger);
+
+        ratingClient.deletePassengerRecord(id);
+
+        return fromEntityToResponse(passenger);
 
     }
 
@@ -96,14 +105,14 @@ public class PassengerServiceImpl implements PassengerService {
     private void checkEmailExist(String email) {
 
         if (passengerRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_EMAIL_ALREADY_EXIST,email));
+            throw new EmailAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_EMAIL_ALREADY_EXIST, email));
         }
     }
 
     private void checkPhoneExist(String phone) {
 
         if (passengerRepository.existsByPhone(phone)) {
-            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_PHONE_ALREADY_EXIST,phone));
+            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_PHONE_ALREADY_EXIST, phone));
         }
     }
 
@@ -122,6 +131,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         return pageRequest;
     }
+
     private void validateSortingParameter(String orderBy) {
         List<String> fieldNames = Arrays.stream(PassengerResponse.class.getDeclaredFields())
                 .map(Field::getName)
@@ -132,6 +142,7 @@ public class PassengerServiceImpl implements PassengerService {
             throw new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT);
         }
     }
+
     public PassengerPageResponse getPassengerPage(int page, int size, String orderBy) {
 
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
@@ -153,7 +164,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     private Passenger getOrThrow(Long id) {
         return passengerRepository.findById(id)
-                .orElseThrow(()-> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION,id)));
+                .orElseThrow(() -> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, id)));
     }
 
 }
