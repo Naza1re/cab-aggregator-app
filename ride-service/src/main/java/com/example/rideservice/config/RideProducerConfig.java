@@ -10,7 +10,7 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 public class RideProducerConfig {
     @Bean
     public NewTopic topic() {
-        return TopicBuilder.name("ride")
+        return TopicBuilder.name("${topic.name.ride}")
                 .partitions(1)
                 .replicas(1)
                 .build();

@@ -7,7 +7,7 @@ import org.springframework.kafka.config.TopicBuilder;
 public class AvailableDriverProducerConfig {
     @Bean
     public NewTopic topic(){
-        return TopicBuilder.name("available")
+        return TopicBuilder.name("${topic.name.available}")
                 .partitions(1)
                 .replicas(1)
                 .build();
