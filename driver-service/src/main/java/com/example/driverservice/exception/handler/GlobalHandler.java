@@ -15,7 +15,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalHandler {
 
-    @ExceptionHandler({DriverNotFoundException.class,NotFoundException.class})
+    @ExceptionHandler({DriverNotFoundException.class, NotFoundException.class})
     public ResponseEntity<AppError> handleDriverNotFoundException(DriverNotFoundException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

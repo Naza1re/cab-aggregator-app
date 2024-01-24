@@ -2,7 +2,6 @@ package com.example.passengerservice.exception.handler;
 
 import com.example.passengerservice.exception.*;
 import com.example.passengerservice.exception.appError.AppError;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,7 +16,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(PassengerNotFoundException.class)
+    @ExceptionHandler({PassengerNotFoundException.class, NotFoundException.class})
     public ResponseEntity<AppError> handlePassengerNotFoundException(
             PassengerNotFoundException ex) {
         String errorMessage = ex.getMessage();
@@ -25,9 +24,17 @@ public class GlobalExceptionHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({PhoneAlreadyExistException.class, EmailAlreadyExistException.class, SortTypeException.class, PaginationParamException.class, PropertyReferenceException.class})
-    public ResponseEntity<AppError> handleCustomException(
-            RuntimeException ex){
+    @ExceptionHandler({PhoneAlreadyExistException.class, EmailAlreadyExistException.class})
+    public ResponseEntity<AppError> handleConflictException(
+            RuntimeException ex) {
+        String errorMessage = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new AppError(errorMessage));
+    }
+
+    @ExceptionHandler({SortTypeException.class, PaginationParamException.class, RatingException.class})
+    public ResponseEntity<AppError> handleBadRequestException(
+            RuntimeException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new AppError(errorMessage));

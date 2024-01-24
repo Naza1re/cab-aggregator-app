@@ -15,7 +15,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RideNotFoundException.class)
+    @ExceptionHandler({RideNotFoundException.class, NotFoundException.class})
     public ResponseEntity<AppError> handleRideNotFoundException(RideNotFoundException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({PaginationParamException.class, SortTypeException.class})
+    @ExceptionHandler({PaginationParamException.class, SortTypeException.class, FeignClientException.class})
     public ResponseEntity<AppError> handleBadRequestException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
