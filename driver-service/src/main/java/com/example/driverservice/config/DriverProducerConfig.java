@@ -8,9 +8,10 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 @Configuration
 public class DriverProducerConfig {
+
     @Bean
     public NewTopic topic(){
-        return TopicBuilder.name("driver")
+        return TopicBuilder.name("${topic.name.driver}")
                 .partitions(1)
                 .replicas(1)
                 .build();

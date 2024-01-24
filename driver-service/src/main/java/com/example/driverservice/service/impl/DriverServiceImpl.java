@@ -16,8 +16,10 @@ import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
 import com.example.driverservice.repository.DriverRepository;
 import com.example.driverservice.service.DriverService;
+import com.example.driverservice.util.ConstantsMessages;
 import com.example.driverservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,7 +30,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
@@ -186,7 +188,7 @@ public class DriverServiceImpl implements DriverService {
 
         driver.setAvailable(!driver.isAvailable());
         if (driver.isAvailable()) {
-            availableDriverProducer.sendMessage("New drivers available");
+            availableDriverProducer.sendMessage(ConstantsMessages.NEW_AVAILABLE_DRIVERS);
         }
         driverRepository.save(driver);
         return driverMapper.fromEntityToResponse(driver);
@@ -195,7 +197,7 @@ public class DriverServiceImpl implements DriverService {
     public void findDriver(Long driverId) {
         DriverForRide driver = findDriverForRide(driverId);
         if (driver == null) {
-            System.out.println("Drivers not available");
+           log.info(ConstantsMessages.DRIVERS_NOT_AVAILABLE);
         } else {
             driverProducer.sendMessage(driver);
         }
