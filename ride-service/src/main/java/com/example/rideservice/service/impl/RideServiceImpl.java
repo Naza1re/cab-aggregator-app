@@ -17,7 +17,6 @@ import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.service.RideService;
 import com.example.rideservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
-import org.bouncycastle.jcajce.provider.asymmetric.rsa.CipherSpi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -167,7 +166,7 @@ public class RideServiceImpl implements RideService {
         rideRepository.save(ride);
     }
 
-    public void findRideForAvailableDriver(){
+    public void findRideForAvailableDriver() {
         Optional<Ride> ride = rideRepository.findFirstByDriverIdIsNull();
         ride.ifPresent(this::findDriverForRide);
     }

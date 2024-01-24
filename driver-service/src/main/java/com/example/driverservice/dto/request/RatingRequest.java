@@ -10,8 +10,5 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingRequest {
-
-    @NotNull(message = "{id.not.null}")
-    @Min(value = 0, message = "{rate.range}")
     private Long id;
 }
