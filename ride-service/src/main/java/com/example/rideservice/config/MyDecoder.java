@@ -1,7 +1,7 @@
 package com.example.rideservice.config;
 
+import com.example.rideservice.exception.FeignClientException;
 import com.example.rideservice.exception.NotFoundException;
-import com.example.rideservice.exception.PaymentException;
 import feign.FeignException;
 import feign.Response;
 import feign.RetryableException;
@@ -17,7 +17,7 @@ public class MyDecoder implements ErrorDecoder {
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
         switch (status) {
             case 400:
-                return new PaymentException(exMessage);
+                return new FeignClientException(exMessage);
             case 404:
                 return new NotFoundException(exMessage);
         }
