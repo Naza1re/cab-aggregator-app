@@ -1,7 +1,7 @@
 package com.example.paymentservice.exception.handler;
 
 import com.example.paymentservice.exception.*;
-import com.example.paymentservice.exception.appError.AppError;
+import com.example.paymentservice.exception.error.AppError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -42,7 +42,7 @@ public class GlobalHandler {
 
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);

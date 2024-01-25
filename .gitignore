@@ -2,6 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+payment-service/src/main/resources/application-prod.yml
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

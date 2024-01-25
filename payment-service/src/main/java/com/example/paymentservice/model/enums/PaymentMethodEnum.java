@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PaymentMethodEnum {
     VISA("pm_card_visa");
-    private String visa;
+    private final String visa;
 }
