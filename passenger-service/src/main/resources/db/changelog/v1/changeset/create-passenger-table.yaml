@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: nikita
+      changes:
+        - createTable:
+            tableName: passenger
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(15)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+      rollback:
+        - dropTable:
+            tableName: passengers
+
