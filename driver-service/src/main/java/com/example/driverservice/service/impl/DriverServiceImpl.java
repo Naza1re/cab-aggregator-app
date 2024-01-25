@@ -1,0 +1,173 @@
+package com.example.driverservice.service.impl;
+
+import com.example.driverservice.dto.request.DriverRequest;
+import com.example.driverservice.dto.response.DriverListResponse;
+import com.example.driverservice.dto.response.DriverPageResponse;
+import com.example.driverservice.dto.response.DriverResponse;
+import com.example.driverservice.exception.*;
+import com.example.driverservice.mapper.DriverMapper;
+import com.example.driverservice.model.Driver;
+import com.example.driverservice.repository.DriverRepository;
+import com.example.driverservice.service.DriverService;
+import com.example.driverservice.util.ExceptionMessages;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class DriverServiceImpl implements DriverService {
+
+    private final DriverRepository driverRepository;
+    private final DriverMapper driverMapper;
+
+    public DriverResponse getDriverById(Long id) {
+        Driver driver = getOrThrow(id);
+        return driverMapper.fromEntityToResponse(driver);
+    }
+
+    public DriverListResponse getListOfDrivers() {
+        List<DriverResponse> driverResponseList = driverRepository.findAll().stream()
+                .map(driverMapper::fromEntityToResponse)
+                .toList();
+        return new DriverListResponse(driverResponseList);
+    }
+
+    public DriverResponse updateDriver(Long id, DriverRequest driverRequest) {
+
+        Driver driver = getOrThrow(id);
+        System.out.println(driver.getName());
+
+        preUpdateDriverCheck(driver,driverRequest);
+
+        driver = driverMapper.fromRequestToEntity(driverRequest);
+        driver.setId(id);
+        return driverMapper.fromEntityToResponse(driverRepository.save(driver));
+    }
+
+    public DriverResponse createDriver(DriverRequest driverRequest) {
+
+        preCreateDriverCheck(driverRequest);
+
+        Driver driver = driverMapper.fromRequestToEntity(driverRequest);
+        driver.setAvailable(false);
+        Driver savedDriver = driverRepository.save(driver);
+
+        return driverMapper.fromEntityToResponse(savedDriver);
+    }
+
+    public DriverResponse deleteDriver(Long id) {
+        Driver driver = getOrThrow(id);
+        driverRepository.delete(driver);
+        return driverMapper.fromEntityToResponse(driver);
+    }
+
+    private void preUpdateDriverCheck(Driver driver, DriverRequest driverRequest) {
+        if (!driver.getEmail().equals(driverRequest.getEmail())) {
+            checkEmailExist(driverRequest.getEmail());
+        }
+        if (!driver.getPhone().equals(driverRequest.getPhone())) {
+           checkPhoneExist(driverRequest.getPhone());
+        }
+        if (!driver.getNumber().equals(driverRequest.getNumber())) {
+           checkCarNumberExist(driverRequest.getNumber());
+        }
+    }
+
+    private void checkEmailExist(String email) {
+        if (driverRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_EMAIL_ALREADY_EXIST,email));
+        }
+    }
+
+    private void checkPhoneExist(String phone) {
+        if (driverRepository.existsByPhone(phone)) {
+            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_PHONE_ALREADY_EXIST, phone));
+        }
+    }
+
+    private void checkCarNumberExist(String carNum) {
+        if (driverRepository.existsByNumber(carNum)) {
+            throw new CarNumberAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_CAR_NUMBER_ALREADY_EXIST, carNum));
+        }
+    }
+
+
+
+    private void preCreateDriverCheck(DriverRequest driverRequest) {
+       checkCarNumberExist(driverRequest.getNumber());
+       checkPhoneExist(driverRequest.getPhone());
+       checkEmailExist(driverRequest.getEmail());
+    }
+
+    public DriverListResponse getAvailableDrivers() {
+        List<Driver> listOfAvailableDrivers = driverRepository.getAllByAvailable(true);
+        List<DriverResponse> listOfAvailable = listOfAvailableDrivers.stream()
+                .map(driverMapper::fromEntityToResponse)
+                .toList();
+        return new DriverListResponse(listOfAvailable);
+    }
+
+    private PageRequest getPageRequest(int page, int size, String orderBy) {
+        if (page < 1 || size < 1) {
+            throw new PaginationParamException(String.format(ExceptionMessages.PAGINATION_FORMAT_EXCEPTION));
+        }
+
+        PageRequest pageRequest;
+        if (orderBy == null) {
+            pageRequest = PageRequest.of(page - 1, size);
+        } else {
+            validateSortingParameter(orderBy);
+            pageRequest = PageRequest.of(page - 1, size, Sort.by(orderBy));
+        }
+
+        return pageRequest;
+    }
+
+    public DriverPageResponse getDriverPage(int page, int size, String orderBy) {
+
+        PageRequest pageRequest = getPageRequest(page, size, orderBy);
+        Page<Driver> driverPage = driverRepository.findAll(pageRequest);
+
+        List<Driver> retrievedDrivers = driverPage.getContent();
+        long total = driverPage.getTotalElements();
+
+        List<DriverResponse> passengers = retrievedDrivers.stream()
+                .map(driverMapper::fromEntityToResponse)
+                .toList();
+
+        return DriverPageResponse.builder()
+                .driverList(passengers)
+                .totalPages(page)
+                .totalElements(total)
+                .build();
+    }
+
+    private void validateSortingParameter(String orderBy) {
+        Arrays.stream(DriverResponse.class.getDeclaredFields())
+                .map(Field::getName)
+                .filter(field -> field.equals(orderBy))
+                .findFirst()
+                .orElseThrow(() -> new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT));
+    }
+
+
+    private Driver getOrThrow(Long id) {
+        return driverRepository.findById(id)
+                .orElseThrow(() -> new DriverNotFoundException(String.format(ExceptionMessages.DRIVER_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    public DriverResponse changeStatus(Long driverId) {
+        Driver driver = getOrThrow(driverId);
+
+        driver.setAvailable(!driver.isAvailable());
+        driverRepository.save(driver);
+        return driverMapper.fromEntityToResponse(driver);
+    }
+}

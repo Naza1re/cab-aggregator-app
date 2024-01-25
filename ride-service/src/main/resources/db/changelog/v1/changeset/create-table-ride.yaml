@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-ride
+      author: Nazar
+      preConditions:
+        - onFail: MARK_RAN
+          or:
+            - not:
+                tableExists:
+                  tableName: ride
+      changes:
+        - createTable:
+            tableName: ride
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: driver_id
+                  type: BIGINT
+              - column:
+                  name: passenger_id
+                  type: BIGINT
+              - column:
+                  name: pick_up_address
+                  type: VARCHAR(20)
+              - column:
+                  name: drop_off_address
+                  type: VARCHAR(20)
+              - column:
+                  name: start_date
+                  type: TIMESTAMP
+              - column:
+                  name: end_date
+                  type: TIMESTAMP
+              - column:
+                  name: price
+                  type: DECIMAL
+              - column:
+                  name: status
+                  type: VARCHAR(15)
+              - column:
+                  name: instructions
+                  type: VARCHAR(255)
+      rollback:
+        - dropTable:
+            tableName: ride
