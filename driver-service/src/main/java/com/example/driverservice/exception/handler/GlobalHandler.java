@@ -1,7 +1,7 @@
 package com.example.driverservice.exception.handler;
 
 import com.example.driverservice.exception.*;
-import com.example.driverservice.exception.appError.AppError;
+import com.example.driverservice.exception.error.AppError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

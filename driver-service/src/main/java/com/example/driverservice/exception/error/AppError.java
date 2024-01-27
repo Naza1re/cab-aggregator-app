@@ -1,4 +1,4 @@
-package com.example.driverservice.exception.appError;
+package com.example.driverservice.exception.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,5 @@
 package com.example.driverservice.dto.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter

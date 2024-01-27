@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "${feign.client.rating.name}", url = "${feign.client.rating.url}",
         path = "${feign.client.rating.path}", configuration = FeignClientConfiguration.class)
-public interface RatingClient {
+public interface RatingFeignClient {
     @GetMapping("/driver/list")
     DriverRatingListResponse getDriversRateList();
 

@@ -18,6 +18,7 @@ public class DriverProducer {
     @Value("${topic.name.driver}")
     private String driverTopic;
 
+
     private final KafkaTemplate<String, DriverForRide> kafkaTemplate;
 
     public void sendMessage(DriverForRide driver) {

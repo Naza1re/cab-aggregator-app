@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "${feign.client.passenger.name}", url = "${feign.client.passenger.url}",
         path = "${feign.client.passenger.path}", configuration = FeignClientConfiguration.class)
-public interface PassengerClient {
+public interface PassengerFeignClient {
     @GetMapping("/{id}")
     PassengerResponse getPassenger(@PathVariable Long id);
 

@@ -43,6 +43,7 @@ public class RideServiceImpl implements RideService {
     private final RideProducer rideProducer;
     private final PaymentClient paymentClient;
 
+    @Override
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
 
@@ -53,6 +54,7 @@ public class RideServiceImpl implements RideService {
         return rideMapper.fromEntityToResponse(ride);
     }
 
+    @Override
     public RideResponse getRideById(Long id) {
         Ride ride = getOrThrow(id);
         return rideMapper.fromEntityToResponse(ride);
@@ -64,6 +66,7 @@ public class RideServiceImpl implements RideService {
         }
     }
 
+    @Override
     public RideResponse endRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
 
@@ -75,6 +78,7 @@ public class RideServiceImpl implements RideService {
         return rideMapper.fromEntityToResponse(ride);
     }
 
+    @Override
     public RideListResponse getListOfRidesByPassengerId(Long passengerId) {
         List<RideResponse> rideList = rideRepository.getAllByPassengerId(passengerId)
                 .stream()
@@ -84,6 +88,7 @@ public class RideServiceImpl implements RideService {
         return new RideListResponse(rideList);
     }
 
+    @Override
     public RideListResponse getListOfRidesByDriverId(Long driverId) {
         List<RideResponse> rideList = rideRepository.getAllByDriverId(driverId)
                 .stream()
@@ -117,6 +122,7 @@ public class RideServiceImpl implements RideService {
                 .orElseThrow(() -> new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT));
     }
 
+    @Override
     public RidePageResponse getRidePage(int page, int size, String orderBy) {
 
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
@@ -135,6 +141,7 @@ public class RideServiceImpl implements RideService {
                 .build();
     }
 
+    @Override
     public RideResponse findRide(RideRequest rideRequest) {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
@@ -171,6 +178,7 @@ public class RideServiceImpl implements RideService {
                 .orElseThrow(() -> new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id)));
     }
 
+    @Override
     public void setDriver(DriverForRide driver) {
         Ride ride = getOrThrow(driver.getRideId());
         ride.setStatus(Status.ACCEPTED);
@@ -180,6 +188,7 @@ public class RideServiceImpl implements RideService {
         rideRepository.save(ride);
     }
 
+    @Override
     public void findRideForAvailableDriver() {
         Optional<Ride> ride = rideRepository.findFirstByDriverIdIsNull();
         ride.ifPresent(this::findDriverForRide);

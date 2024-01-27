@@ -1,14 +1,10 @@
 package com.example.driverservice.service.impl;
 
-import com.example.driverservice.client.RatingClient;
-import com.example.driverservice.dto.request.RatingRequest;
-import com.example.driverservice.dto.response.DriverRatingResponse;
+import com.example.driverservice.client.RatingFeignClient;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
-import com.example.driverservice.dto.response.DriverListResponse;
-import com.example.driverservice.dto.response.DriverPageResponse;
-import com.example.driverservice.dto.response.DriverRatingListResponse;
-import com.example.driverservice.dto.response.DriverResponse;
+import com.example.driverservice.dto.request.RatingRequest;
+import com.example.driverservice.dto.response.*;
 import com.example.driverservice.exception.*;
 import com.example.driverservice.kafka.AvailableDriverProducer;
 import com.example.driverservice.kafka.DriverProducer;
@@ -30,6 +26,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,15 +35,16 @@ public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
     private final DriverProducer driverProducer;
-    private final RatingClient ratingClient;
+    private final RatingFeignClient ratingFeignClient;
     private final AvailableDriverProducer availableDriverProducer;
 
-
+    @Override
     public DriverResponse getDriverById(Long id) {
         Driver driver = getOrThrow(id);
         return driverMapper.fromEntityToResponse(driver);
     }
 
+    @Override
     public DriverListResponse getListOfDrivers() {
         List<DriverResponse> driverResponseList = driverRepository.findAll().stream()
                 .map(driverMapper::fromEntityToResponse)
@@ -54,6 +52,7 @@ public class DriverServiceImpl implements DriverService {
         return new DriverListResponse(driverResponseList);
     }
 
+    @Override
     public DriverResponse updateDriver(Long id, DriverRequest driverRequest) {
 
         Driver driver = getOrThrow(id);
@@ -66,6 +65,7 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.fromEntityToResponse(driverRepository.save(driver));
     }
 
+    @Override
     public DriverResponse createDriver(DriverRequest driverRequest) {
 
         preCreateDriverCheck(driverRequest);
@@ -74,18 +74,19 @@ public class DriverServiceImpl implements DriverService {
         driver.setAvailable(false);
         Driver savedDriver = driverRepository.save(driver);
 
-        ratingClient.createDriverRecord(RatingRequest.builder()
+        ratingFeignClient.createDriverRecord(RatingRequest.builder()
                 .id(savedDriver.getId())
                 .build());
 
         return driverMapper.fromEntityToResponse(savedDriver);
     }
 
+    @Override
     public DriverResponse deleteDriver(Long id) {
         Driver driver = getOrThrow(id);
         driverRepository.delete(driver);
 
-        ratingClient.deleteDriverRating(id);
+        ratingFeignClient.deleteDriverRating(id);
 
         return driverMapper.fromEntityToResponse(driver);
     }
@@ -127,6 +128,7 @@ public class DriverServiceImpl implements DriverService {
         checkEmailExist(driverRequest.getEmail());
     }
 
+    @Override
     public DriverListResponse getAvailableDrivers() {
         List<Driver> listOfAvailableDrivers = driverRepository.getAllByAvailable(true);
         List<DriverResponse> listOfAvailable = listOfAvailableDrivers.stream()
@@ -151,6 +153,7 @@ public class DriverServiceImpl implements DriverService {
         return pageRequest;
     }
 
+    @Override
     public DriverPageResponse getDriverPage(int page, int size, String orderBy) {
 
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
@@ -183,6 +186,7 @@ public class DriverServiceImpl implements DriverService {
                 .orElseThrow(() -> new DriverNotFoundException(String.format(ExceptionMessages.DRIVER_NOT_FOUND_EXCEPTION, id)));
     }
 
+    @Override
     public DriverResponse changeStatus(Long driverId) {
         Driver driver = getOrThrow(driverId);
 
@@ -194,10 +198,11 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.fromEntityToResponse(driver);
     }
 
+    @Override
     public void findDriver(Long driverId) {
         DriverForRide driver = findDriverForRide(driverId);
         if (driver == null) {
-           log.info(ConstantsMessages.DRIVERS_NOT_AVAILABLE);
+            log.info(ConstantsMessages.DRIVERS_NOT_AVAILABLE);
         } else {
             driverProducer.sendMessage(driver);
         }
@@ -205,7 +210,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private DriverForRide findDriverForRide(Long id) {
-        DriverRatingListResponse ratingListResponse = ratingClient.getDriversRateList();
+        DriverRatingListResponse ratingListResponse = ratingFeignClient.getDriversRateList();
         List<Driver> drivers = driverRepository.getAllByAvailable(true);
         Optional<Driver> highestRatedDriver = drivers.stream()
                 .filter(Driver::isAvailable)

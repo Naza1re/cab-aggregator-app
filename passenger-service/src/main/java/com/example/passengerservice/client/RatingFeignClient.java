@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "${feign.client.rating.name}", url = "${feign.client.rating.url}",
         path = "${feign.client.rating.path}", configuration = FeignClientConfiguration.class)
-public interface RatingClient {
+public interface RatingFeignClient {
 
     @PostMapping("/passenger")
     PassengerRatingResponse createPassengerRecord(@RequestBody RatingRequest request);

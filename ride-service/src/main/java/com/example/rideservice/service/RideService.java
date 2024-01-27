@@ -1,6 +1,5 @@
 package com.example.rideservice.service;
 
-import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
 import com.example.rideservice.dto.response.DriverForRide;
 import com.example.rideservice.dto.response.RideListResponse;

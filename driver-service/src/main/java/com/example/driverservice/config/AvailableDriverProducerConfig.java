@@ -8,11 +8,16 @@ import org.springframework.kafka.config.TopicBuilder;
 public class AvailableDriverProducerConfig {
     @Value("${topic.name.available}")
     private String available;
+    @Value("${kafka.partitions.count}")
+    private int PARTITIONS_COUNT;
+    @Value("${kafka.replicas.count}")
+    private int REPLICAS_COUNT;
+
     @Bean
-    public NewTopic topic(){
+    public NewTopic topic() {
         return TopicBuilder.name(available)
-                .partitions(1)
-                .replicas(1)
+                .partitions(PARTITIONS_COUNT)
+                .replicas(REPLICAS_COUNT)
                 .build();
     }
 }

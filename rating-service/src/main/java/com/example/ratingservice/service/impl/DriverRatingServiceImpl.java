@@ -25,11 +25,13 @@ public class DriverRatingServiceImpl implements DriverRatingService {
 
     private final DriverMapper driverMapper;
 
+    @Override
     public DriverRatingResponse getDriverById(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse createDriver(CreateRequest request) {
 
         checkDriverRatingExist(request.getId());
@@ -42,6 +44,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse updateDriverRate(UpdateRequest updateRequest) {
         DriverRating driverRating = getOrThrowByDriverId(updateRequest.getId());
 
@@ -51,6 +54,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse deleteDriverRecord(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
 
@@ -58,12 +62,13 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
-    public void checkDriverRatingExist(Long driverId) {
+    private void checkDriverRatingExist(Long driverId) {
         if (driverRatingRepository.existsByDriver(driverId)) {
             throw new DriverRatingAlreadyExistException(String.format(ExceptionMessages.DRIVER_RATING_ALREADY_EXIST, driverId));
         }
     }
 
+    @Override
     public DriverRatingListResponse getAllDriversRecords() {
         List<DriverRatingResponse> driverRatings = driverRatingRepository.findAll()
                 .stream()
@@ -72,7 +77,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return new DriverRatingListResponse(driverRatings);
     }
 
-    public DriverRating getOrThrowByDriverId(Long id) {
+    private DriverRating getOrThrowByDriverId(Long id) {
         return driverRatingRepository.findDriverRatingByDriver(id)
                 .orElseThrow(() -> new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id)));
     }

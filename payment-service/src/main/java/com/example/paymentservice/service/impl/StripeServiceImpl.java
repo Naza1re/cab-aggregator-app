@@ -34,6 +34,7 @@ public class StripeServiceImpl implements StripeService {
     @Value("${stripe.secret}")
     private String secretKey;
 
+    @Override
     public void createPaymentParams(String customerId) {
         Map<String, Object> paymentParams = new HashMap<>();
         paymentParams.put("type", "card");
@@ -43,6 +44,7 @@ public class StripeServiceImpl implements StripeService {
         createPayment(paymentParams, customerId);
     }
 
+    @Override
     public Customer createStripeCustomerParams(CustomerRequest customerRequest) {
         CustomerCreateParams customerCreateParams = CustomerCreateParams.builder()
                 .setPhone(customerRequest.getPhone())
@@ -54,6 +56,7 @@ public class StripeServiceImpl implements StripeService {
         return createStripeCustomer(customerCreateParams);
     }
 
+    @Override
     public Customer createStripeCustomer(CustomerCreateParams customerCreateParams) {
         RequestOptions requestOptions = RequestOptions.builder()
                 .setApiKey(secretKey)
@@ -65,6 +68,7 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
     public void createPayment(Map<String, Object> paymentParams, String customerId) {
         RequestOptions requestOptions = RequestOptions.builder()
                 .setApiKey(secretKey)
@@ -77,6 +81,7 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
     public PaymentIntent confirmIntent(CustomerChargeRequest request, String customerId) {
         Stripe.apiKey = secretKey;
         PaymentIntent intent = createIntent(request, customerId);
@@ -87,6 +92,7 @@ public class StripeServiceImpl implements StripeService {
         return intentParams(intent, params);
     }
 
+    @Override
     public void changeBalance(String customerId, Long amount) {
         Customer customer = retrieveCustomer(customerId);
         CustomerUpdateParams customerUpdateParams =
@@ -95,6 +101,7 @@ public class StripeServiceImpl implements StripeService {
         updateCustomer(customerUpdateParams, customer);
     }
 
+    @Override
     public void checkBalance(String customerId, long amount) {
         Customer customer = retrieveCustomer(customerId);
 
@@ -116,6 +123,7 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
     public Charge createCharge(ChargeRequest chargeRequest) {
         Map<String, Object> chargeParams = createChargeParams(chargeRequest);
         try {
@@ -145,6 +153,7 @@ public class StripeServiceImpl implements StripeService {
         return chargeParams;
     }
 
+    @Override
     public Token createToken(CardRequest cardRequest) {
 
         Map<String, Object> cardParams = createCardParams(cardRequest);
@@ -158,6 +167,7 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
     public Customer retrieveCustomer(String customerId) {
         try {
             RequestOptions requestOptions = RequestOptions.builder()
@@ -180,12 +190,13 @@ public class StripeServiceImpl implements StripeService {
         }
     }
 
+    @Override
     public PaymentIntent intentParams(PaymentIntent intent, PaymentIntentConfirmParams params) {
         try {
             RequestOptions requestOptions = RequestOptions.builder()
                     .setApiKey(secretKey)
                     .build();
-            return intent.confirm(params,requestOptions);
+            return intent.confirm(params, requestOptions);
         } catch (StripeException stripeException) {
             throw new PaymentException(stripeException.getMessage());
         }
