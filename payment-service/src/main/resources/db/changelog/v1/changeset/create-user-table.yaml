@@ -1,22 +1,28 @@
 databaseChangeLog:
   - changeSet:
-      id: create-customers
+      id: create-passengers_customers
       author: Nazar
       preConditions:
         - onFail: MARK_RAN
           or:
             - not:
                 tableExists:
-                  tableName: customers
+                  tableName: passengers_customers
       changes:
         - createTable:
-            tableName: customers
+            tableName: passengers_customers
             columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
               - column:
                   name: passenger_id
                   type: bigint
                   constraints:
-                    primaryKey: true
                     nullable: false
               - column:
                   name: customer_id
@@ -25,4 +31,4 @@ databaseChangeLog:
                     nullable: false
       rollback:
         - dropTable:
-            tableName: drivers
+            tableName: passengers_customers

@@ -15,7 +15,7 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalHandler {
 
-    @ExceptionHandler(CustomerNotFoundException.class)
+    @ExceptionHandler({CustomerNotFoundException.class,NotFoundException.class})
     public ResponseEntity<AppError> handleNotFoundException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)

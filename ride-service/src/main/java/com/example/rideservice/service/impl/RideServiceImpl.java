@@ -2,6 +2,8 @@ package com.example.rideservice.service.impl;
 
 import com.example.rideservice.client.DriverClient;
 import com.example.rideservice.client.PassengerClient;
+import com.example.rideservice.client.PaymentClient;
+import com.example.rideservice.dto.request.CustomerChargeRequest;
 import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
 import com.example.rideservice.dto.response.*;
@@ -39,6 +41,7 @@ public class RideServiceImpl implements RideService {
     private final PassengerClient passengerClient;
     private final DriverClient driverClient;
     private final RideProducer rideProducer;
+    private final PaymentClient paymentClient;
 
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
@@ -137,7 +140,7 @@ public class RideServiceImpl implements RideService {
 
         PassengerResponse passenger = passengerClient.getPassenger(rideRequest.getPassengerId());
         ride.setPrice(new BigDecimal(10));
-
+        createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
         rideRepository.save(ride);
 
@@ -145,6 +148,16 @@ public class RideServiceImpl implements RideService {
         rideProducer.sendMessage(rideForDriver);
 
         return rideMapper.fromEntityToResponse(ride);
+    }
+
+    private void createChargeFromCustomer(Long id, BigDecimal price) {
+        CustomerChargeRequest request = CustomerChargeRequest.builder()
+                .amount(price)
+                .passengerId(id)
+                .currency("USD")
+                .build();
+        paymentClient.chargeFromCustomer(request);
+
     }
 
     private RideForDriver createRideForDriver(Ride ride) {

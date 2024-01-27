@@ -2,7 +2,9 @@ package com.example.paymentservice.controller;
 
 import com.example.paymentservice.dto.request.CardRequest;
 import com.example.paymentservice.dto.request.ChargeRequest;
-import com.example.paymentservice.dto.response.*;
+import com.example.paymentservice.dto.response.CardTokenResponse;
+import com.example.paymentservice.dto.response.CustomerResponse;
+import com.example.paymentservice.dto.response.StringResponse;
 import com.example.paymentservice.service.PaymentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

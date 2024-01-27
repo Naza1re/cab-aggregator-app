@@ -39,4 +39,8 @@ feign:
       name: driver
       url: http://localhost:8084
       path: /api/v1/drivers
+    payment:
+      name: payment
+      url: http://localhost:8085
+      path: /api/v1/payment
 

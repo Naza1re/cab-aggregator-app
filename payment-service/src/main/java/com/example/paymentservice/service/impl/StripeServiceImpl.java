@@ -11,6 +11,7 @@ import com.example.paymentservice.exception.PaymentException;
 import com.example.paymentservice.model.enums.PaymentMethodEnum;
 import com.example.paymentservice.service.StripeService;
 import com.example.paymentservice.util.ExceptionMessages;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.net.RequestOptions;
@@ -28,11 +29,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StripeServiceImpl implements StripeService {
 
-    @Value("${stripe.secret}")
-    private String secretKey;
-
     @Value("${stripe.public}")
     private String publicKey;
+    @Value("${stripe.secret}")
+    private String secretKey;
 
     public void createPaymentParams(String customerId) {
         Map<String, Object> paymentParams = new HashMap<>();
@@ -55,10 +55,10 @@ public class StripeServiceImpl implements StripeService {
     }
 
     public Customer createStripeCustomer(CustomerCreateParams customerCreateParams) {
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setApiKey(secretKey)
+                .build();
         try {
-            RequestOptions requestOptions = RequestOptions.builder()
-                    .setApiKey(secretKey)
-                    .build();
             return Customer.create(customerCreateParams, requestOptions);
         } catch (StripeException ex) {
             throw new CreateCustomerException(ex.getMessage());
@@ -66,10 +66,10 @@ public class StripeServiceImpl implements StripeService {
     }
 
     public void createPayment(Map<String, Object> paymentParams, String customerId) {
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setApiKey(secretKey)
+                .build();
         try {
-            RequestOptions requestOptions = RequestOptions.builder()
-                    .setApiKey(secretKey)
-                    .build();
             PaymentMethod paymentMethod = PaymentMethod.create(paymentParams);
             paymentMethod.attach(Map.of("customer", customerId), requestOptions);
         } catch (StripeException ex) {
@@ -78,6 +78,7 @@ public class StripeServiceImpl implements StripeService {
     }
 
     public PaymentIntent confirmIntent(CustomerChargeRequest request, String customerId) {
+        Stripe.apiKey = secretKey;
         PaymentIntent intent = createIntent(request, customerId);
         PaymentIntentConfirmParams params =
                 PaymentIntentConfirmParams.builder()
@@ -181,7 +182,10 @@ public class StripeServiceImpl implements StripeService {
 
     public PaymentIntent intentParams(PaymentIntent intent, PaymentIntentConfirmParams params) {
         try {
-            return intent.confirm(params);
+            RequestOptions requestOptions = RequestOptions.builder()
+                    .setApiKey(secretKey)
+                    .build();
+            return intent.confirm(params,requestOptions);
         } catch (StripeException stripeException) {
             throw new PaymentException(stripeException.getMessage());
         }
