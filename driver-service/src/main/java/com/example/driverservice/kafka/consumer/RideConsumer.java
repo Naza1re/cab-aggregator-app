@@ -1,4 +1,4 @@
-package com.example.driverservice.kafka;
+package com.example.driverservice.kafka.consumer;
 
 import com.example.driverservice.dto.response.RideForDriver;
 import com.example.driverservice.service.DriverService;
@@ -16,8 +16,8 @@ public class RideConsumer {
 
     @KafkaListener(topics = "${topic.name.ride}")
     public void consume(RideForDriver ride) {
-        log.info(String.format("Json message recieved -> %s", ride));
-        driverService.findDriver(ride.getRideId());
+        log.info("Json message recieved -> {}", ride);
+        driverService.handleDriver(ride.getRideId());
     }
 
 

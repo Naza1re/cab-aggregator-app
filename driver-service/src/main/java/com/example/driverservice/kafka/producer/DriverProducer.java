@@ -1,4 +1,4 @@
-package com.example.driverservice.kafka;
+package com.example.driverservice.kafka.producer;
 
 import com.example.driverservice.dto.request.DriverForRide;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class DriverProducer {
 
     public void sendMessage(DriverForRide driver) {
 
-        log.info(String.format("Message sent -> %s", driver.toString()));
+        log.info("Json message send -> {}", driver.toString());
         Message<DriverForRide> message = MessageBuilder
                 .withPayload(driver)
                 .setHeader(KafkaHeaders.TOPIC, driverTopic)

@@ -9,15 +9,15 @@ public class AvailableDriverProducerConfig {
     @Value("${topic.name.available}")
     private String available;
     @Value("${kafka.partitions.count}")
-    private int PARTITIONS_COUNT;
+    private int partitionCount;
     @Value("${kafka.replicas.count}")
-    private int REPLICAS_COUNT;
+    private int replicasCount;
 
     @Bean
     public NewTopic topic() {
         return TopicBuilder.name(available)
-                .partitions(PARTITIONS_COUNT)
-                .replicas(REPLICAS_COUNT)
+                .partitions(partitionCount)
+                .replicas(replicasCount)
                 .build();
     }
 }

@@ -21,6 +21,7 @@
         <feign.version>4.1.0</feign.version>
         <jackson.core.version>2.16.1</jackson.core.version>
         <jackson.databind.version>2.16.1</jackson.databind.version>
+        <spring.openfign.version>4.1.0</spring.openfign.version>
     </properties>
     <dependencies>
 
@@ -50,7 +51,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <version>4.1.0</version>
+            <version>${spring.openfign.version}</version>
         </dependency>
 
 

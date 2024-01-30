@@ -6,12 +6,13 @@ import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
 import com.example.driverservice.dto.response.*;
 import com.example.driverservice.exception.*;
-import com.example.driverservice.kafka.AvailableDriverProducer;
-import com.example.driverservice.kafka.DriverProducer;
+import com.example.driverservice.kafka.producer.AvailableDriverProducer;
+import com.example.driverservice.kafka.producer.DriverProducer;
 import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
 import com.example.driverservice.repository.DriverRepository;
 import com.example.driverservice.service.DriverService;
+import com.example.driverservice.util.Constants;
 import com.example.driverservice.util.ConstantsMessages;
 import com.example.driverservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,6 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponse updateDriver(Long id, DriverRequest driverRequest) {
 
         Driver driver = getOrThrow(id);
-        System.out.println(driver.getName());
 
         preUpdateDriverCheck(driver, driverRequest);
 
@@ -199,7 +199,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void findDriver(Long driverId) {
+    public void handleDriver(Long driverId) {
         DriverForRide driver = findDriverForRide(driverId);
         if (driver == null) {
             log.info(ConstantsMessages.DRIVERS_NOT_AVAILABLE);
@@ -228,6 +228,6 @@ public class DriverServiceImpl implements DriverService {
                 .filter(ratingResponse -> ratingResponse.getDriver().equals(driverId))
                 .mapToDouble(DriverRatingResponse::getRate)
                 .findFirst()
-                .orElse(0.0);
+                .orElse(Constants.DEFAULT_RATE);
     }
 }

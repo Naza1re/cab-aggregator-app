@@ -15,11 +15,11 @@ public class MyDecoder implements ErrorDecoder {
         String[] responseMessageSplit = exception.getMessage().split("\"message\"");
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
-        switch (status) {
-            case 400:
-                return new RatingException(exMessage);
-            case 404:
-                return new NotFoundException(exMessage);
+        if (status == 400) {
+            return new RatingException(exMessage);
+        }
+        if (status == 404) {
+            return new NotFoundException(exMessage);
         }
         if (status >= 500) {
             return new RetryableException(

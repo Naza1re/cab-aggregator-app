@@ -1,4 +1,4 @@
-package com.example.driverservice.kafka;
+package com.example.driverservice.kafka.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class AvailableDriverProducer {
 
     public void sendMessage(String available) {
 
-        log.info(String.format("Message sent -> %s", available));
+        log.info("Json message send -> {}", available);
         Message<String> message = MessageBuilder
                 .withPayload(available)
                 .setHeader(KafkaHeaders.TOPIC, availableTopic)

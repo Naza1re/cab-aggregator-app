@@ -1,4 +1,4 @@
-package com.example.rideservice.kafka;
+package com.example.rideservice.kafka.consumer;
 
 import com.example.rideservice.service.RideService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class NewAvailableDriverConsumer {
 
     @KafkaListener(topics = "${topic.name.available}")
     public void consume(String message) {
-        log.info(String.format("Json message recieved -> %s", message));
-        rideService.findRideForAvailableDriver();
+        log.info("Json message recieved -> {}", message);
+        rideService.handleRideForAvailableDriver();
     }
 }

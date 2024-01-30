@@ -1,4 +1,4 @@
-package com.example.rideservice.kafka;
+package com.example.rideservice.kafka.producer;
 
 import com.example.rideservice.dto.request.RideForDriver;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class RideProducer {
 
     public void sendMessage(RideForDriver ride) {
 
-        log.info(String.format("Message sent -> %s", ride.toString()));
+        log.info("Json message sebd -> {}", ride.toString());
         Message<RideForDriver> message = MessageBuilder
                 .withPayload(ride)
                 .setHeader(KafkaHeaders.TOPIC, rideTopic)

@@ -11,7 +11,7 @@ import com.example.rideservice.exception.PaginationParamException;
 import com.example.rideservice.exception.RideNotFoundException;
 import com.example.rideservice.exception.RideNotHaveDriverException;
 import com.example.rideservice.exception.SortTypeException;
-import com.example.rideservice.kafka.RideProducer;
+import com.example.rideservice.kafka.producer.RideProducer;
 import com.example.rideservice.mapper.RideMapper;
 import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
@@ -189,7 +189,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void findRideForAvailableDriver() {
+    public void handleRideForAvailableDriver() {
         Optional<Ride> ride = rideRepository.findFirstByDriverIdIsNull();
         ride.ifPresent(this::findDriverForRide);
     }
