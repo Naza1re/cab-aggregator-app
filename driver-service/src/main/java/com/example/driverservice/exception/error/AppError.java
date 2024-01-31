@@ -1,12 +1,14 @@
 package com.example.driverservice.exception.error;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
+@NoArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class AppError {
     private String message;
 }
