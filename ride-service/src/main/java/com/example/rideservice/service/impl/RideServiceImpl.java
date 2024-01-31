@@ -1,13 +1,17 @@
 package com.example.rideservice.service.impl;
 
+import com.example.rideservice.client.DriverClient;
+import com.example.rideservice.client.PassengerClient;
+import com.example.rideservice.client.PaymentClient;
+import com.example.rideservice.dto.request.CustomerChargeRequest;
+import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
-import com.example.rideservice.dto.response.RideListResponse;
-import com.example.rideservice.dto.response.RidePageResponse;
-import com.example.rideservice.dto.response.RideResponse;
+import com.example.rideservice.dto.response.*;
 import com.example.rideservice.exception.PaginationParamException;
 import com.example.rideservice.exception.RideNotFoundException;
 import com.example.rideservice.exception.RideNotHaveDriverException;
 import com.example.rideservice.exception.SortTypeException;
+import com.example.rideservice.kafka.producer.RideProducer;
 import com.example.rideservice.mapper.RideMapper;
 import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
@@ -21,9 +25,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -32,7 +38,12 @@ public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
+    private final PassengerClient passengerClient;
+    private final DriverClient driverClient;
+    private final RideProducer rideProducer;
+    private final PaymentClient paymentClient;
 
+    @Override
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
 
@@ -43,6 +54,7 @@ public class RideServiceImpl implements RideService {
         return rideMapper.fromEntityToResponse(ride);
     }
 
+    @Override
     public RideResponse getRideById(Long id) {
         Ride ride = getOrThrow(id);
         return rideMapper.fromEntityToResponse(ride);
@@ -54,16 +66,19 @@ public class RideServiceImpl implements RideService {
         }
     }
 
+    @Override
     public RideResponse endRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
 
         checkRideHasDriver(ride);
         ride.setEndDate(LocalDateTime.now());
         ride.setStatus(Status.FINISHED);
+        driverClient.changeStatus(ride.getDriverId());
         rideRepository.save(ride);
         return rideMapper.fromEntityToResponse(ride);
     }
 
+    @Override
     public RideListResponse getListOfRidesByPassengerId(Long passengerId) {
         List<RideResponse> rideList = rideRepository.getAllByPassengerId(passengerId)
                 .stream()
@@ -73,6 +88,7 @@ public class RideServiceImpl implements RideService {
         return new RideListResponse(rideList);
     }
 
+    @Override
     public RideListResponse getListOfRidesByDriverId(Long driverId) {
         List<RideResponse> rideList = rideRepository.getAllByDriverId(driverId)
                 .stream()
@@ -106,6 +122,7 @@ public class RideServiceImpl implements RideService {
                 .orElseThrow(() -> new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT));
     }
 
+    @Override
     public RidePageResponse getRidePage(int page, int size, String orderBy) {
 
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
@@ -115,8 +132,7 @@ public class RideServiceImpl implements RideService {
         long total = ridesPage.getTotalElements();
 
         List<RideResponse> rides = retrievedRides.stream()
-                .map(rideMapper::fromEntityToResponse)
-                .toList();
+                .map(rideMapper::fromEntityToResponse).toList();
 
         return RidePageResponse.builder()
                 .rideList(rides)
@@ -125,33 +141,64 @@ public class RideServiceImpl implements RideService {
                 .build();
     }
 
+    @Override
     public RideResponse findRide(RideRequest rideRequest) {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
+        PassengerResponse passenger = passengerClient.getPassenger(rideRequest.getPassengerId());
+        ride.setPrice(new BigDecimal(10));
+        createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
         rideRepository.save(ride);
-        //Логика отправки запроса на поездку лучшевму водителю
+
+        RideForDriver rideForDriver = createRideForDriver(ride);
+        rideProducer.sendMessage(rideForDriver);
+
         return rideMapper.fromEntityToResponse(ride);
     }
 
-    public RideResponse acceptRide(Long rideId, Long driverId) {
-        Ride ride = getOrThrow(rideId);
+    private void createChargeFromCustomer(Long id, BigDecimal price) {
+        CustomerChargeRequest request = CustomerChargeRequest.builder()
+                .amount(price)
+                .passengerId(id)
+                .currency("USD")
+                .build();
+        paymentClient.chargeFromCustomer(request);
 
-        ride.setDriverId(driverId);
-        ride.setStatus(Status.ACCEPTED);
-        rideRepository.save(ride);
-        return rideMapper.fromEntityToResponse(ride);
     }
 
-    public RideResponse cancelRide(Long rideId, Long driverId) {
-        Ride ride = getOrThrow(rideId);
-        //Логика отиправки запрос ана поездку следующему водителю
-        return rideMapper.fromEntityToResponse(ride);
+    private RideForDriver createRideForDriver(Ride ride) {
+        return RideForDriver.builder()
+                .rideId(ride.getId())
+                .build();
     }
 
     private Ride getOrThrow(Long id) {
         return rideRepository.findById(id)
                 .orElseThrow(() -> new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    @Override
+    public void setDriver(DriverForRide driver) {
+        Ride ride = getOrThrow(driver.getRideId());
+        ride.setStatus(Status.ACCEPTED);
+        driverClient.changeStatus(driver.getDriverId());
+        ride.setDriverId(driver.getDriverId());
+
+        rideRepository.save(ride);
+    }
+
+    @Override
+    public void handleRideForAvailableDriver() {
+        Optional<Ride> ride = rideRepository.findFirstByDriverIdIsNull();
+        ride.ifPresent(this::findDriverForRide);
+    }
+
+    private void findDriverForRide(Ride ride) {
+        RideForDriver rideForDriver = RideForDriver.builder()
+                .rideId(ride.getId())
+                .build();
+        rideProducer.sendMessage(rideForDriver);
     }
 
 }

@@ -1,16 +1,18 @@
 package com.example.passengerservice.service.impl;
 
+import com.example.passengerservice.client.RatingFeignClient;
 import com.example.passengerservice.dto.request.PassengerRequest;
+import com.example.passengerservice.dto.request.RatingRequest;
 import com.example.passengerservice.dto.response.PassengerListResponse;
 import com.example.passengerservice.dto.response.PassengerPageResponse;
 import com.example.passengerservice.dto.response.PassengerResponse;
 import com.example.passengerservice.exception.*;
+import com.example.passengerservice.mapper.PassengerMapper;
 import com.example.passengerservice.model.Passenger;
 import com.example.passengerservice.repository.PassengerRepository;
 import com.example.passengerservice.service.PassengerService;
 import com.example.passengerservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,57 +27,61 @@ import java.util.List;
 public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
-    private final ModelMapper modelMapper;
+    private final RatingFeignClient ratingFeignClient;
+    private final PassengerMapper passengerMapper;
 
-    private PassengerResponse fromEntityToResponse(Passenger passenger){
-        return modelMapper.map(passenger, PassengerResponse.class);
-    }
-
-    private Passenger fromRequestToEntity(PassengerRequest passengerRequest){
-        return modelMapper.map(passengerRequest, Passenger.class);
-    }
-
+    @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = getOrThrow(id);
-        return fromEntityToResponse(passenger);
+        return passengerMapper.fromEntityToResponse(passenger);
 
     }
 
-    public PassengerListResponse getAllPassengers(){
-          List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
-                .map(this::fromEntityToResponse)
+    @Override
+    public PassengerListResponse getAllPassengers() {
+        List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
+                .map(passengerMapper::fromEntityToResponse)
                 .toList();
         return new PassengerListResponse(listOfPassengers);
     }
 
+    @Override
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
 
         checkEmailExist(passengerRequest.getEmail());
         checkPhoneExist(passengerRequest.getPhone());
 
-        Passenger passenger = fromRequestToEntity(passengerRequest);
+        Passenger passenger = passengerMapper.fromRequestToEntity(passengerRequest);
         Passenger savedPassenger = passengerRepository.save(passenger);
 
-        return fromEntityToResponse(savedPassenger);
+        ratingFeignClient.createPassengerRecord(RatingRequest.builder()
+                .id(savedPassenger.getId())
+                .build());
+        return passengerMapper.fromEntityToResponse(savedPassenger);
     }
 
+    @Override
     public PassengerResponse updatePassenger(Long id, PassengerRequest passengerRequest) {
 
         Passenger passenger = getOrThrow(id);
 
-        preUpdateEmailCheck(passenger,passengerRequest.getEmail());
-        preUpdatePhoneCheck(passenger,passengerRequest.getPhone());
+        preUpdateEmailCheck(passenger, passengerRequest.getEmail());
+        preUpdatePhoneCheck(passenger, passengerRequest.getPhone());
 
-        passenger = fromRequestToEntity(passengerRequest);
+        passenger = passengerMapper.fromRequestToEntity(passengerRequest);
         passenger.setId(id);
-        return fromEntityToResponse(passengerRepository.save(passenger));
+        return passengerMapper.fromEntityToResponse(passengerRepository.save(passenger));
 
     }
 
+    @Override
     public PassengerResponse deletePassenger(Long id) {
-       Passenger passenger = getOrThrow(id);
-            passengerRepository.delete(passenger);
-            return fromEntityToResponse(passenger);
+        Passenger passenger = getOrThrow(id);
+        passengerRepository.delete(passenger);
+
+        ratingFeignClient.deletePassengerRecord(id);
+
+        return passengerMapper.fromEntityToResponse(passenger);
 
     }
 
@@ -96,14 +102,14 @@ public class PassengerServiceImpl implements PassengerService {
     private void checkEmailExist(String email) {
 
         if (passengerRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_EMAIL_ALREADY_EXIST,email));
+            throw new EmailAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_EMAIL_ALREADY_EXIST, email));
         }
     }
 
     private void checkPhoneExist(String phone) {
 
         if (passengerRepository.existsByPhone(phone)) {
-            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_PHONE_ALREADY_EXIST,phone));
+            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_PHONE_ALREADY_EXIST, phone));
         }
     }
 
@@ -122,6 +128,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         return pageRequest;
     }
+
     private void validateSortingParameter(String orderBy) {
         List<String> fieldNames = Arrays.stream(PassengerResponse.class.getDeclaredFields())
                 .map(Field::getName)
@@ -132,6 +139,8 @@ public class PassengerServiceImpl implements PassengerService {
             throw new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT);
         }
     }
+
+    @Override
     public PassengerPageResponse getPassengerPage(int page, int size, String orderBy) {
 
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
@@ -141,7 +150,7 @@ public class PassengerServiceImpl implements PassengerService {
         long total = passengersPage.getTotalElements();
 
         List<PassengerResponse> passengers = retrievedPassengers.stream()
-                .map(this::fromEntityToResponse)
+                .map(passengerMapper::fromEntityToResponse)
                 .toList();
 
         return PassengerPageResponse.builder()
@@ -153,7 +162,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     private Passenger getOrThrow(Long id) {
         return passengerRepository.findById(id)
-                .orElseThrow(()-> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION,id)));
+                .orElseThrow(() -> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, id)));
     }
 
 }

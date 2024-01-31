@@ -18,20 +18,6 @@ public class RideController {
 
     private final RideService rideService;
 
-    @PatchMapping("/{rideId}/accept/{driverId}")
-    public ResponseEntity<RideResponse> acceptRideByDriver(
-            @PathVariable Long driverId,
-            @PathVariable Long rideId) {
-        return ResponseEntity.ok(rideService.acceptRide(rideId, driverId));
-    }
-
-    @PatchMapping("/{rideId}/cancel/{driverId}")
-    public ResponseEntity<RideResponse> cancelRideByDriver(
-            @PathVariable Long driverId,
-            @PathVariable Long rideId) {
-        return ResponseEntity.ok(rideService.cancelRide(rideId, driverId));
-    }
-
     @PostMapping
     public ResponseEntity<RideResponse> findRide(
             @Valid @RequestBody RideRequest rideRequest) {

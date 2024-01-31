@@ -2,7 +2,7 @@ package com.example.ratingservice.service.impl;
 
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
-import com.example.ratingservice.dto.responce.DriverListResponse;
+import com.example.ratingservice.dto.responce.DriverRatingListResponse;
 import com.example.ratingservice.dto.responce.DriverRatingResponse;
 import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
 import com.example.ratingservice.exception.DriverRatingNotFoundException;
@@ -25,11 +25,13 @@ public class DriverRatingServiceImpl implements DriverRatingService {
 
     private final DriverMapper driverMapper;
 
+    @Override
     public DriverRatingResponse getDriverById(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse createDriver(CreateRequest request) {
 
         checkDriverRatingExist(request.getId());
@@ -42,6 +44,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse updateDriverRate(UpdateRequest updateRequest) {
         DriverRating driverRating = getOrThrowByDriverId(updateRequest.getId());
 
@@ -51,6 +54,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
+    @Override
     public DriverRatingResponse deleteDriverRecord(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
 
@@ -58,21 +62,22 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
-    public void checkDriverRatingExist(Long driverId) {
+    private void checkDriverRatingExist(Long driverId) {
         if (driverRatingRepository.existsByDriver(driverId)) {
             throw new DriverRatingAlreadyExistException(String.format(ExceptionMessages.DRIVER_RATING_ALREADY_EXIST, driverId));
         }
     }
 
-    public DriverListResponse getAllDriversRecords() {
+    @Override
+    public DriverRatingListResponse getAllDriversRecords() {
         List<DriverRatingResponse> driverRatings = driverRatingRepository.findAll()
                 .stream()
                 .map(driverMapper::fromEntityToResponse)
                 .toList();
-        return new DriverListResponse(driverRatings);
+        return new DriverRatingListResponse(driverRatings);
     }
 
-    public DriverRating getOrThrowByDriverId(Long id) {
+    private DriverRating getOrThrowByDriverId(Long id) {
         return driverRatingRepository.findDriverRatingByDriver(id)
                 .orElseThrow(() -> new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id)));
     }

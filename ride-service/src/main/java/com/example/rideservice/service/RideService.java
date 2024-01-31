@@ -1,6 +1,7 @@
 package com.example.rideservice.service;
 
 import com.example.rideservice.dto.request.RideRequest;
+import com.example.rideservice.dto.response.DriverForRide;
 import com.example.rideservice.dto.response.RideListResponse;
 import com.example.rideservice.dto.response.RidePageResponse;
 import com.example.rideservice.dto.response.RideResponse;
@@ -21,7 +22,7 @@ public interface RideService {
 
     RideResponse findRide(RideRequest rideRequest);
 
-    RideResponse acceptRide(Long rideId, Long driverId);
+    void setDriver(DriverForRide driver);
 
-    RideResponse cancelRide(Long rideId, Long driverId);
+    void handleRideForAvailableDriver();
 }

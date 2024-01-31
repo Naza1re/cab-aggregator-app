@@ -24,12 +24,14 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     private final PassengerRatingRepository passengerRatingRepository;
     private final PassengerMapper passengerMapper;
 
+    @Override
     public PassengerRatingResponse getPassengerRecordById(Long passengerId) {
 
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
+    @Override
     public PassengerRatingResponse createPassenger(CreateRequest createRequest) {
 
         checkPassengerRatingExist(createRequest.getId());
@@ -43,6 +45,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
 
     }
 
+    @Override
     public PassengerRatingResponse updatePassengerRating(UpdateRequest updateRequest) {
         PassengerRating passengerRating = getOrThrowByPassengerId(updateRequest.getId());
 
@@ -52,6 +55,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
+    @Override
     public PassengerRatingResponse deletePassengerRecord(Long passengerId) {
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
 
@@ -59,6 +63,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
+    @Override
     public PassengerListResponse getAllPassengersRecords() {
         List<PassengerRatingResponse> passengerRatings = passengerRatingRepository.findAll()
                 .stream()

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost/passengers
-    username: root
-    password: root
+    url: jdbc:mysql://localhost:3306/passengers
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     properties:
@@ -13,4 +13,12 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+feign:
+  client:
+    rating:
+      name: rating
+      url: http://localhost:8083
+      path: /api/v1/rating
+server:
+  port: 8081
 

@@ -14,3 +14,33 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
+  kafka:
+    consumer:
+      group-id: driver-creation-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: localhost:9092
+topic:
+  name:
+    ride: ride
+    driver: driver
+    available: available
+feign:
+  client:
+    passenger:
+      name: passenger
+      url: http://localhost:8081
+      path: /api/v1/passengers
+    driver:
+      name: driver
+      url: http://localhost:8084
+      path: /api/v1/drivers
+    payment:
+      name: payment
+      url: http://localhost:8085
+      path: /api/v1/payment
+

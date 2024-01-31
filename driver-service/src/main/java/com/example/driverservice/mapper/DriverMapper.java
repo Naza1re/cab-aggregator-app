@@ -13,7 +13,6 @@ public class DriverMapper {
 
     private final ModelMapper modelMapper;
 
-
     public DriverResponse fromEntityToResponse(Driver driver) {
         return modelMapper.map(driver, DriverResponse.class);
     }
