@@ -4,6 +4,7 @@ package com.example.ratingservice.service;
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
 import com.example.ratingservice.dto.responce.DriverRatingResponse;
+import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
 import com.example.ratingservice.exception.DriverRatingNotFoundException;
 import com.example.ratingservice.mapper.DriverMapper;
 import com.example.ratingservice.model.DriverRating;
@@ -52,6 +53,19 @@ public class DriverRatingServiceImplTest {
         assertThat(actual).isEqualTo(driverRatingResponse);
     }
 
+
+    @Test
+    void createDriverRatingWhenRatingAlreadyExist() {
+        CreateRequest request = getCreateRequest();
+
+        doReturn(true)
+                .when(driverRatingRepository)
+                .existsByDriver(request.getId());
+        assertThrows(
+                DriverRatingAlreadyExistException.class,
+                () -> driverRatingService.createDriver(request)
+        );
+    }
     @Test
     void creteDriverRating() {
         DriverRatingResponse driverRatingResponse = getDefaultDriverRatingResponse();

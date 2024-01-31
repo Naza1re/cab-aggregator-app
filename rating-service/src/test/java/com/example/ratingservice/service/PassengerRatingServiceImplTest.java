@@ -3,6 +3,7 @@ package com.example.ratingservice.service;
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
 import com.example.ratingservice.dto.responce.PassengerRatingResponse;
+import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
 import com.example.ratingservice.exception.PassengerRatingNotFoundException;
 import com.example.ratingservice.mapper.PassengerMapper;
 import com.example.ratingservice.model.PassengerRating;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.example.ratingservice.util.DriverRatingUtilTest.getCreateRequest;
 import static com.example.ratingservice.util.PassengerRatingUtilTest.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,6 +51,19 @@ public class PassengerRatingServiceImplTest {
         verify(passengerMapper).fromEntityToResponse(passengerRating);
 
         assertThat(actual).isEqualTo(passengerRatingResponse);
+    }
+
+    @Test
+    void createPassengerRatingWhenRatingAlreadyExist() {
+        CreateRequest request = getCreateRequest();
+
+        doReturn(true)
+                .when(passengerRatingRepository)
+                .existsByPassenger(request.getId());
+        assertThrows(
+                DriverRatingAlreadyExistException.class,
+                () -> passengerRatingService.createPassenger(request)
+        );
     }
 
     @Test

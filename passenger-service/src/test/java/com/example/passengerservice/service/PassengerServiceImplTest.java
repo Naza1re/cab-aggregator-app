@@ -3,12 +3,11 @@ package com.example.passengerservice.service;
 import com.example.passengerservice.client.RatingFeignClient;
 import com.example.passengerservice.dto.request.PassengerRequest;
 import com.example.passengerservice.dto.request.RatingRequest;
+import com.example.passengerservice.dto.response.PassengerListResponse;
+import com.example.passengerservice.dto.response.PassengerPageResponse;
 import com.example.passengerservice.dto.response.PassengerRatingResponse;
 import com.example.passengerservice.dto.response.PassengerResponse;
-import com.example.passengerservice.exception.EmailAlreadyExistException;
-import com.example.passengerservice.exception.PaginationParamException;
-import com.example.passengerservice.exception.PassengerNotFoundException;
-import com.example.passengerservice.exception.PhoneAlreadyExistException;
+import com.example.passengerservice.exception.*;
 import com.example.passengerservice.mapper.PassengerMapper;
 import com.example.passengerservice.model.Passenger;
 import com.example.passengerservice.repository.PassengerRepository;
@@ -20,12 +19,15 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.passengerservice.util.PassengerTestUtil.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +41,34 @@ public class PassengerServiceImplTest {
     private PassengerServiceImpl passengerService;
     @Mock
     private RatingFeignClient ratingFeignClient;
+
+
+    @Test
+    void findAllDrivers() {
+
+        PassengerListResponse expected = getPassengerListResponse();
+        List<Passenger> passengerList = getPassengerList();
+
+
+        doReturn(passengerList)
+                .when(passengerRepository)
+                .findAll();
+        doReturn(expected.getListOfPassengers().get(0))
+                .when(passengerMapper)
+                .fromEntityToResponse(passengerList.get(0));
+        doReturn(expected.getListOfPassengers().get(1))
+                .when(passengerMapper)
+                .fromEntityToResponse(passengerList.get(1));
+
+        PassengerListResponse actual = passengerService.getAllPassengers();
+
+        verify(passengerRepository).findAll();
+        verify(passengerMapper).fromEntityToResponse(passengerList.get(0));
+        verify(passengerMapper).fromEntityToResponse(passengerList.get(1));
+
+        assertThat(actual.getListOfPassengers()).isEqualTo(expected.getListOfPassengers());
+
+    }
 
     @Test
     void findPassengerByIdWhenPassengerExist() {
@@ -80,28 +110,22 @@ public class PassengerServiceImplTest {
         PassengerRequest request = getPassengerRequest();
         Passenger savedPassenger = getNotSavedPassenger();
         PassengerRatingResponse passengerRatingResponse = getPassengerRatingResponse();
-        RatingRequest ratingRequest = getPassengerRatingRequest();
 
         doReturn(false)
                 .when(passengerRepository)
                 .existsByEmail(DEFAULT_EMAIL);
-
         doReturn(false)
                 .when(passengerRepository)
                 .existsByPhone(DEFAULT_PHONE);
-
         doReturn(passengerToSave)
                 .when(passengerMapper)
                 .fromRequestToEntity(request);
-
         doReturn(savedPassenger)
                 .when(passengerRepository)
                 .save(passengerToSave);
-
         doReturn(passengerResponse)
                 .when(passengerMapper)
                 .fromEntityToResponse(savedPassenger);
-
         doReturn(passengerRatingResponse)
                 .when(ratingFeignClient)
                 .createPassengerRecord(ArgumentMatchers.any(RatingRequest.class));
@@ -116,7 +140,22 @@ public class PassengerServiceImplTest {
         verify(ratingFeignClient).createPassengerRecord(ArgumentMatchers.any(RatingRequest.class));
 
         assertThat(actual).isEqualTo(passengerResponse);
+    }
 
+    @Test
+    void GetPageWhenPaginationParamsIsInvalid() {
+        assertThrows(
+                PaginationParamException.class,
+                () -> passengerService.getPassengerPage(INVALID_PAGINATION_PAGE,INVALID_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+        );
+    }
+
+    @Test
+    void GetPageWhenOrderByIsInvalid() {
+        assertThrows(
+                SortTypeException.class,
+                () -> passengerService.getPassengerPage(DEFAULT_PAGINATION_PAGE,DEFAULT_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+        );
     }
 
     @Test
@@ -181,6 +220,7 @@ public class PassengerServiceImplTest {
                 PassengerNotFoundException.class,
                 () -> passengerService.deletePassenger(NOT_FOUND_ID)
         );
+
         verify(passengerRepository).findById(NOT_FOUND_ID);
 
     }
@@ -222,6 +262,7 @@ public class PassengerServiceImplTest {
         doReturn(true)
                 .when(passengerRepository)
                 .existsByEmail(passengerRequest.getEmail());
+
         assertThrows(
                 EmailAlreadyExistException.class,
                 () -> passengerService.updatePassenger(DEFAULT_ID, passengerRequest)
@@ -246,6 +287,7 @@ public class PassengerServiceImplTest {
         doReturn(true)
                 .when(passengerRepository)
                 .existsByPhone(passengerRequest.getPhone());
+
         assertThrows(
                 PhoneAlreadyExistException.class,
                 () -> passengerService.updatePassenger(DEFAULT_ID, passengerRequest)
@@ -267,23 +309,18 @@ public class PassengerServiceImplTest {
         doReturn(Optional.of(passenger))
                 .when(passengerRepository)
                 .findById(DEFAULT_ID);
-
         doReturn(false)
                 .when(passengerRepository)
                 .existsByEmail(passengerUpdateRequest.getEmail());
-
         doReturn(false)
                 .when(passengerRepository)
                 .existsByPhone(passengerUpdateRequest.getPhone());
-
         doReturn(updatePassenger)
                 .when(passengerMapper)
                 .fromRequestToEntity(passengerUpdateRequest);
-
         doReturn(expected)
                 .when(passengerMapper)
                 .fromEntityToResponse(updatePassenger);
-
         doReturn(updatePassenger)
                 .when(passengerRepository)
                 .save(updatePassenger);
@@ -301,13 +338,32 @@ public class PassengerServiceImplTest {
     }
 
     @Test
-    void getPassengersPageWhenParamsIsInvalid() {
-        assertThrows(
-                PaginationParamException.class,
-                () -> passengerService.getPassengerPage(INVALID_PARAM_PAGE, INVALID_PARAM_SIZE, INVALID_PARAM_ORDER_BY)
-        );
+    void getPassengerPage_ReturnsPageResponse_WhenValidParams() {
+        Page<Passenger> passengersPage = mock(Page.class);
+        List<Passenger> passengersList = getPassengerList();
+        when(passengersPage.getContent()).thenReturn(passengersList);
+        when(passengersPage.getTotalElements()).thenReturn((long) passengersList.size());
+        when(passengerRepository.findAll(any(PageRequest.class))).thenReturn(passengersPage);
 
+        PassengerPageResponse pageResponse = passengerService.getPassengerPage(DEFAULT_PAGINATION_PAGE, DEFAULT_PAGINATION_SIZE, null);
 
+        assertNotNull(pageResponse);
+        assertEquals(passengersList.size(), pageResponse.getTotalElements());
+        assertEquals(DEFAULT_PAGINATION_PAGE, pageResponse.getTotalPages());
+    }
+
+    @Test
+    void getPassengerPage_ReturnsEmptyResponse_WhenNoPassengersFound() {
+        Page<Passenger> passengersPage = mock(Page.class);
+        when(passengersPage.getContent()).thenReturn(List.of());
+        when(passengersPage.getTotalElements()).thenReturn(0L);
+        when(passengerRepository.findAll(any(PageRequest.class))).thenReturn(passengersPage);
+
+        PassengerPageResponse pageResponse = passengerService.getPassengerPage(DEFAULT_PAGINATION_PAGE, DEFAULT_PAGINATION_SIZE, null);
+
+        assertNotNull(pageResponse);
+        assertEquals(0, pageResponse.getTotalElements());
+        assertEquals(DEFAULT_PAGINATION_PAGE, pageResponse.getTotalPages());
     }
 
 }

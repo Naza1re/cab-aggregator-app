@@ -3,11 +3,9 @@ package com.example.driverservice.service;
 import com.example.driverservice.client.RatingFeignClient;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.response.DriverListResponse;
+import com.example.driverservice.dto.response.DriverPageResponse;
 import com.example.driverservice.dto.response.DriverResponse;
-import com.example.driverservice.exception.CarNumberAlreadyExistException;
-import com.example.driverservice.exception.DriverNotFoundException;
-import com.example.driverservice.exception.EmailAlreadyExistException;
-import com.example.driverservice.exception.PhoneAlreadyExistException;
+import com.example.driverservice.exception.*;
 import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
 import com.example.driverservice.repository.DriverRepository;
@@ -17,14 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.driverservice.util.DriverTestUtil.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,6 +100,22 @@ public class DriverServiceImplTest {
 
         assertThat(actual.getDriverResponseList()).isEqualTo(expected.getDriverResponseList());
 
+    }
+
+    @Test
+    void GetPageWhenPaginationParamsIsInvalid() {
+        assertThrows(
+                PaginationParamException.class,
+                () -> driverService.getDriverPage(INVALID_PAGINATION_PAGE,INVALID_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+        );
+    }
+
+    @Test
+    void GetPageWhenOrderByIsInvalid() {
+        assertThrows(
+                SortTypeException.class,
+                () -> driverService.getDriverPage(DEFAULT_PAGINATION_PAGE,DEFAULT_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+        );
     }
 
     @Test
@@ -296,4 +311,23 @@ public class DriverServiceImplTest {
         assertThat(actual.getDriverResponseList()).isEqualTo(expected.getDriverResponseList());
 
     }
+
+    @Test
+    void getDriverPage_ReturnsPageResponse_WhenValidParams() {
+        // Arrange
+        PageRequest pageRequest = PageRequest.of(DEFAULT_PAGINATION_PAGE - 1, DEFAULT_PAGINATION_SIZE);
+        Page<Driver> driversPage = mock(Page.class);
+        List<Driver> driversList = getDriverList();
+        when(driversPage.getContent()).thenReturn(driversList);
+        when(driversPage.getTotalElements()).thenReturn((long) driversList.size());
+        when(driverRepository.findAll(any(PageRequest.class))).thenReturn(driversPage);
+
+        DriverPageResponse pageResponse = driverService.getDriverPage(DEFAULT_PAGINATION_PAGE, DEFAULT_PAGINATION_SIZE, null);
+
+        assertNotNull(pageResponse);
+        assertEquals(driversList.size(), pageResponse.getTotalElements());
+        assertEquals(DEFAULT_PAGINATION_PAGE, pageResponse.getTotalPages());
+    }
+
+
 }

@@ -27,6 +27,13 @@ public class DriverTestUtil {
     public static final String UPDATE_COLOR = "white";
     public static final String UPDATE_NUMBER = "1236 KX-5";
     public static final String UPDATE_MODEL = "skoda rapid";
+    public static final int INVALID_PAGINATION_SIZE = -1;
+    public static final int DEFAULT_PAGINATION_SIZE = 1;
+    public static final int INVALID_PAGINATION_PAGE = -1;
+    public static final int DEFAULT_PAGINATION_PAGE = 1;
+    public static final String INVALID_PAGINATION_SORTED_TYPE = "mmm";
+
+
     public static final boolean AVAILABLE = true;
 
 
