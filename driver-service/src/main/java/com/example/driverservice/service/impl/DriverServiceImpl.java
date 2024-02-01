@@ -72,6 +72,7 @@ public class DriverServiceImpl implements DriverService {
 
         Driver driver = driverMapper.fromRequestToEntity(driverRequest);
         driver.setAvailable(false);
+
         Driver savedDriver = driverRepository.save(driver);
 
         ratingFeignClient.createDriverRecord(RatingRequest.builder()

@@ -1,10 +1,14 @@
 package com.example.driverservice.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "drivers")
 public class Driver {
 

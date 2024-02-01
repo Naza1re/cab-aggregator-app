@@ -9,11 +9,13 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ContainerConfiguration {
+public class DataBaseContainerConfiguration {
 
     private static MySQLContainer<?> mySQL = new MySQLContainer<>(DockerImageName.parse(
             "mysql:8"
     ));
+
+
 
     @BeforeAll
     static void beforeAll() {
@@ -30,7 +32,6 @@ public class ContainerConfiguration {
         registry.add("spring.datasource.username", mySQL::getUsername);
         registry.add("spring.datasource.password", mySQL::getPassword);
         registry.add("mysql.driver", mySQL::getDriverClassName);
-        registry.add("spring.jpa.generate-ddl", () -> true);
     }
 
 
