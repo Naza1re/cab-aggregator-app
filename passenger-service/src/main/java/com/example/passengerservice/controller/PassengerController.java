@@ -24,7 +24,7 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getPassengerById(id));
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<PassengerListResponse> getAllPassengers(){
         return ResponseEntity.ok(passengerService.getAllPassengers());
     }

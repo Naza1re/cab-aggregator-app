@@ -1,13 +1,15 @@
 package com.example.passengerservice.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+@Builder
 public class PassengerListResponse {
 
     private List<PassengerResponse> listOfPassengers;
