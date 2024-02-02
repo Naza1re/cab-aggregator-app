@@ -92,7 +92,6 @@ public class DriverServiceImplTest {
                 .fromEntityToResponse(driverList.get(1));
 
         DriverListResponse actual = driverService.getListOfDrivers();
-        System.out.println(actual);
 
         verify(driverRepository).findAll();
         verify(driverMapper).fromEntityToResponse(driverList.get(0));
