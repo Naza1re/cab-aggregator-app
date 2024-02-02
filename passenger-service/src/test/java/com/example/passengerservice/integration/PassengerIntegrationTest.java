@@ -39,7 +39,7 @@ public class PassengerIntegrationTest extends DataBaseContainerConfiguration {
     private int port;
 
     @Test
-    void findById_shouldReturnPassengerNotFoundMessage_whenPassengerNotExist() {
+    void findById_shouldReturnPassengerNotFound_whenPassengerNotExist() {
         AppError expected = AppError.builder()
                 .message(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, ID_NOT_FOUND))
                 .build();

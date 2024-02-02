@@ -1,10 +1,15 @@
 package com.example.ratingservice.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 @Table(name = "driver_rate")
 public class DriverRating {
     @Id

@@ -33,7 +33,6 @@ public class DriverRatingServiceImpl implements DriverRatingService {
 
     @Override
     public DriverRatingResponse createDriver(CreateRequest request) {
-
         checkDriverRatingExist(request.getId());
 
         DriverRating driverRating = new DriverRating();
