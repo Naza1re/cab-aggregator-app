@@ -1,4 +1,4 @@
-package com.example.passengerservice.integration;
+package com.example.rideservice.integration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +31,5 @@ public class DataBaseContainerConfiguration {
         registry.add("spring.datasource.password", mySQL::getPassword);
         registry.add("mysql.driver", mySQL::getDriverClassName);
     }
-
 
 }

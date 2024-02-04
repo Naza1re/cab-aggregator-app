@@ -79,7 +79,7 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void findAllShodReturnDriverListResponse() {
+    void findAll_shodReturnDriverListResponse() {
         List<Driver> allDrivers = driverRepository.findAll();
         List<DriverResponse> driverResponseList = allDrivers.stream()
                 .map(driverMapper::fromEntityToResponse)
@@ -99,7 +99,7 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void createDriverShouldReturnDriverResponseWhenDriverValid() {
+    void createDriver_shouldReturnDriverResponse_whenDriverValid() {
         DriverResponse expected = getCreateDriverResponse();
         DriverRequest driverRequest = getCreateDriverRequest();
 
@@ -118,7 +118,7 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void changeStatusForDriverWhenDriverExist() {
+    void changeStatusForDriver_shouldReturnDriverResponse_whenDriverExist() {
         DriverResponse expected = getChangeStatusDriverResponse();
 
         var actual = given()
@@ -137,7 +137,7 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void updateDriverWhenDriverExistShouldReturnDriverResponse() {
+    void updateDriver_shouldReturnDriverResponse_whenDriverExist() {
         DriverResponse expected = getExpectedUpdateDriverResponse();
         DriverRequest updateRequest = getUpdateDriverRequest();
 
@@ -157,7 +157,7 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void deleteDriverWhenDriverExist() {
+    void deleteDriver_shouldReturnNoContent_whenDriverExist() {
 
         given()
                 .port(port)

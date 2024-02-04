@@ -4,6 +4,7 @@ import com.example.rideservice.model.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "ride")
+@ToString
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -70,7 +70,7 @@ public class PassengerIntegrationTest extends DataBaseContainerConfiguration {
         var actual = given()
                 .port(port)
                 .when()
-                .get(FIND_ALL)
+                .get(PATH_DEFAULT)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -118,7 +118,7 @@ public class PassengerIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void deletePassenger_shouldReturnNoContent_WhenDriverExist() {
+    void deletePassenger_shouldReturnNoContent_whenDriverExist() {
 
         given()
                 .port(port)

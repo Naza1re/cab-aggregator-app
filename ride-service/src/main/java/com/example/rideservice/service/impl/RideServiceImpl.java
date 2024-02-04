@@ -124,16 +124,15 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public RidePageResponse getRidePage(int page, int size, String orderBy) {
-
         PageRequest pageRequest = getPageRequest(page, size, orderBy);
-        Page<Ride> ridesPage = rideRepository.findAll(pageRequest);
+        Page<Ride> ridePage = rideRepository.findAll(pageRequest);
 
-        List<Ride> retrievedRides = ridesPage.getContent();
-        long total = ridesPage.getTotalElements();
+        List<Ride> retrievedRides = ridePage.getContent();
+        long total = ridePage.getTotalElements();
 
         List<RideResponse> rides = retrievedRides.stream()
-                .map(rideMapper::fromEntityToResponse).toList();
-
+                .map(rideMapper::fromEntityToResponse)
+                .toList();
         return RidePageResponse.builder()
                 .rideList(rides)
                 .totalPages(page)
