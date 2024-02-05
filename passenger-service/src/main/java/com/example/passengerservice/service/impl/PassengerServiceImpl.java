@@ -130,14 +130,11 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     private void validateSortingParameter(String orderBy) {
-        List<String> fieldNames = Arrays.stream(PassengerResponse.class.getDeclaredFields())
+        Arrays.stream(PassengerResponse.class.getDeclaredFields())
                 .map(Field::getName)
-                .filter(field -> !field.equals(orderBy))
-                .toList();
-
-        if (fieldNames.isEmpty()) {
-            throw new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT);
-        }
+                .filter(field -> field.equals(orderBy))
+                .findFirst()
+                .orElseThrow(() -> new SortTypeException(ExceptionMessages.INVALID_TYPE_OF_SORT));
     }
 
     @Override

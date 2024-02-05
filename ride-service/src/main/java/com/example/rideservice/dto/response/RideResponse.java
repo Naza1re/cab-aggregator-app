@@ -1,10 +1,7 @@
 package com.example.rideservice.dto.response;
 
 import com.example.rideservice.model.enums.Status;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RideResponse {
     private Long id;
 
@@ -32,5 +30,6 @@ public class RideResponse {
     private BigDecimal price;
 
     private Status status;
+    private String instructions;
 
 }

@@ -149,12 +149,12 @@ public class RideServiceImpl implements RideService {
         ride.setPrice(new BigDecimal(10));
         createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
-        rideRepository.save(ride);
+        Ride savedRide =  rideRepository.save(ride);
 
         RideForDriver rideForDriver = createRideForDriver(ride);
         rideProducer.sendMessage(rideForDriver);
 
-        return rideMapper.fromEntityToResponse(ride);
+        return rideMapper.fromEntityToResponse(savedRide);
     }
 
     private void createChargeFromCustomer(Long id, BigDecimal price) {

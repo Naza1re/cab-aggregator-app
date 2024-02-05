@@ -4,11 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
 public class ChargeResponse {
     String id;
     String currency;
-    long amount;
+    BigDecimal amount;
 }

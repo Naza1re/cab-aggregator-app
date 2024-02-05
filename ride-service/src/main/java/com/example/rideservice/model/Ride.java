@@ -2,8 +2,7 @@ package com.example.rideservice.model;
 
 import com.example.rideservice.model.enums.Status;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "ride")
 public class Ride {
     @Id
