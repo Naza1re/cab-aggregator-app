@@ -103,6 +103,16 @@ public class PassengerTestUtil {
                 .build();
     }
 
+    public PassengerRequest getPassengerRequest(String phone) {
+        return PassengerRequest.builder()
+                .name(DEFAULT_NAME)
+                .email(DEFAULT_EMAIL)
+                .name(DEFAULT_NAME)
+                .surname(DEFAULT_SURNAME)
+                .phone(phone)
+                .build();
+    }
+
     public PassengerRequest getPassengerRequest() {
         return PassengerRequest.builder()
                 .name(DEFAULT_NAME)
