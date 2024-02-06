@@ -5,11 +5,9 @@ import com.example.passengerservice.dto.response.PassengerListResponse;
 import com.example.passengerservice.dto.response.PassengerRatingResponse;
 import com.example.passengerservice.dto.response.PassengerResponse;
 import com.example.passengerservice.model.Passenger;
-import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
-@UtilityClass
 public class PassengerTestUtil {
     public static final Long DEFAULT_ID = 1L;
     public static final Long SECOND_ID = 1L;
@@ -35,17 +33,17 @@ public class PassengerTestUtil {
     public static final String INVALID_PAGINATION_SORTED_TYPE = "mmm";
 
 
-    public PassengerListResponse getPassengerListResponse() {
+    public static PassengerListResponse getPassengerListResponse() {
         return PassengerListResponse.builder()
                 .listOfPassengers(List.of(getSecondPassengerResponse(), getPassengerResponse()))
                 .build();
     }
 
-    public List<Passenger> getPassengerList() {
+    public static List<Passenger> getPassengerList() {
         return List.of(getPassenger(), getSecondPassenger());
     }
 
-    public Passenger getSecondPassenger() {
+    public static Passenger getSecondPassenger() {
         return Passenger.builder()
                 .id(SECOND_ID)
                 .email(SECOND_EMAIL)
@@ -55,7 +53,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerResponse getSecondPassengerResponse() {
+    public static PassengerResponse getSecondPassengerResponse() {
         return PassengerResponse.builder()
                 .id(SECOND_ID)
                 .email(SECOND_EMAIL)
@@ -65,7 +63,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerResponse getPassengerResponse() {
+    public static PassengerResponse getPassengerResponse() {
         return PassengerResponse.builder()
                 .id(DEFAULT_ID)
                 .email(DEFAULT_EMAIL)
@@ -75,7 +73,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public Passenger getPassenger() {
+    public static Passenger getPassenger() {
         return Passenger.builder()
                 .id(DEFAULT_ID)
                 .email(DEFAULT_EMAIL)
@@ -85,7 +83,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerRatingResponse getPassengerRatingResponse() {
+    public static PassengerRatingResponse getPassengerRatingResponse() {
         return PassengerRatingResponse.builder()
                 .id(DEFAULT_ID_RESPONSE)
                 .passenger(DEFAULT_ID)
@@ -93,7 +91,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public Passenger getNotSavedPassenger() {
+    public static Passenger getNotSavedPassenger() {
         return Passenger.builder()
                 .id(DEFAULT_ID)
                 .name(DEFAULT_NAME)
@@ -103,7 +101,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerRequest getPassengerRequest(String phone) {
+    public static PassengerRequest getPassengerRequest(String phone) {
         return PassengerRequest.builder()
                 .name(DEFAULT_NAME)
                 .email(DEFAULT_EMAIL)
@@ -113,7 +111,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerRequest getPassengerRequest() {
+    public static PassengerRequest getPassengerRequest() {
         return PassengerRequest.builder()
                 .name(DEFAULT_NAME)
                 .email(DEFAULT_EMAIL)
@@ -123,7 +121,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerRequest getUpdatePassengerRequest() {
+    public static PassengerRequest getUpdatePassengerRequest() {
         return PassengerRequest.builder()
                 .name(NAME_FOR_UPDATE)
                 .email(EMAIL_OR_UPDATE)
@@ -132,7 +130,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public PassengerResponse getUpdatePassengerResponse() {
+    public static PassengerResponse getUpdatePassengerResponse() {
         return PassengerResponse.builder()
                 .name(NAME_FOR_UPDATE)
                 .surname(SURNAME_FOR_UPDATE)
@@ -141,7 +139,7 @@ public class PassengerTestUtil {
                 .build();
     }
 
-    public Passenger getUpdatePassenger() {
+    public static Passenger getUpdatePassenger() {
         return Passenger.builder()
                 .name(NAME_FOR_UPDATE)
                 .surname(SURNAME_FOR_UPDATE)

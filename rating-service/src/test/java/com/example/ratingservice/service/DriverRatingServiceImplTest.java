@@ -144,5 +144,4 @@ public class DriverRatingServiceImplTest {
         assertThat(actual).isEqualTo(driverRatingResponse);
     }
 
-
 }
