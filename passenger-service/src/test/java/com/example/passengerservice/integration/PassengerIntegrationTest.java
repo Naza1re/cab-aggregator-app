@@ -29,11 +29,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
                 "classpath:sql/passenger/insert-data.sql"
         }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PassengerIntegrationTest extends DataBaseContainerConfiguration {
 
     private final PassengerRepository  passengerRepository;
     private final PassengerMapper passengerMapper;
+    @Autowired
+    public PassengerIntegrationTest(PassengerMapper passengerMapper, PassengerRepository passengerRepository) {
+        this.passengerRepository = passengerRepository;
+        this.passengerMapper = passengerMapper;
+    }
 
     @LocalServerPort
     private int port;

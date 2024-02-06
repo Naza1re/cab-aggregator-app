@@ -8,7 +8,6 @@ import com.example.rideservice.model.Ride;
 import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.util.IntegrationTestUtil;
 import io.restassured.http.ContentType;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -31,11 +30,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
                 "classpath:sql/ride/insert-data.sql"
         }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RideIntegrationTest extends DataBaseContainerConfiguration {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
+
+    @Autowired
+    public RideIntegrationTest(RideRepository rideRepository,RideMapper rideMapper) {
+        this.rideRepository=rideRepository;
+        this.rideMapper = rideMapper;
+    }
 
     @LocalServerPort
     private int port;
@@ -108,7 +112,7 @@ public class RideIntegrationTest extends DataBaseContainerConfiguration {
 
         var actual = given()
                 .port(port)
-                .pathParam(ID,DEFAULT_ID)
+                .pathParam(ID, DEFAULT_ID)
                 .when()
                 .put(PATH_START)
                 .then()
@@ -131,7 +135,7 @@ public class RideIntegrationTest extends DataBaseContainerConfiguration {
 
         var actual = given()
                 .port(port)
-                .pathParam(ID,DEFAULT_ID)
+                .pathParam(ID, DEFAULT_ID)
                 .when()
                 .get(PATH_GET_BY_PASSENGER)
                 .then()
@@ -153,7 +157,7 @@ public class RideIntegrationTest extends DataBaseContainerConfiguration {
 
         var actual = given()
                 .port(port)
-                .pathParam(ID,DEFAULT_ID)
+                .pathParam(ID, DEFAULT_ID)
                 .when()
                 .get(PATH_GET_BY_DRIVER)
                 .then()
@@ -168,7 +172,7 @@ public class RideIntegrationTest extends DataBaseContainerConfiguration {
     void endRide_shouldReturnRideResponse_whenRideExist() {
         var actual = given()
                 .port(port)
-                .pathParam(ID,DEFAULT_ID)
+                .pathParam(ID, DEFAULT_ID)
                 .when()
                 .put(PATH_END)
                 .then()

@@ -28,11 +28,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
                 "classpath:sql/driver/insert-data.sql"
         }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DriverIntegrationTest extends DataBaseContainerConfiguration {
 
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
+    @Autowired
+    public DriverIntegrationTest(DriverRepository driverRepository, DriverMapper driverMapper) {
+        this.driverRepository = driverRepository;
+        this.driverMapper = driverMapper;
+    }
 
     @LocalServerPort
     private int port;
