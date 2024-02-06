@@ -22,8 +22,30 @@
         <jackson.core.version>2.16.1</jackson.core.version>
         <jackson.databind.version>2.16.1</jackson.databind.version>
         <spring.openfign.version>4.1.0</spring.openfign.version>
+        <cucumber.version>7.15.0</cucumber.version>
+        <cucumber.spring.version>7.14.0</cucumber.spring.version>
     </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-spring</artifactId>
+            <version>${cucumber.spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>

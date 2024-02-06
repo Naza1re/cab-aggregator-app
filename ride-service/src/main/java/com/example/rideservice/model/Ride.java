@@ -2,7 +2,12 @@ package com.example.rideservice.model;
 
 import com.example.rideservice.model.enums.Status;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Builder;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

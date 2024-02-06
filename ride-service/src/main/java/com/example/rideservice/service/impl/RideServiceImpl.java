@@ -50,8 +50,8 @@ public class RideServiceImpl implements RideService {
         checkRideHasDriver(ride);
         ride.setStartDate(LocalDateTime.now());
         ride.setStatus(Status.ACTIVE);
-        rideRepository.save(ride);
-        return rideMapper.fromEntityToResponse(ride);
+        Ride savedRide =  rideRepository.save(ride);
+        return rideMapper.fromEntityToResponse(savedRide);
     }
 
     @Override
