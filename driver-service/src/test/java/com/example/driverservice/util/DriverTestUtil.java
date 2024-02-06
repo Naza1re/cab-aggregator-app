@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
-@UtilityClass
 public class DriverTestUtil {
     public static final Long DEFAULT_ID = 1L;
     public static final Long NOT_FOUND_ID = 100L;
@@ -37,17 +36,17 @@ public class DriverTestUtil {
     public static final boolean AVAILABLE = true;
 
 
-    public DriverListResponse getDriverListResponse() {
+    public static DriverListResponse getDriverListResponse() {
         return DriverListResponse.builder()
                 .driverResponseList(List.of(getDefaultDriverResponse(), getSecondDriverResponse()))
                 .build();
     }
 
-    public List<Driver> getDriverList() {
+    public static List<Driver> getDriverList() {
         return List.of(getDefaultDriver(), getSecondDriver());
     }
 
-    public Driver getNotSavedDriver() {
+    public static Driver getNotSavedDriver() {
         return Driver.builder()
                 .name(DEFAULT_NAME)
                 .surname(DEFAULT_SURNAME)
@@ -61,7 +60,7 @@ public class DriverTestUtil {
 
     }
 
-    public DriverResponse getUpdateDriverResponse() {
+    public static DriverResponse getUpdateDriverResponse() {
         return DriverResponse.builder()
                 .id(DEFAULT_ID)
                 .name(UPDATE_NAME)
@@ -75,7 +74,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public Driver getUpdateDriver() {
+    public static Driver getUpdateDriver() {
         return Driver.builder()
                 .id(DEFAULT_ID)
                 .name(UPDATE_NAME)
@@ -90,7 +89,7 @@ public class DriverTestUtil {
 
     }
 
-    public Driver getSecondDriver() {
+    public static Driver getSecondDriver() {
         return Driver.builder()
                 .id(SECOND_ID)
                 .name(UPDATE_NAME)
@@ -104,7 +103,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public Driver getSavedDriver() {
+    public static Driver getSavedDriver() {
         return Driver.builder()
                 .id(DEFAULT_ID)
                 .name(DEFAULT_NAME)
@@ -118,7 +117,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public Driver getDefaultDriver() {
+    public static Driver getDefaultDriver() {
         return Driver.builder()
                 .id(DEFAULT_ID)
                 .name(DEFAULT_NAME)
@@ -132,7 +131,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public DriverResponse getSecondDriverResponse() {
+    public static DriverResponse getSecondDriverResponse() {
         return DriverResponse.builder()
                 .id(SECOND_ID)
                 .name(UPDATE_NAME)
@@ -146,7 +145,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public DriverResponse getDefaultDriverResponse() {
+    public static DriverResponse getDefaultDriverResponse() {
         return DriverResponse.builder()
                 .id(DEFAULT_ID)
                 .name(DEFAULT_NAME)
@@ -160,7 +159,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public DriverRequest getDriverUpdateRequest() {
+    public static DriverRequest getDriverUpdateRequest() {
         return DriverRequest.builder()
                 .name(UPDATE_NAME)
                 .surname(UPDATE_SURNAME)
@@ -172,7 +171,7 @@ public class DriverTestUtil {
                 .build();
     }
 
-    public DriverRequest getDriverRequest() {
+    public static DriverRequest getDriverRequest() {
         return DriverRequest.builder()
                 .name(DEFAULT_NAME)
                 .surname(DEFAULT_SURNAME)
@@ -181,6 +180,19 @@ public class DriverTestUtil {
                 .phone(DEFAULT_PHONE)
                 .model(DEFAULT_MODEL)
                 .number(DEFAULT_NUMBER)
+                .build();
+
+    }
+
+    public static DriverRequest getDriverRequest(String existParam) {
+        return DriverRequest.builder()
+                .name(DEFAULT_NAME)
+                .surname(DEFAULT_SURNAME)
+                .color(DEFAULT_COLOR)
+                .email(existParam)
+                .phone(existParam)
+                .model(DEFAULT_MODEL)
+                .number(existParam)
                 .build();
 
     }

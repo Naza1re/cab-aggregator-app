@@ -127,12 +127,12 @@ public class PassengerComponentTest {
 
     @When("A create request with email {string} is passed to the add method")
     public void aCreateRequestWithEmailIsPassedToTheAddMethod(String email) {
-            PassengerRequest createRequest = getPassengerRequest(email);
-            try {
-                passengerResponse = passengerService.createPassenger(createRequest);
-            } catch (EmailAlreadyExistException e) {
-                exception = e;
-            }
+        PassengerRequest createRequest = getPassengerRequest(email);
+        try {
+            passengerResponse = passengerService.createPassenger(createRequest);
+        } catch (EmailAlreadyExistException e) {
+            exception = e;
+        }
     }
 
     @Then("The EmailAlreadyExistException should be thrown for email {string}")
@@ -193,7 +193,7 @@ public class PassengerComponentTest {
     public void aUpdateRequestIsPassedToTheUpdateMethod(long id) {
         PassengerRequest createRequest = getUpdatePassengerRequest();
         try {
-            passengerResponse = passengerService.updatePassenger(id,createRequest);
+            passengerResponse = passengerService.updatePassenger(id, createRequest);
         } catch (Exception e) {
             exception = e;
         }
