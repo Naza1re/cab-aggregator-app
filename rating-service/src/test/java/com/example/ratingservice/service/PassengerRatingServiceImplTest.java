@@ -3,7 +3,6 @@ package com.example.ratingservice.service;
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
 import com.example.ratingservice.dto.responce.PassengerRatingResponse;
-import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
 import com.example.ratingservice.exception.PassengerRatingAlreadyExistException;
 import com.example.ratingservice.exception.PassengerRatingNotFoundException;
 import com.example.ratingservice.mapper.PassengerMapper;
@@ -34,7 +33,7 @@ public class PassengerRatingServiceImplTest {
     private PassengerMapper passengerMapper;
 
     @Test
-    void getDriverByIdWhenDriverExist() {
+    void getPassengerByIdWhenDriverExist() {
         PassengerRatingResponse passengerRatingResponse = PassengerRatingUtilTest.getDefaultPassengerRatingResponse();
         PassengerRating passengerRating = PassengerRatingUtilTest.getSavedPassengerRating();
 
@@ -82,13 +81,13 @@ public class PassengerRatingServiceImplTest {
                 .save(passengerRating);
         doReturn(passengerRatingResponse)
                 .when(passengerMapper)
-                .fromEntityToResponse(passengerRating);
+                .fromEntityToResponse(passengerRatingSaved);
 
         PassengerRatingResponse actual = passengerRatingService.createPassenger(request);
 
         verify(passengerRatingRepository).save(passengerRating);
         verify(passengerRatingRepository).existsByPassenger(DEFAULT_PASSENGER_ID);
-        verify(passengerMapper).fromEntityToResponse(passengerRating);
+        verify(passengerMapper).fromEntityToResponse(passengerRatingSaved);
 
         assertThat(actual).isEqualTo(passengerRatingResponse);
     }
