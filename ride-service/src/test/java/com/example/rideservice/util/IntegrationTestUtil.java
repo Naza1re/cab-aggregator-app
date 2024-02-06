@@ -3,13 +3,11 @@ package com.example.rideservice.util;
 import com.example.rideservice.dto.request.RideRequest;
 import com.example.rideservice.dto.response.RideResponse;
 import com.example.rideservice.model.enums.Status;
-import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-@UtilityClass
 public class IntegrationTestUtil {
     public static final Long DEFAULT_ID = 1L;
     public static final String PATH_DEFAULT = "api/v1/rides";
@@ -35,7 +33,7 @@ public class IntegrationTestUtil {
     public static final String INSTRUCTIONS = "Нас четверо";
     public static final BigDecimal PRICE = BigDecimal.valueOf(10);
 
-    public RideRequest getDefaultRideRequest() {
+    public static RideRequest getDefaultRideRequest() {
         return RideRequest.builder()
                 .passengerId(PASSENGER_ID)
                 .pickUpAddress(PICK_UP_ADDRESS)
@@ -44,7 +42,7 @@ public class IntegrationTestUtil {
                 .build();
     }
 
-    public RideResponse getDefaultRideResponse() {
+    public static RideResponse getDefaultRideResponse() {
         return RideResponse.builder()
                 .id(CREATED_ID)
                 .passengerId(PASSENGER_ID)

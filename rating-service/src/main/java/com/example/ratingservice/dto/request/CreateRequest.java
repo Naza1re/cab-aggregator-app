@@ -2,7 +2,12 @@ package com.example.ratingservice.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -13,6 +18,6 @@ import lombok.*;
 public class CreateRequest {
 
     @NotNull(message = "{id.not.null}")
-    @Min(value = 0, message = "{rate.range}")
+    @Min(value = 0, message = "{id.not.negative}")
     private Long id;
 }

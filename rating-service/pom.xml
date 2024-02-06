@@ -22,8 +22,16 @@
         <modelmapper.version>3.1.1</modelmapper.version>
         <testcontainer.mysql.version>1.19.4</testcontainer.mysql.version>
         <rest-assured.version>5.4.0</rest-assured.version>
+        <junit.jupiter.version>1.16.0</junit.jupiter.version>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.rest-assured</groupId>

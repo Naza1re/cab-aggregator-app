@@ -80,6 +80,7 @@ public class RideIntegrationTest extends DataBaseContainerConfiguration {
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(RideResponse.class);
+
         assertThat(actual).isEqualTo(expected);
     }
 

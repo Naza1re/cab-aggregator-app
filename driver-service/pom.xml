@@ -24,8 +24,16 @@
 		<jackson.core.version>2.16.1</jackson.core.version>
 		<testcontainer.mysql.version>1.19.4</testcontainer.mysql.version>
 		<rest-assured.version>5.4.0</rest-assured.version>
+		<junit.jupiter.version>1.16.0</junit.jupiter.version>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>io.rest-assured</groupId>
@@ -40,7 +48,6 @@
 			<version>${testcontainer.mysql.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -112,7 +119,7 @@
 			<version>${liquibase.version}</version>
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>

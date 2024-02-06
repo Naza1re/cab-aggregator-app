@@ -2,9 +2,7 @@ package com.example.passengerservice.util;
 
 import com.example.passengerservice.dto.request.PassengerRequest;
 import com.example.passengerservice.dto.response.PassengerResponse;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public class IntegrationTestUtil {
     public static final String PATH_PARAM_ID = "id";
     public static final Long ID_NOT_FOUND = 100L;
@@ -21,7 +19,7 @@ public class IntegrationTestUtil {
     public static final String NEW_PHONE = "16304838971";
     public static final String NEW_EMAIL = "naza1re@mail.ru";
 
-    public PassengerRequest getUpdatePassengerRequest() {
+    public static PassengerRequest getUpdatePassengerRequest() {
         return PassengerRequest.builder()
                 .name(NEW_NAME)
                 .surname(NEW_SURNAME)
@@ -31,7 +29,7 @@ public class IntegrationTestUtil {
 
     }
 
-    public PassengerResponse getExpectedUpdatePassengerResponse() {
+    public static PassengerResponse getExpectedUpdatePassengerResponse() {
         return PassengerResponse.builder()
                 .id(DEFAULT_ID)
                 .name(NEW_NAME)
@@ -41,7 +39,7 @@ public class IntegrationTestUtil {
                 .build();
     }
 
-    public PassengerResponse getCreatePassengerResponse() {
+    public static PassengerResponse getCreatePassengerResponse() {
         return PassengerResponse.builder()
                 .id(DEFAULT_CREATE_ID)
                 .name(DEFAULT_NAME)
@@ -52,7 +50,7 @@ public class IntegrationTestUtil {
 
     }
 
-    public PassengerRequest getCreatePassengerRequest() {
+    public static PassengerRequest getCreatePassengerRequest() {
         return PassengerRequest.builder()
                 .name(DEFAULT_NAME)
                 .surname(DEFAULT_SURNAME)

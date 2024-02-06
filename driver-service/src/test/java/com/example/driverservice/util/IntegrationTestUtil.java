@@ -2,9 +2,7 @@ package com.example.driverservice.util;
 
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.response.DriverResponse;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public class IntegrationTestUtil {
 
     public static final String PATH_PARAM_ID = "id";
@@ -32,7 +30,7 @@ public class IntegrationTestUtil {
     public static final String NEW_EMAIL = "naza1re@mail.ru";
     public static final String NEW_NUMBER = "naza1re@mail.ru";
 
-    public DriverRequest getUpdateDriverRequest() {
+    public static DriverRequest getUpdateDriverRequest() {
         return DriverRequest.builder()
                 .model(DEFAULT_MODEL)
                 .color(DEFAULT_COLOR)
@@ -45,7 +43,7 @@ public class IntegrationTestUtil {
 
     }
 
-    public DriverResponse getExpectedUpdateDriverResponse() {
+    public static DriverResponse getExpectedUpdateDriverResponse() {
         return DriverResponse.builder()
                 .id(DEFAULT_ID)
                 .available(DEFAULT_AVAILABLE_CHANGE)
@@ -59,7 +57,7 @@ public class IntegrationTestUtil {
                 .build();
     }
 
-    public DriverResponse getCreateDriverResponse() {
+    public static DriverResponse getCreateDriverResponse() {
         return DriverResponse.builder()
                 .id(DEFAULT_CREATE_ID)
                 .model(DEFAULT_MODEL)
@@ -74,7 +72,7 @@ public class IntegrationTestUtil {
 
     }
 
-    public DriverResponse getChangeStatusDriverResponse() {
+    public static DriverResponse getChangeStatusDriverResponse() {
         return DriverResponse.builder()
                 .id(DEFAULT_ID)
                 .model(DEFAULT_MODEL)
@@ -89,7 +87,7 @@ public class IntegrationTestUtil {
 
     }
 
-    public DriverRequest getCreateDriverRequest() {
+    public static DriverRequest getCreateDriverRequest() {
         return DriverRequest.builder()
                 .model(DEFAULT_MODEL)
                 .color(DEFAULT_COLOR)
