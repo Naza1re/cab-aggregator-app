@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
                 "classpath:sql/passenger-rating/insert-data.sql"
         }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
 )
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PassengerRatingIntegrationTest extends DataBaseContainerConfiguration {
 
     @LocalServerPort
@@ -34,6 +33,11 @@ public class PassengerRatingIntegrationTest extends DataBaseContainerConfigurati
 
     private final PassengerRatingRepository passengerRatingRepository;
     private final PassengerMapper passengerMapper;
+    @Autowired
+    public PassengerRatingIntegrationTest(PassengerRatingRepository passengerRatingRepository, PassengerMapper passengerMapper) {
+        this.passengerMapper  = passengerMapper;
+        this.passengerRatingRepository = passengerRatingRepository;
+    }
 
 
     @Test
