@@ -39,9 +39,9 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         PassengerRating passengerRating = new PassengerRating();
         passengerRating.setPassenger(createRequest.getId());
         passengerRating.setRate(Constants.DEFAULT_RATING);
-        passengerRatingRepository.save(passengerRating);
+        PassengerRating savedPassengerRating =  passengerRatingRepository.save(passengerRating);
 
-        return passengerMapper.fromEntityToResponse(passengerRating);
+        return passengerMapper.fromEntityToResponse(savedPassengerRating);
 
     }
 

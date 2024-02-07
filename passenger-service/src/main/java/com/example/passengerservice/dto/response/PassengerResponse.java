@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+@EqualsAndHashCode
 public class PassengerResponse {
     private Long id;
     private String name;

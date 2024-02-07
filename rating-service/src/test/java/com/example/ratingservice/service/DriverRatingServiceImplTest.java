@@ -82,13 +82,13 @@ public class DriverRatingServiceImplTest {
                 .save(driverRating);
         doReturn(driverRatingResponse)
                 .when(driverMapper)
-                .fromEntityToResponse(driverRating);
+                .fromEntityToResponse(driverRatingSaved);
 
         DriverRatingResponse actual = driverRatingService.createDriver(request);
 
         verify(driverRatingRepository).save(driverRating);
         verify(driverRatingRepository).existsByDriver(DEFAULT_DRIVER_ID);
-        verify(driverMapper).fromEntityToResponse(driverRating);
+        verify(driverMapper).fromEntityToResponse(driverRatingSaved);
 
         assertThat(actual).isEqualTo(driverRatingResponse);
     }
@@ -143,6 +143,5 @@ public class DriverRatingServiceImplTest {
 
         assertThat(actual).isEqualTo(driverRatingResponse);
     }
-
 
 }
