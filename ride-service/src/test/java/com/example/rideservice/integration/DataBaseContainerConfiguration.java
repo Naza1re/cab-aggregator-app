@@ -18,16 +18,6 @@ public class DataBaseContainerConfiguration {
             "mysql:8"
     ));
 
-    @BeforeAll
-    static void beforeAll() {
-        mySQL.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        mySQL.stop();
-    }
-
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySQL::getJdbcUrl);
