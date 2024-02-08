@@ -22,9 +22,15 @@
 		<stripe.version>20.79.0</stripe.version>
 		<liquibase.version>4.25.1</liquibase.version>
 		<spring.openfign.version>4.1.0</spring.openfign.version>
+		<eureka.client.version>4.1.0</eureka.client.version>
 	</properties>
-
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>${eureka.client.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

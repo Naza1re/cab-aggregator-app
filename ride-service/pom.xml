@@ -22,8 +22,15 @@
         <jackson.core.version>2.16.1</jackson.core.version>
         <jackson.databind.version>2.16.1</jackson.databind.version>
         <spring.openfign.version>4.1.0</spring.openfign.version>
+        <eureka.client.version>4.1.0</eureka.client.version>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>${eureka.client.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.kafka</groupId>

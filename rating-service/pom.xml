@@ -20,8 +20,16 @@
         <mysql.connector.version>8.2.0</mysql.connector.version>
         <lombok.version>1.18.22</lombok.version>
         <modelmapper.version>3.1.1</modelmapper.version>
+        <eureka.client.version>4.1.0</eureka.client.version>
     </properties>
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>${eureka.client.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
