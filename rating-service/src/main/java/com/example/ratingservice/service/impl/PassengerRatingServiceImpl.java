@@ -33,7 +33,6 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
 
     @Override
     public PassengerRatingResponse createPassenger(CreateRequest createRequest) {
-
         checkPassengerRatingExist(createRequest.getId());
 
         PassengerRating passengerRating = new PassengerRating();

@@ -12,8 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
 @EqualsAndHashCode
+@NoArgsConstructor
+@ToString
+@Builder
 public class RideListResponse {
     private List<RideResponse> rideResponseList;
 

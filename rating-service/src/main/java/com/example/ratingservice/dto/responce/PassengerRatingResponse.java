@@ -1,8 +1,8 @@
 package com.example.ratingservice.dto.responce;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Builder;

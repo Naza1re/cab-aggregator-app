@@ -1,0 +1,2 @@
+DELETE FROM passenger;
+ALTER TABLE passenger AUTO_INCREMENT = 1;
