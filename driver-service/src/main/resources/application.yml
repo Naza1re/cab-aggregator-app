@@ -37,7 +37,7 @@ feign:
   client:
     rating:
       name: rating
-      url: http://localhost:8083
+      url: http://localhost:8070
       path: /api/v1/rating
 server:
   port: 8084
