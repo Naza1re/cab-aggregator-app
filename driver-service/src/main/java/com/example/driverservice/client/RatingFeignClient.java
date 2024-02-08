@@ -7,8 +7,9 @@ import com.example.driverservice.dto.response.DriverRatingResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(value = "${feign.client.rating.name}", url = "${feign.client.rating.url}",
-        path = "${feign.client.rating.path}", configuration = FeignClientConfiguration.class)
+@FeignClient(value = "${service.rating.name}",
+             path = "${service.rating.path}",
+             configuration = FeignClientConfiguration.class)
 public interface RatingFeignClient {
     @GetMapping("/driver/list")
     DriverRatingListResponse getDriversRateList();

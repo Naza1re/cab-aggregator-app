@@ -15,9 +15,7 @@ stripe:
   secret: ${SECRET_KEY}
 server:
   port: 8085
-feign:
-  client:
+service:
     passenger:
       name: passenger
-      url: http://localhost:8081
       path: /api/v1/passengers

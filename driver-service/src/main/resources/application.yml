@@ -33,11 +33,9 @@ kafka:
     count: 1
   replicas:
     count: 1
-feign:
-  client:
+service:
     rating:
       name: rating
-      url: http://localhost:8070
       path: /api/v1/rating
 server:
   port: 8084

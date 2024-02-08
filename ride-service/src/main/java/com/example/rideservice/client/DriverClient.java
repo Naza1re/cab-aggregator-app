@@ -6,8 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
-@FeignClient(value = "${feign.client.driver.name}", url = "${feign.client.driver.url}",
-        path = "${feign.client.driver.path}", configuration = FeignClientConfiguration.class)
+@FeignClient(value = "${service.driver.name}",
+             path = "${service.driver.path}",
+             configuration = FeignClientConfiguration.class)
 public interface DriverClient {
 
     @PutMapping("/{id}/status")

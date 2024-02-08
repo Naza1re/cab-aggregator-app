@@ -13,11 +13,9 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
-feign:
-  client:
+service:
     rating:
       name: rating
-      url: http://localhost:8070
       path: /api/v1/rating
 server:
   port: 8081
