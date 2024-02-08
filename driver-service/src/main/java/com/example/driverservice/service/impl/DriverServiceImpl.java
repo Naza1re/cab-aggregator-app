@@ -39,9 +39,9 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
-    private final DriverProducer driverProducer;
     private final RatingFeignClient ratingFeignClient;
     private final AvailableDriverProducer availableDriverProducer;
+    private final DriverProducer driverProducer;
 
     @Override
     public DriverResponse getDriverById(Long id) {
@@ -203,7 +203,6 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.fromEntityToResponse(driver);
     }
 
-    @Override
     public void handleDriver(Long driverId) {
         DriverForRide driver = findDriverForRide(driverId);
         if (driver == null) {
@@ -235,4 +234,5 @@ public class DriverServiceImpl implements DriverService {
                 .findFirst()
                 .orElse(Constants.DEFAULT_RATE);
     }
+
 }

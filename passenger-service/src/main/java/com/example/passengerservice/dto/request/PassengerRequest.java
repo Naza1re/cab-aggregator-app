@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @Getter
+@Builder
 public class PassengerRequest {
 
     @NotBlank(message = "{name.not.blanked}")

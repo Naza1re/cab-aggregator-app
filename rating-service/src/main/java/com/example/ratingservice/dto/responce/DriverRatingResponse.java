@@ -13,8 +13,8 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode
 @Builder
+@EqualsAndHashCode
 public class DriverRatingResponse {
     private Long id;
     private Long driver;

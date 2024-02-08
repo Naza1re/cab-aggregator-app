@@ -1,11 +1,11 @@
 package com.example.driverservice.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.ToString;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
 @Getter

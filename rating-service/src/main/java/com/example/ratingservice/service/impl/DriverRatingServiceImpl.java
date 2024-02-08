@@ -39,8 +39,8 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         driverRating.setDriver(request.getId());
         driverRating.setRate(Constants.DEFAULT_RATING);
 
-        driverRatingRepository.save(driverRating);
-        return driverMapper.fromEntityToResponse(driverRating);
+        DriverRating savedDriverRating = driverRatingRepository.save(driverRating);
+        return driverMapper.fromEntityToResponse(savedDriverRating);
     }
 
     @Override

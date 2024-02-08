@@ -8,15 +8,19 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+@AllArgsConstructor
 @Table(name = "driver_rate")
 public class DriverRating {
     @Id
