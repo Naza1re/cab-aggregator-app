@@ -2,6 +2,7 @@ package com.example.rideservice.exception.handler;
 
 import com.example.rideservice.exception.*;
 import com.example.rideservice.exception.appError.AppError;
+import feign.RetryableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({PaginationParamException.class, SortTypeException.class, FeignClientException.class})
+    @ExceptionHandler({PaginationParamException.class, SortTypeException.class, FeignClientException.class, RetryableException.class})
     public ResponseEntity<AppError> handleBadRequestException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

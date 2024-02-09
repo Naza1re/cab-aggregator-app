@@ -13,6 +13,8 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  application:
+    name: driver
   kafka:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -39,4 +41,12 @@ service:
       path: /api/v1/rating
 server:
   port: 8084
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+logging:
+  pattern:
+    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
 

@@ -21,7 +21,7 @@ public class MyDecoder implements ErrorDecoder {
         if (status == 404) {
             return new NotFoundException(exMessage);
         }
-        if (status >= 500) {
+        else {
             return new RetryableException(
                     response.status(),
                     exception.getMessage(),
@@ -30,6 +30,6 @@ public class MyDecoder implements ErrorDecoder {
                     (Long) null,
                     response.request());
         }
-        return exception;
+
     }
 }

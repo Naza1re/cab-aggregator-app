@@ -37,7 +37,6 @@ public class PaymentServiceImpl implements PaymentService {
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
         checkCustomerAlreadyExist(customerRequest.getPassengerId());
         Customer customer = service.createStripeCustomerParams(customerRequest);
-
         passengerFeignClient.getPassenger(customerRequest.getPassengerId());
 
         service.createPaymentParams(customer.getId());

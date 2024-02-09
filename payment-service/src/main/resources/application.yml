@@ -10,6 +10,8 @@ spring:
       ddl-auto: validate
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  application:
+    name: payment
 stripe:
   public: ${STRIPE_PUBLIC_KEY}
   secret: ${SECRET_KEY}
@@ -19,3 +21,11 @@ service:
     passenger:
       name: passenger
       path: /api/v1/passengers
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+logging:
+  pattern:
+    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
