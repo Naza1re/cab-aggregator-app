@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({SortTypeException.class, PaginationParamException.class, RatingException.class})
+    @ExceptionHandler({SortTypeException.class, PaginationParamException.class, RatingException.class, ServiceUnAvailableException.class})
     public ResponseEntity<AppError> handleBadRequestException(
             Exception ex) {
         String errorMessage = ex.getMessage();

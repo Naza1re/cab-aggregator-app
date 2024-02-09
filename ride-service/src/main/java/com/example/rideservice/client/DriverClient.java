@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @FeignClient(value = "${service.driver.name}",
-             path = "${service.driver.path}",
-             configuration = FeignClientConfiguration.class)
+        path = "${service.driver.path}",
+        configuration = FeignClientConfiguration.class)
 public interface DriverClient {
 
     @PutMapping("/{id}/status")

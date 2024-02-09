@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "${service.rating.name}",
-             path = "${service.rating.path}",
-             configuration = FeignClientConfiguration.class)
+        path = "${service.rating.path}",
+        configuration = FeignClientConfiguration.class)
 public interface RatingFeignClient {
     @GetMapping("/driver/list")
     DriverRatingListResponse getDriversRateList();

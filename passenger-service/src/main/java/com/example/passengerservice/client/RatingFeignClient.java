@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "${service.rating.name}",
-            path = "${service.rating.path}",
-            configuration = FeignClientConfiguration.class)
+        path = "${service.rating.path}",
+        configuration = FeignClientConfiguration.class)
 public interface RatingFeignClient {
 
     @PostMapping("/passenger")

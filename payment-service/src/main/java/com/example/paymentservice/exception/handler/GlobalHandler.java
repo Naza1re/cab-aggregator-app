@@ -22,7 +22,7 @@ public class GlobalHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({BalanceException.class, CreateCustomerException.class, GenerateTokenException.class, PaymentException.class})
+    @ExceptionHandler({BalanceException.class, CreateCustomerException.class, GenerateTokenException.class, PaymentException.class, ServiceUnAvailableException.class})
     public ResponseEntity<AppError> handleBadRequestException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
