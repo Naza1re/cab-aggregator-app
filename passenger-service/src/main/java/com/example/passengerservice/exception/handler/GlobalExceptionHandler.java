@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({PassengerNotFoundException.class, NotFoundException.class})
     public ResponseEntity<AppError> handlePassengerNotFoundException(
-            PassengerNotFoundException ex) {
+            Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new AppError(errorMessage));
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({PhoneAlreadyExistException.class, EmailAlreadyExistException.class})
     public ResponseEntity<AppError> handleConflictException(
-            RuntimeException ex) {
+            Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new AppError(errorMessage));
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({SortTypeException.class, PaginationParamException.class, RatingException.class})
     public ResponseEntity<AppError> handleBadRequestException(
-            RuntimeException ex) {
+            Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new AppError(errorMessage));
