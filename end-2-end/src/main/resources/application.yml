@@ -1,0 +1,20 @@
+feign:
+  client:
+    passenger:
+      name: passenger
+      url: http://localhost:8081
+      path: /api/v1/passengers
+    driver:
+      name: driver
+      url: http://localhost:8084
+      path: /api/v1/drivers
+    payment:
+      name: payment
+      url: http://localhost:8085
+      path: /api/v1/payment
+    ride:
+      name: ride
+      url: http://localhost:80800
+      path: /api/v1/rides
+
+
