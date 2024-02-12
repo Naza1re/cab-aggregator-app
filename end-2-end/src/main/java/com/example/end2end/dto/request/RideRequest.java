@@ -9,4 +9,9 @@ import lombok.*;
 @Getter
 @Setter
 public class RideRequest {
+    private Long passengerId;
+    private String pickUpAddress;
+    private String dropOffAddress;
+    private String instructions;
+
 }
