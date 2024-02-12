@@ -5,5 +5,5 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class CucumberConfig {
+public class CucumberSpringConfig {
 }

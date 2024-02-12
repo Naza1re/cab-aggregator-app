@@ -16,21 +16,21 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({RideNotFoundException.class, NotFoundException.class})
-    public ResponseEntity<AppError> handleRideNotFoundException(RideNotFoundException ex) {
+    public ResponseEntity<AppError> handleRideNotFoundException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new AppError(errorMessage));
     }
 
     @ExceptionHandler({RideHaveDriverException.class, RideAlreadyAcceptedException.class, RideNotHaveDriverException.class})
-    public ResponseEntity<AppError> handleCustomException(RuntimeException ex) {
+    public ResponseEntity<AppError> handleCustomException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new AppError(errorMessage));
     }
 
     @ExceptionHandler({PaginationParamException.class, SortTypeException.class, FeignClientException.class})
-    public ResponseEntity<AppError> handleBadRequestException(RuntimeException ex) {
+    public ResponseEntity<AppError> handleBadRequestException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new AppError(errorMessage));

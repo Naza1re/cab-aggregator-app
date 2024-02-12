@@ -1,10 +1,14 @@
-Feature: Ride test
+Feature: end to end tests
   Scenario: Find ride for existing passenger
-    Given Existing passenger with id 1
-    When A passenger with id 1 sends request to find ride
-    Then Passenger should get response with ride details with passenger id 1
+    Given Existing passenger with id 11
+    When A passenger with id 11 sends request to find ride
+    Then Passenger should get response with ride details with passenger id 11 and status active
 
-  Scenario: Find ride for not existing passenger
-    Given Not Existing Passenger with id 100
+  Scenario: Find ride for non existing passenger
+    Given Non existing passenger with id 100
     When A passenger with id 100 sends request to find ride
-    Then A passenger should get PassengerNotFoundException with passenger id 100
+    Then NotfoundException should be thrown for passenger with id 100
+
+
+
+

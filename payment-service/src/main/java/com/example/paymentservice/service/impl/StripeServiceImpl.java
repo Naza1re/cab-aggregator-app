@@ -70,12 +70,10 @@ public class StripeServiceImpl implements StripeService {
 
     @Override
     public void createPayment(Map<String, Object> paymentParams, String customerId) {
-        RequestOptions requestOptions = RequestOptions.builder()
-                .setApiKey(secretKey)
-                .build();
+       Stripe.apiKey = secretKey;
         try {
             PaymentMethod paymentMethod = PaymentMethod.create(paymentParams);
-            paymentMethod.attach(Map.of("customer", customerId), requestOptions);
+            paymentMethod.attach(Map.of("customer", customerId));
         } catch (StripeException ex) {
             throw new PaymentException("Error creating payment: " + ex.getMessage());
         }
