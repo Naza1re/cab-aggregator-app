@@ -1,6 +1,7 @@
 package com.example.end2end.config;
 
-import com.example.end2end.exception.NotFoundException;
+
+import com.example.end2end.exception.CustomFeignException;
 import feign.FeignException;
 import feign.Response;
 import feign.RetryableException;
@@ -15,8 +16,8 @@ public class MyDecoder implements ErrorDecoder {
         String[] responseMessageSplit = exception.getMessage().split("\"message\"");
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
-        if (status == 404) {
-            return new NotFoundException(exMessage);
+        if (status >= 400) {
+            return new CustomFeignException(exMessage);
         }
         if (status >= 500) {
             return new RetryableException(

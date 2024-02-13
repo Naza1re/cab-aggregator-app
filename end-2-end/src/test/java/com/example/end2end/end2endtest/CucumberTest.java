@@ -12,5 +12,5 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com/example/end2end")
 @ConfigurationParameter(key = FEATURES_PROPERTY_NAME, value = "src/test/resources/features/")
-public class CucumberRideTest {
+public class CucumberTest {
 }

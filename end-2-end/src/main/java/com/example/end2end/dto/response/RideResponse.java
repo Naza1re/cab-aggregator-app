@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Getter
+@ToString
 @Setter
 public class RideResponse {
     private Long id;

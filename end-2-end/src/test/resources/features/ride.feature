@@ -9,6 +9,10 @@ Feature: end to end tests
     When A passenger with id 100 sends request to find ride
     Then NotfoundException should be thrown for passenger with id 100
 
+  Scenario: Start ride when ride dont have driver
+    Given Exist ride with id 42 that dont have driver
+    When Driver with id try to start ride with id 42 that not accepted
+    Then RideDontHaveDriverException should be thrown for ride with id 42
 
 
 
