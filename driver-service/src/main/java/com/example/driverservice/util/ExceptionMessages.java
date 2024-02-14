@@ -11,5 +11,6 @@ public class ExceptionMessages {
     public static final String DRIVER_WITH_EMAIL_ALREADY_EXIST = "Driver with id ' %s' already exist";
     public static final String DRIVER_WITH_PHONE_ALREADY_EXIST = "Driver with phone ' %s' already exist";
     public static final String DRIVER_WITH_CAR_NUMBER_ALREADY_EXIST = "Driver with car number ' %s' already exist";
+    public static final String RATING_SERVICE_IS_NOT_AVAILABLE = "Rating service is not available , try later";
 
 }

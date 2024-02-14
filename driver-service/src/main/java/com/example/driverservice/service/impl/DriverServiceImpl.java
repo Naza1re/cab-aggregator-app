@@ -1,6 +1,5 @@
 package com.example.driverservice.service.impl;
 
-import com.example.driverservice.client.RatingFeignClient;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
@@ -16,6 +15,7 @@ import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
 import com.example.driverservice.repository.DriverRepository;
 import com.example.driverservice.service.DriverService;
+import com.example.driverservice.service.RatingService;
 import com.example.driverservice.util.Constants;
 import com.example.driverservice.util.ConstantsMessages;
 import com.example.driverservice.util.ExceptionMessages;
@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -39,9 +40,9 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
     private final DriverMapper driverMapper;
-    private final RatingFeignClient ratingFeignClient;
     private final AvailableDriverProducer availableDriverProducer;
     private final DriverProducer driverProducer;
+    private final RatingService ratingService;
 
     @Override
     public DriverResponse getDriverById(Long id) {
@@ -69,6 +70,7 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.fromEntityToResponse(driverRepository.save(driver));
     }
 
+    @Transactional
     @Override
     public DriverResponse createDriver(DriverRequest driverRequest) {
 
@@ -79,7 +81,7 @@ public class DriverServiceImpl implements DriverService {
 
         Driver savedDriver = driverRepository.save(driver);
 
-        ratingFeignClient.createDriverRecord(RatingRequest.builder()
+        ratingService.createDriverRecord(RatingRequest.builder()
                 .id(savedDriver.getId())
                 .build());
 
@@ -91,7 +93,7 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = getOrThrow(id);
         driverRepository.delete(driver);
 
-        ratingFeignClient.deleteDriverRating(id);
+        ratingService.deleteDriverRating(id);
 
         return driverMapper.fromEntityToResponse(driver);
     }
@@ -214,7 +216,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private DriverForRide findDriverForRide(Long id) {
-        DriverRatingListResponse ratingListResponse = ratingFeignClient.getDriversRateList();
+        DriverRatingListResponse ratingListResponse = ratingService.getDriversRateList();
         List<Driver> drivers = driverRepository.getAllByAvailable(true);
         Optional<Driver> highestRatedDriver = drivers.stream()
                 .filter(Driver::isAvailable)

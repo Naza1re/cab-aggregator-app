@@ -21,6 +21,8 @@
         <lombok.version>1.18.22</lombok.version>
         <modelmapper.version>3.1.1</modelmapper.version>
         <feign.version>4.1.0</feign.version>
+        <eureka.client.version>4.1.0</eureka.client.version>
+        <circuit.breaker.version>3.1.0</circuit.breaker.version>
         <testcontainer.mysql.version>1.19.4</testcontainer.mysql.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <junit.jupiter.version>1.16.0</junit.jupiter.version>
@@ -68,6 +70,18 @@
             <artifactId>mysql</artifactId>
             <version>${testcontainer.mysql.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+            <version>${circuit.breaker.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <version>${eureka.client.version}</version>
         </dependency>
 
         <dependency>

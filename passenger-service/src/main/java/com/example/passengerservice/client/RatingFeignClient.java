@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "${feign.client.rating.name}", url = "${feign.client.rating.url}",
-        path = "${feign.client.rating.path}", configuration = FeignClientConfiguration.class)
+@FeignClient(value = "${service.rating.name}",
+        path = "${service.rating.path}",
+        configuration = FeignClientConfiguration.class)
 public interface RatingFeignClient {
 
     @PostMapping("/passenger")

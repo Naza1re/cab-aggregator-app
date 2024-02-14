@@ -13,6 +13,16 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  application:
+    name: rating
 server:
   port: 8083
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+logging:
+  pattern:
+    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
 

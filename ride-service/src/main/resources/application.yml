@@ -13,6 +13,8 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  application:
+    name: ride
 
   kafka:
     consumer:
@@ -29,18 +31,23 @@ topic:
     ride: ride
     driver: driver
     available: available
-feign:
-  client:
+service:
     passenger:
       name: passenger
-      url: http://localhost:8081
       path: /api/v1/passengers
     driver:
       name: driver
-      url: http://localhost:8084
       path: /api/v1/drivers
     payment:
       name: payment
-      url: http://localhost:8085
       path: /api/v1/payment
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+logging:
+  pattern:
+    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+
 

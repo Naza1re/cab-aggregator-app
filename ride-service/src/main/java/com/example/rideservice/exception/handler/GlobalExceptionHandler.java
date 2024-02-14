@@ -2,6 +2,7 @@ package com.example.rideservice.exception.handler;
 
 import com.example.rideservice.exception.*;
 import com.example.rideservice.exception.appError.AppError;
+import feign.RetryableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,21 +17,21 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({RideNotFoundException.class, NotFoundException.class})
-    public ResponseEntity<AppError> handleRideNotFoundException(RideNotFoundException ex) {
+    public ResponseEntity<AppError> handleRideNotFoundException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new AppError(errorMessage));
     }
 
     @ExceptionHandler({RideHaveDriverException.class, RideAlreadyAcceptedException.class, RideNotHaveDriverException.class})
-    public ResponseEntity<AppError> handleCustomException(RuntimeException ex) {
+    public ResponseEntity<AppError> handleCustomException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({PaginationParamException.class, SortTypeException.class, FeignClientException.class})
-    public ResponseEntity<AppError> handleBadRequestException(RuntimeException ex) {
+    @ExceptionHandler({ServiceUnAvailableException.class, PaginationParamException.class, SortTypeException.class, FeignClientException.class, RetryableException.class})
+    public ResponseEntity<AppError> handleBadRequestException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new AppError(errorMessage));

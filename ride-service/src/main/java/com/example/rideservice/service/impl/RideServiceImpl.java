@@ -1,8 +1,5 @@
 package com.example.rideservice.service.impl;
 
-import com.example.rideservice.client.DriverClient;
-import com.example.rideservice.client.PassengerClient;
-import com.example.rideservice.client.PaymentClient;
 import com.example.rideservice.dto.request.CustomerChargeRequest;
 import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
@@ -16,6 +13,9 @@ import com.example.rideservice.mapper.RideMapper;
 import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
 import com.example.rideservice.repository.RideRepository;
+import com.example.rideservice.service.DriverService;
+import com.example.rideservice.service.PassengerService;
+import com.example.rideservice.service.PaymentService;
 import com.example.rideservice.service.RideService;
 import com.example.rideservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +38,10 @@ public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
-    private final PassengerClient passengerClient;
-    private final DriverClient driverClient;
+    private final PassengerService passengerService;
+    private final DriverService driverService;
     private final RideProducer rideProducer;
-    private final PaymentClient paymentClient;
+    private final PaymentService paymentService;
 
     @Override
     public RideResponse startRide(Long rideId) {
@@ -73,7 +73,7 @@ public class RideServiceImpl implements RideService {
         checkRideHasDriver(ride);
         ride.setEndDate(LocalDateTime.now());
         ride.setStatus(Status.FINISHED);
-        driverClient.changeStatus(ride.getDriverId());
+        driverService.changeStatus(ride.getDriverId());
         rideRepository.save(ride);
         return rideMapper.fromEntityToResponse(ride);
     }
@@ -144,11 +144,11 @@ public class RideServiceImpl implements RideService {
     public RideResponse findRide(RideRequest rideRequest) {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
-        PassengerResponse passenger = passengerClient.getPassenger(rideRequest.getPassengerId());
+        PassengerResponse passenger = passengerService.getPassenger(rideRequest.getPassengerId());
         ride.setPrice(new BigDecimal(10));
         createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
-        Ride savedRide =  rideRepository.save(ride);
+        Ride savedRide = rideRepository.save(ride);
 
         RideForDriver rideForDriver = createRideForDriver(ride);
         rideProducer.sendMessage(rideForDriver);
@@ -162,7 +162,7 @@ public class RideServiceImpl implements RideService {
                 .passengerId(id)
                 .currency("USD")
                 .build();
-        paymentClient.chargeFromCustomer(request);
+        paymentService.chargeFromCustomer(request);
 
     }
 
@@ -181,7 +181,7 @@ public class RideServiceImpl implements RideService {
     public void setDriver(DriverForRide driver) {
         Ride ride = getOrThrow(driver.getRideId());
         ride.setStatus(Status.ACCEPTED);
-        driverClient.changeStatus(driver.getDriverId());
+        driverService.changeStatus(driver.getDriverId());
         ride.setDriverId(driver.getDriverId());
 
         rideRepository.save(ride);

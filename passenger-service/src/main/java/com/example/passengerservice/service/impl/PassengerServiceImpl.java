@@ -1,6 +1,5 @@
 package com.example.passengerservice.service.impl;
 
-import com.example.passengerservice.client.RatingFeignClient;
 import com.example.passengerservice.dto.request.PassengerRequest;
 import com.example.passengerservice.dto.request.RatingRequest;
 import com.example.passengerservice.dto.response.PassengerListResponse;
@@ -11,12 +10,14 @@ import com.example.passengerservice.mapper.PassengerMapper;
 import com.example.passengerservice.model.Passenger;
 import com.example.passengerservice.repository.PassengerRepository;
 import com.example.passengerservice.service.PassengerService;
+import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.List;
 public class PassengerServiceImpl implements PassengerService {
 
     private final PassengerRepository passengerRepository;
-    private final RatingFeignClient ratingFeignClient;
+    private final RatingService ratingService;
     private final PassengerMapper passengerMapper;
 
     @Override
@@ -45,6 +46,7 @@ public class PassengerServiceImpl implements PassengerService {
         return new PassengerListResponse(listOfPassengers);
     }
 
+    @Transactional
     @Override
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
 
@@ -54,7 +56,7 @@ public class PassengerServiceImpl implements PassengerService {
         Passenger passenger = passengerMapper.fromRequestToEntity(passengerRequest);
         Passenger savedPassenger = passengerRepository.save(passenger);
 
-        ratingFeignClient.createPassengerRecord(RatingRequest.builder()
+        ratingService.createPassengerRecord(RatingRequest.builder()
                 .id(savedPassenger.getId())
                 .build());
         return passengerMapper.fromEntityToResponse(savedPassenger);
@@ -79,7 +81,7 @@ public class PassengerServiceImpl implements PassengerService {
         Passenger passenger = getOrThrow(id);
         passengerRepository.delete(passenger);
 
-        ratingFeignClient.deletePassengerRecord(id);
+        ratingService.deletePassengerRecord(id);
 
         return passengerMapper.fromEntityToResponse(passenger);
 

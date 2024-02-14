@@ -1,6 +1,5 @@
 package com.example.paymentservice.service.impl;
 
-import com.example.paymentservice.client.PassengerFeignClient;
 import com.example.paymentservice.dto.request.CardRequest;
 import com.example.paymentservice.dto.request.ChargeRequest;
 import com.example.paymentservice.dto.request.CustomerChargeRequest;
@@ -13,6 +12,7 @@ import com.example.paymentservice.exception.CustomerAlreadyExistException;
 import com.example.paymentservice.exception.CustomerNotFoundException;
 import com.example.paymentservice.model.User;
 import com.example.paymentservice.repository.UserRepository;
+import com.example.paymentservice.service.PassengerService;
 import com.example.paymentservice.service.PaymentService;
 import com.example.paymentservice.service.StripeService;
 import com.example.paymentservice.util.ExceptionMessages;
@@ -31,14 +31,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final UserRepository userRepository;
     private final StripeService service;
-    private final PassengerFeignClient passengerFeignClient;
+    private final PassengerService passengerService;
 
     @Override
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
         checkCustomerAlreadyExist(customerRequest.getPassengerId());
         Customer customer = service.createStripeCustomerParams(customerRequest);
-
-        passengerFeignClient.getPassenger(customerRequest.getPassengerId());
+        passengerService.getPassenger(customerRequest.getPassengerId());
 
         service.createPaymentParams(customer.getId());
         saveUserToDatabase(customer.getId(), customerRequest.getPassengerId());
