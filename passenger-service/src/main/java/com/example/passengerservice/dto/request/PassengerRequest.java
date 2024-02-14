@@ -10,7 +10,6 @@ import lombok.Setter;
 
 
 @Setter
-@Builder
 @Getter
 @Builder
 public class PassengerRequest {

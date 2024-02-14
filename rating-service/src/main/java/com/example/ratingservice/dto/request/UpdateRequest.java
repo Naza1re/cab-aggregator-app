@@ -14,7 +14,6 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
