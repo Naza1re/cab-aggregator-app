@@ -3,7 +3,7 @@ package com.example.ratingservice.service;
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
 import com.example.ratingservice.dto.responce.PassengerRatingResponse;
-import com.example.ratingservice.exception.DriverRatingAlreadyExistException;
+import com.example.ratingservice.exception.PassengerRatingAlreadyExistException;
 import com.example.ratingservice.exception.PassengerRatingNotFoundException;
 import com.example.ratingservice.mapper.PassengerMapper;
 import com.example.ratingservice.model.PassengerRating;
@@ -18,8 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.ratingservice.util.DriverRatingUtilTest.getCreateRequest;
-import static com.example.ratingservice.util.PassengerRatingUtilTest.*;
+import static com.example.ratingservice.util.PassengerRatingUtilTest.DEFAULT_PASSENGER_ID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -34,9 +33,9 @@ public class PassengerRatingServiceImplTest {
     private PassengerMapper passengerMapper;
 
     @Test
-    void getDriverByIdWhenDriverExist() {
-        PassengerRatingResponse passengerRatingResponse = getDefaultPassengerRatingResponse();
-        PassengerRating passengerRating = getSavedPassengerRating();
+    void getPassengerByIdWhenDriverExist() {
+        PassengerRatingResponse passengerRatingResponse = PassengerRatingUtilTest.getDefaultPassengerRatingResponse();
+        PassengerRating passengerRating = PassengerRatingUtilTest.getSavedPassengerRating();
 
         doReturn(Optional.of(passengerRating))
                 .when(passengerRatingRepository)
@@ -55,23 +54,23 @@ public class PassengerRatingServiceImplTest {
 
     @Test
     void createPassengerRatingWhenRatingAlreadyExist() {
-        CreateRequest request = getCreateRequest();
+        CreateRequest request = PassengerRatingUtilTest.getCreateRequest();
 
         doReturn(true)
                 .when(passengerRatingRepository)
                 .existsByPassenger(request.getId());
         assertThrows(
-                DriverRatingAlreadyExistException.class,
+                PassengerRatingAlreadyExistException.class,
                 () -> passengerRatingService.createPassenger(request)
         );
     }
 
     @Test
     void creteDriverRating() {
-        PassengerRatingResponse passengerRatingResponse = getDefaultPassengerRatingResponse();
+        PassengerRatingResponse passengerRatingResponse = PassengerRatingUtilTest.getDefaultPassengerRatingResponse();
         CreateRequest request = PassengerRatingUtilTest.getCreateRequest();
-        PassengerRating passengerRating = getDefaultPassengerRating();
-        PassengerRating passengerRatingSaved = getSavedPassengerRating();
+        PassengerRating passengerRating = PassengerRatingUtilTest.getDefaultPassengerRating();
+        PassengerRating passengerRatingSaved = PassengerRatingUtilTest.getSavedPassengerRating();
 
 
         doReturn(false)
@@ -82,20 +81,20 @@ public class PassengerRatingServiceImplTest {
                 .save(passengerRating);
         doReturn(passengerRatingResponse)
                 .when(passengerMapper)
-                .fromEntityToResponse(passengerRating);
+                .fromEntityToResponse(passengerRatingSaved);
 
         PassengerRatingResponse actual = passengerRatingService.createPassenger(request);
 
         verify(passengerRatingRepository).save(passengerRating);
         verify(passengerRatingRepository).existsByPassenger(DEFAULT_PASSENGER_ID);
-        verify(passengerMapper).fromEntityToResponse(passengerRating);
+        verify(passengerMapper).fromEntityToResponse(passengerRatingSaved);
 
         assertThat(actual).isEqualTo(passengerRatingResponse);
     }
 
     @Test
     void deleteDriverRatingByIdWhenRatingExist() {
-        PassengerRating passengerRating = getDefaultPassengerRating();
+        PassengerRating passengerRating = PassengerRatingUtilTest.getDefaultPassengerRating();
 
         doReturn(Optional.of(passengerRating))
                 .when(passengerRatingRepository)
@@ -115,19 +114,19 @@ public class PassengerRatingServiceImplTest {
     void deleteDriveRatingByIdWhenRatingIsNotExist() {
         doReturn(Optional.empty())
                 .when(passengerRatingRepository)
-                .findPassengerRatingByPassenger(NOT_EXIST_ID);
+                .findPassengerRatingByPassenger(PassengerRatingUtilTest.NOT_EXIST_ID);
 
         assertThrows(
                 PassengerRatingNotFoundException.class,
-                () -> passengerRatingService.deletePassengerRecord(NOT_EXIST_ID)
+                () -> passengerRatingService.deletePassengerRecord(PassengerRatingUtilTest.NOT_EXIST_ID)
         );
     }
 
     @Test
     void updateDriverRating() {
-        PassengerRating passengerRating = getDefaultPassengerRating();
+        PassengerRating passengerRating = PassengerRatingUtilTest.getDefaultPassengerRating();
         UpdateRequest updateRequest = PassengerRatingUtilTest.getUpdateRequest();
-        PassengerRatingResponse passengerRatingResponse = getDefaultPassengerRatingResponse();
+        PassengerRatingResponse passengerRatingResponse = PassengerRatingUtilTest.getDefaultPassengerRatingResponse();
 
         doReturn(Optional.of(passengerRating))
                 .when(passengerRatingRepository)
@@ -143,7 +142,6 @@ public class PassengerRatingServiceImplTest {
 
         assertThat(actual).isEqualTo(passengerRatingResponse);
     }
-
 
 }
 

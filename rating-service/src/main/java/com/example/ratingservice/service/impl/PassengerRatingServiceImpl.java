@@ -33,15 +33,14 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
 
     @Override
     public PassengerRatingResponse createPassenger(CreateRequest createRequest) {
-
         checkPassengerRatingExist(createRequest.getId());
 
         PassengerRating passengerRating = new PassengerRating();
         passengerRating.setPassenger(createRequest.getId());
         passengerRating.setRate(Constants.DEFAULT_RATING);
-        passengerRatingRepository.save(passengerRating);
+        PassengerRating savedPassengerRating =  passengerRatingRepository.save(passengerRating);
 
-        return passengerMapper.fromEntityToResponse(passengerRating);
+        return passengerMapper.fromEntityToResponse(savedPassengerRating);
 
     }
 

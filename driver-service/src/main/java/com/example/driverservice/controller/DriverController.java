@@ -63,7 +63,7 @@ public class DriverController {
     }
 
     @PutMapping("/{driverId}/status")
-    public ResponseEntity<DriverResponse> startRide(@PathVariable Long driverId) {
+    public ResponseEntity<DriverResponse> changeStatus(@PathVariable Long driverId) {
         return ResponseEntity.ok(driverService.changeStatus(driverId));
     }
 

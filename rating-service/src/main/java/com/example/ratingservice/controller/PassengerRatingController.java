@@ -31,7 +31,8 @@ public class PassengerRatingController {
     @PostMapping
     public ResponseEntity<PassengerRatingResponse> creatingPassenger(
             @Valid @RequestBody CreateRequest createRequest) {
-        return ResponseEntity.ok(passengerRatingService.createPassenger(createRequest));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(passengerRatingService.createPassenger(createRequest));
     }
 
     @PutMapping

@@ -4,9 +4,11 @@ import lombok.*;
 
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class PassengerResponse {
     private Long id;
     private String name;

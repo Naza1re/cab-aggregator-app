@@ -1,11 +1,13 @@
 package com.example.rideservice.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
+
 @Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class RidePageResponse {

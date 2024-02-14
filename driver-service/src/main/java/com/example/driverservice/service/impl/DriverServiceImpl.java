@@ -3,7 +3,11 @@ package com.example.driverservice.service.impl;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
-import com.example.driverservice.dto.response.*;
+import com.example.driverservice.dto.response.DriverRatingResponse;
+import com.example.driverservice.dto.response.DriverListResponse;
+import com.example.driverservice.dto.response.DriverPageResponse;
+import com.example.driverservice.dto.response.DriverRatingListResponse;
+import com.example.driverservice.dto.response.DriverResponse;
 import com.example.driverservice.exception.*;
 import com.example.driverservice.kafka.producer.AvailableDriverProducer;
 import com.example.driverservice.kafka.producer.DriverProducer;
@@ -74,6 +78,7 @@ public class DriverServiceImpl implements DriverService {
 
         Driver driver = driverMapper.fromRequestToEntity(driverRequest);
         driver.setAvailable(false);
+
         Driver savedDriver = driverRepository.save(driver);
 
         ratingService.createDriverRecord(RatingRequest.builder()
