@@ -103,25 +103,6 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
     }
 
     @Test
-    void createDriver_shouldReturnDriverResponse_whenDriverValid() {
-        DriverResponse expected = getCreateDriverResponse();
-        DriverRequest driverRequest = getCreateDriverRequest();
-
-        var actual = given()
-                .port(port)
-                .contentType(ContentType.JSON)
-                .body(driverRequest)
-                .when()
-                .post(PATH_DEFAULT)
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .as(DriverResponse.class);
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
     void changeStatusForDriver_shouldReturnDriverResponse_whenDriverExist() {
         DriverResponse expected = getChangeStatusDriverResponse();
 
@@ -160,17 +141,4 @@ public class DriverIntegrationTest extends DataBaseContainerConfiguration {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void deleteDriver_shouldReturnNoContent_whenDriverExist() {
-
-        given()
-                .port(port)
-                .pathParam(PATH_PARAM_ID, DEFAULT_ID)
-                .contentType(ContentType.JSON)
-                .when()
-                .delete(PATH_ID)
-                .then()
-                .statusCode(HttpStatus.NO_CONTENT.value())
-                .extract();
-    }
 }

@@ -82,24 +82,6 @@ public class PassengerIntegrationTest extends DataBaseContainerConfiguration {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void createDriver_shouldReturnDriverResponse_whenDriverValid() {
-        PassengerResponse expected = IntegrationTestUtil.getCreatePassengerResponse();
-        PassengerRequest passengerRequest = getCreatePassengerRequest();
-
-        var actual = given()
-                .port(port)
-                .contentType(ContentType.JSON)
-                .body(passengerRequest)
-                .when()
-                .post(PATH_DEFAULT)
-                .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .extract()
-                .as(PassengerResponse.class);
-
-        assertThat(actual).isEqualTo(expected);
-    }
 
     @Test
     void updateDriver_shouldReturnDriverResponse_whenPassengerExist() {

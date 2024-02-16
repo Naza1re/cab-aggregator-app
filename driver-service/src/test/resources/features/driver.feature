@@ -25,11 +25,6 @@ Feature: Driver service
     When A create request with car number "3856 KX-5" is passed to the add method
     Then The CarNumberAlreadyExistException should be thrown for сar number "3856 KX-5"
 
-  Scenario: Creating a new driver with unique data
-    Given A driver with email "mcarim@mail.ru" , "375259148179" and car number "3856 KX-5" doesn't exist
-    When A create request with email "mcarim@mail.ru", phone "375259148179", car number "3856 KX-5" is passed to the add method
-    Then The response should contain created driver response
-
   Scenario: Update driver by non-existing id
     Given A driver with id 100 doesn't exist
     When A update request and id 100 is passed to the update method

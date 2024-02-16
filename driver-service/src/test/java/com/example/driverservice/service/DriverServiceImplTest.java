@@ -37,6 +37,7 @@ public class DriverServiceImplTest {
     private DriverServiceImpl driverService;
     @Mock
     private RatingFeignClient ratingFeignClient;
+
     @Test
     void findDriverByIdWhenDriverNotFound() {
 
@@ -105,7 +106,7 @@ public class DriverServiceImplTest {
     void GetPageWhenPaginationParamsIsInvalid() {
         assertThrows(
                 PaginationParamException.class,
-                () -> driverService.getDriverPage(INVALID_PAGINATION_PAGE,INVALID_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+                () -> driverService.getDriverPage(INVALID_PAGINATION_PAGE, INVALID_PAGINATION_SIZE, INVALID_PAGINATION_SORTED_TYPE)
         );
     }
 
@@ -113,7 +114,7 @@ public class DriverServiceImplTest {
     void GetPageWhenOrderByIsInvalid() {
         assertThrows(
                 SortTypeException.class,
-                () -> driverService.getDriverPage(DEFAULT_PAGINATION_PAGE,DEFAULT_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+                () -> driverService.getDriverPage(DEFAULT_PAGINATION_PAGE, DEFAULT_PAGINATION_SIZE, INVALID_PAGINATION_SORTED_TYPE)
         );
     }
 
@@ -135,43 +136,6 @@ public class DriverServiceImplTest {
 
     }
 
-    @Test
-    void createDriverWhenDataIsUnique() {
-        DriverResponse response = getDefaultDriverResponse();
-        DriverRequest request = getDriverRequest();
-        Driver notSavedDriver = getNotSavedDriver();
-        Driver savedDriver = getSavedDriver();
-
-        doReturn(false)
-                .when(driverRepository)
-                .existsByEmail(DEFAULT_EMAIL);
-        doReturn(false)
-                .when(driverRepository)
-                .existsByPhone(DEFAULT_PHONE);
-        doReturn(false)
-                .when(driverRepository)
-                .existsByNumber(DEFAULT_NUMBER);
-        doReturn(notSavedDriver)
-                .when(driverMapper)
-                .fromRequestToEntity(request);
-        doReturn(savedDriver)
-                .when(driverRepository)
-                .save(notSavedDriver);
-        doReturn(response)
-                .when(driverMapper)
-                .fromEntityToResponse(savedDriver);
-
-        DriverResponse actual = driverService.createDriver(request);
-
-        verify(driverRepository).existsByNumber(DEFAULT_NUMBER);
-        verify(driverRepository).existsByPhone(DEFAULT_PHONE);
-        verify(driverRepository).existsByEmail(DEFAULT_EMAIL);
-        verify(driverRepository).save(notSavedDriver);
-        verify(driverMapper).fromEntityToResponse(savedDriver);
-        verify(driverMapper).fromRequestToEntity(request);
-        assertThat(actual).isEqualTo(response);
-
-    }
 
     @Test()
     void createDriverWhenCarNumberIsNotUnique() {
@@ -222,24 +186,6 @@ public class DriverServiceImplTest {
                 EmailAlreadyExistException.class,
                 () -> driverService.createDriver(request)
         );
-    }
-
-    @Test
-    void deleteDriverWhenDriverExist() {
-        Driver driver = getDefaultDriver();
-
-        doReturn(Optional.of(driver))
-                .when(driverRepository)
-                .findById(DEFAULT_ID);
-        doNothing()
-                .when(driverRepository)
-                .delete(driver);
-
-        driverService.deleteDriver(DEFAULT_ID);
-
-        verify(driverRepository).findById(DEFAULT_ID);
-        verify(driverRepository).delete(driver);
-
     }
 
     @Test

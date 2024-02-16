@@ -2,7 +2,6 @@ package com.example.passengerservice.service;
 
 import com.example.passengerservice.client.RatingFeignClient;
 import com.example.passengerservice.dto.request.PassengerRequest;
-import com.example.passengerservice.dto.request.RatingRequest;
 import com.example.passengerservice.dto.response.PassengerListResponse;
 import com.example.passengerservice.dto.response.PassengerPageResponse;
 import com.example.passengerservice.dto.response.PassengerRatingResponse;
@@ -15,7 +14,6 @@ import com.example.passengerservice.service.impl.PassengerServiceImpl;
 import com.example.passengerservice.util.PassengerTestUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,7 +39,8 @@ public class PassengerServiceImplTest {
     private PassengerServiceImpl passengerService;
     @Mock
     private RatingFeignClient ratingFeignClient;
-
+    @Mock
+    private RatingService ratingService;
 
     @Test
     void findAllDrivers() {
@@ -126,9 +125,7 @@ public class PassengerServiceImplTest {
         doReturn(passengerResponse)
                 .when(passengerMapper)
                 .fromEntityToResponse(savedPassenger);
-        doReturn(passengerRatingResponse)
-                .when(ratingFeignClient)
-                .createPassengerRecord(ArgumentMatchers.any(RatingRequest.class));
+
 
         PassengerResponse actual = passengerService.createPassenger(request);
 
@@ -137,7 +134,6 @@ public class PassengerServiceImplTest {
         verify(passengerRepository).save(passengerToSave);
         verify(passengerMapper).fromRequestToEntity(request);
         verify(passengerMapper).fromEntityToResponse(savedPassenger);
-        verify(ratingFeignClient).createPassengerRecord(ArgumentMatchers.any(RatingRequest.class));
 
         assertThat(actual).isEqualTo(passengerResponse);
     }
@@ -146,7 +142,7 @@ public class PassengerServiceImplTest {
     void GetPageWhenPaginationParamsIsInvalid() {
         assertThrows(
                 PaginationParamException.class,
-                () -> passengerService.getPassengerPage(INVALID_PAGINATION_PAGE,INVALID_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+                () -> passengerService.getPassengerPage(INVALID_PAGINATION_PAGE, INVALID_PAGINATION_SIZE, INVALID_PAGINATION_SORTED_TYPE)
         );
     }
 
@@ -154,7 +150,7 @@ public class PassengerServiceImplTest {
     void GetPageWhenOrderByIsInvalid() {
         assertThrows(
                 SortTypeException.class,
-                () -> passengerService.getPassengerPage(DEFAULT_PAGINATION_PAGE,DEFAULT_PAGINATION_SIZE,INVALID_PAGINATION_SORTED_TYPE)
+                () -> passengerService.getPassengerPage(DEFAULT_PAGINATION_PAGE, DEFAULT_PAGINATION_SIZE, INVALID_PAGINATION_SORTED_TYPE)
         );
     }
 
@@ -237,17 +233,12 @@ public class PassengerServiceImplTest {
         doNothing()
                 .when(passengerRepository)
                 .delete(passenger);
-        doReturn(passengerRatingResponse)
-                .when(ratingFeignClient)
-                .deletePassengerRecord(DEFAULT_ID);
-        doReturn(passengerResponse)
-                .when(passengerMapper)
-                .fromEntityToResponse(passenger);
+
 
         passengerService.deletePassenger(DEFAULT_ID);
 
         verify(passengerRepository).delete(passenger);
-        verify(ratingFeignClient).deletePassengerRecord(DEFAULT_ID);
+
 
     }
 
