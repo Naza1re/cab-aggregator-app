@@ -1,36 +1,161 @@
 version: "3.7"
 
 networks:
-  kafka-net:
-    name: kafka-net
+  cab_aggregator:
+    name: cab_aggregator
     driver: bridge
 
 services:
+
+  api-gateway:
+    image: api-gateway
+    container_name: gateway-service
+    networks:
+      - cab_aggregator
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+
+    depends_on:
+      - eureka-service
+    ports:
+      - '8070:8070'
+
+  rating_service:
+    image: rating-service
+    container_name: rating-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/rating
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+    ports:
+      - '8083:8083'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
+
+  payment-service:
+    image: payment-service
+    container_name: payment-service
+    environment:
+      - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/payment
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+    ports:
+      - '8085:8085'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
+
+
+  ride_service:
+    image: ride-service
+    container_name: ride-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/rides
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    ports:
+      - '8082:8082'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
+      - kafka
+
+
+  driver_service:
+    image: driver-service
+    container_name: driver-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/drivers
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    ports:
+      - '8084:8084'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
+      - kafka
+
+
+  mysql_db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - cab_aggregator
+    volumes:
+      - ./dbdata:/var/lib/mysql/
+      - ./db:/docker-entrypoint-initdb.d
+
+  passenger_service:
+    image: passenger-service
+    container_name: passenger-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/passengers
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+    ports:
+      - '8081:8081'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
+
+
+  eureka-service:
+    image: eureka-server
+    container_name: eureka-server
+    networks:
+      - cab_aggregator
+    ports:
+      - '8090:8090'
+
+
   zookeeper:
     image: zookeeper:3.7.0
     container_name: zookeeper
-    restart: "no"
     networks:
-      - kafka-net
+      - cab_aggregator
+    restart: "no"
     ports:
       - "2181:2181"
 
   kafka:
-    image: obsidiandynamics/kafka
-    container_name: kafka
-    restart: "no"
-    networks:
-      - kafka-net
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
-      KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_BROKER_ID: 1
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-    depends_on:
-      - zookeeper
+      image: obsidiandynamics/kafka
+      container_name: kafka
+      restart: "no"
+      networks:
+        - cab_aggregator
+      ports:
+        - "9092:9092"
+      environment:
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
+        KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
+        KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+        KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
+        KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+        KAFKA_BROKER_ID: 1
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      depends_on:
+        - zookeeper
