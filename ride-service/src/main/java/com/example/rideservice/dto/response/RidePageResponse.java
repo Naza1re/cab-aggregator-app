@@ -1,6 +1,11 @@
 package com.example.rideservice.dto.response;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Builder;
 
 import java.util.List;
 
