@@ -56,7 +56,9 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     @Override
     public PromoCodeResponse updatePromoCode(Long id, PromoCodeRequest request) {
+        checkPromoCodeExist(request.getValue());
         PromoCode promoCode = getOrThrow(id);
+
         promoCode = promoCodeMapper.fromRequestToEntity(request);
         PromoCode savedPromo = promoCodeRepository.save(promoCode);
 
@@ -67,6 +69,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     public PromoCodeResponse deletePromoCodeById(Long id) {
         PromoCode promoCode = getOrThrow(id);
 
+        promoCodeRepository.delete(promoCode);
         return promoCodeMapper.fromEntityToResponse(promoCode);
     }
 
