@@ -14,7 +14,7 @@ public class PromoCodeUtilTest {
     public final Long DEFAULT_ID = 1L;
     public final Long NOT_FOUND_ID = 1L;
     public final String DEFAULT_NAME = "STUDENT";
-    public final String DEFAULT_VALUE = "4545";
+    public final String DEFAULT_VALUE = "1222";
     public final int DEFAULT_PERCENT = 20;
 
     public final Long SECOND_ID = 1L;
@@ -56,6 +56,14 @@ public class PromoCodeUtilTest {
     public PromoCodeResponseList getDefaultPromoCodeResponseList() {
         return PromoCodeResponseList.builder()
                 .promoCodeResponseList(List.of(getDefaultPromoCodeResponse(), getSecondPromoCodeResponse()))
+                .build();
+    }
+
+    public PromoCode getUpdatePromoCodeNotSaved() {
+        return PromoCode.builder()
+                .name(SECOND_NAME)
+                .value(SECOND_VALUE)
+                .percent(SECOND_PERCENT)
                 .build();
     }
 
@@ -110,4 +118,14 @@ public class PromoCodeUtilTest {
                 .value(DEFAULT_VALUE)
                 .build();
     }
+
+    public static PromoCodeRequest getPromoCodeRequestWithValue(String value) {
+        return PromoCodeRequest.builder()
+                .name(DEFAULT_NAME)
+                .percent(DEFAULT_PERCENT)
+                .value(value)
+                .build();
+    }
+
+
 }
