@@ -10,6 +10,7 @@ import lombok.Builder;
 @Getter
 @Setter
 @Builder
+
 public class PromoCodeRequest {
     @NotBlank(message = "{promo.code.name.not.blanked}")
     @Size(max = 16, message = "{name.max.value}")

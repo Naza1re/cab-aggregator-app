@@ -12,7 +12,7 @@ spring:
     hibernate:
       ddl-auto: none
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-promo-master.xml
+    change-log: classpath:/db/changelog/db.changelog-master.xml
   application:
     name: promo-code
 server:

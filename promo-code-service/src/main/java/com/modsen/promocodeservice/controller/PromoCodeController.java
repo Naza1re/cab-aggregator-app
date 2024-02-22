@@ -4,6 +4,7 @@ import com.modsen.promocodeservice.dto.request.PromoCodeRequest;
 import com.modsen.promocodeservice.dto.responce.PromoCodeResponse;
 import com.modsen.promocodeservice.dto.responce.PromoCodeResponseList;
 import com.modsen.promocodeservice.service.PromoCodeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +36,15 @@ public class PromoCodeController {
     }
 
     @PostMapping()
-    public ResponseEntity<PromoCodeResponse> createPromoCode(@RequestBody PromoCodeRequest request) {
+    public ResponseEntity<PromoCodeResponse> createPromoCode(
+            @Valid @RequestBody PromoCodeRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(promoCodeService.createPromoCode(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PromoCodeResponse> updatePromoCode(@RequestBody PromoCodeRequest request, @PathVariable Long id) {
+    public ResponseEntity<PromoCodeResponse> updatePromoCode(
+            @Valid @RequestBody PromoCodeRequest request, @PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(promoCodeService.updatePromoCode(id,request));
     }
