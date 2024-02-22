@@ -16,4 +16,6 @@ public interface PromoCodeService {
     PromoCodeResponse updatePromoCode(Long id, PromoCodeRequest request);
 
     PromoCodeResponse deletePromoCodeById(Long id);
+
+    PromoCodeResponse getPromoCodeByValue(String value);
 }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     private PromoCode getOrThrow(Long id) {
         return promoCodeRepository.findById(id)
-                .orElseThrow(() -> new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND, id)));
+                .orElseThrow(() -> new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
@@ -71,6 +72,17 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
         promoCodeRepository.delete(promoCode);
         return promoCodeMapper.fromEntityToResponse(promoCode);
+    }
+
+    @Override
+    public PromoCodeResponse getPromoCodeByValue(String value) {
+        Optional<PromoCode> promoCode = promoCodeRepository.findByValue(value);
+        if(promoCode.isPresent()){
+            return promoCodeMapper.fromEntityToResponse(promoCode.get());
+        }
+        else {
+            throw new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_VALUE,value));
+        }
     }
 
     private void checkPromoCodeExist(String value) {

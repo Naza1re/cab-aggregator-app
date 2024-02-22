@@ -22,6 +22,12 @@ public class PromoCodeController {
                 .body(promoCodeService.getAllPromoCodes());
     }
 
+    @GetMapping("/value/{value}")
+    public ResponseEntity<PromoCodeResponse> getPromoCodeByValue(@PathVariable String value) {
+        return ResponseEntity.ok()
+                .body(promoCodeService.getPromoCodeByValue(value));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> getPromoCodeById(@PathVariable Long id) {
         return ResponseEntity.ok()

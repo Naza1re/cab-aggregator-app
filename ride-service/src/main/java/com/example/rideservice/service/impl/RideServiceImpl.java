@@ -13,10 +13,7 @@ import com.example.rideservice.mapper.RideMapper;
 import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
 import com.example.rideservice.repository.RideRepository;
-import com.example.rideservice.service.DriverService;
-import com.example.rideservice.service.PassengerService;
-import com.example.rideservice.service.PaymentService;
-import com.example.rideservice.service.RideService;
+import com.example.rideservice.service.*;
 import com.example.rideservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,6 +39,7 @@ public class RideServiceImpl implements RideService {
     private final DriverService driverService;
     private final RideProducer rideProducer;
     private final PaymentService paymentService;
+    private final PromoCodeService promoCodeService;
 
     @Override
     public RideResponse startRide(Long rideId) {
@@ -145,7 +143,10 @@ public class RideServiceImpl implements RideService {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
         PassengerResponse passenger = passengerService.getPassenger(rideRequest.getPassengerId());
-        ride.setPrice(new BigDecimal(10));
+
+
+        ride.setPrice(reducePriceByExistingPromoCode(rideRequest.getPromo()));
+
         createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
         Ride savedRide = rideRepository.save(ride);
@@ -154,6 +155,16 @@ public class RideServiceImpl implements RideService {
         rideProducer.sendMessage(rideForDriver);
 
         return rideMapper.fromEntityToResponse(savedRide);
+    }
+
+    private BigDecimal reducePriceByExistingPromoCode(String value) {
+        if(value==null) {
+            return BigDecimal.valueOf(200);
+        }
+        else {
+            PromoCodeResponse promoCodeResponse = promoCodeService.getPromCode(value);
+            return BigDecimal.valueOf(200L - (200L * (promoCodeResponse.getPercent() / 100)));
+        }
     }
 
     private void createChargeFromCustomer(Long id, BigDecimal price) {

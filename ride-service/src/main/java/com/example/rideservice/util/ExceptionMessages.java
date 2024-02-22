@@ -12,6 +12,7 @@ public class ExceptionMessages {
     public static final String DRIVER_SERVICE_IS_NOT_AVAILABLE = "Driver service is not available, try later";
     public static final String PASSENGER_SERVICE_IS_NOT_AVAILABLE = "Passenger service is not available, try later";
     public static final String PAYMENT_SERVICE_IS_NOT_AVAILABLE = "Payment service is not available, try later";
+    public static final String PROMO_CODE_SERVICE_IS_NOT_AVAILABLE = "Promo code service is not available, try later";
 
 
 

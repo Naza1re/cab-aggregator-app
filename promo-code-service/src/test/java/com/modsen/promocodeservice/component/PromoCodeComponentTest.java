@@ -92,7 +92,7 @@ public class PromoCodeComponentTest {
 
     @Then("The PromoCodeNotFoundException should be thrown with id {long}")
     public void thePromoCodeNotFoundExceptionShouldBeThrown(long id) {
-        String expected = String.format(ExceptionMessages.PROMOCODE_NOT_FOUND, id);
+        String expected = String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id);
         String actual = exception.getMessage();
 
         assertThat(actual).isEqualTo(expected);

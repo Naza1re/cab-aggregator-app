@@ -15,11 +15,12 @@ public class MyDecoder implements ErrorDecoder {
         String[] responseMessageSplit = exception.getMessage().split("\"message\"");
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
+        System.out.println(status);
         if (status == 400) {
-            return new FeignClientException(exMessage);
+            throw new FeignClientException(exMessage);
         }
         if (status == 404) {
-            return new NotFoundException(exMessage);
+            throw new NotFoundException(exMessage);
         }
         else {
             return new RetryableException(

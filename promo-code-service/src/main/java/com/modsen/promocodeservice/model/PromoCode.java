@@ -1,10 +1,12 @@
 package com.modsen.promocodeservice.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
@@ -12,13 +14,15 @@ import lombok.ToString;
 @Table(name = "promocode")
 @Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PromoCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String value;
-    private int percent;
+    private double percent;
 
 
 }

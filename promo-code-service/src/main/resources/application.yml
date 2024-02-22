@@ -10,9 +10,9 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.xml
+    change-log: classpath:/db/changelog/db.changelog-promo-master.xml
   application:
     name: promo-code
 server:

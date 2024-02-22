@@ -1,19 +1,22 @@
 package com.modsen.promocodeservice.dto.request;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Builder;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class PromoCodeRequest {
-
+    @NotBlank(message = "{promo.code.name.not.blanked}")
+    @Size(max = 16, message = "{name.max.value}")
     private String name;
+    @NotBlank(message = "{value.not.blanked}")
+    @Size(max = 5, message = "{value.max.value}")
     private String value;
-    private int percent;
+    @Max(value = 50 , message = "{percent.max.value}")
+    private double percent;
 }
