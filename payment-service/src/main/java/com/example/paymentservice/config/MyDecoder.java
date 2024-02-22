@@ -1,5 +1,6 @@
 package com.example.paymentservice.config;
 
+import com.example.paymentservice.exception.FeignClientException;
 import com.example.paymentservice.exception.NotFoundException;
 import feign.FeignException;
 import feign.Response;
@@ -14,6 +15,9 @@ public class MyDecoder implements ErrorDecoder {
         String[] responseMessageSplit = exception.getMessage().split("\"message\"");
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
+        if (status == 400) {
+            throw new FeignClientException(exMessage);
+        }
         if (status == 404) {
             return new NotFoundException(exMessage);
         }

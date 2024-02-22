@@ -1,5 +1,6 @@
 package com.example.driverservice.config;
 
+import com.example.driverservice.exception.FeignClientException;
 import com.example.driverservice.exception.NotFoundException;
 import com.example.driverservice.exception.RatingException;
 import feign.FeignException;
@@ -16,7 +17,7 @@ public class MyDecoder implements ErrorDecoder {
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
         if (status == 400) {
-            return new RatingException(exMessage);
+            return new FeignClientException(exMessage);
         }
         if (status == 404) {
             return new NotFoundException(exMessage);

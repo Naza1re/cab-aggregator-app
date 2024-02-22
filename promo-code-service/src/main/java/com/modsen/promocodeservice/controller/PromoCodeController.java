@@ -46,7 +46,7 @@ public class PromoCodeController {
     public ResponseEntity<PromoCodeResponse> updatePromoCode(
             @Valid @RequestBody PromoCodeRequest request, @PathVariable Long id) {
         return ResponseEntity.ok()
-                .body(promoCodeService.updatePromoCode(id,request));
+                .body(promoCodeService.updatePromoCode(id, request));
     }
 
     @DeleteMapping("/{id}")
@@ -54,10 +54,6 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(promoCodeService.deletePromoCodeById(id));
     }
-
-
-
-
 
 
 }

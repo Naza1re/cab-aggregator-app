@@ -2,6 +2,8 @@ package com.example.passengerservice.service.impl;
 
 import com.example.passengerservice.client.RatingFeignClient;
 import com.example.passengerservice.dto.request.RatingRequest;
+import com.example.passengerservice.exception.FeignClientException;
+import com.example.passengerservice.exception.NotFoundException;
 import com.example.passengerservice.exception.ServiceUnAvailableException;
 import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
@@ -24,6 +26,14 @@ public class RatingServiceImpl implements RatingService {
     @Override
     @CircuitBreaker(name = "rating", fallbackMethod = "fallbackRatingService")
     public void deletePassengerRecord(Long id) {
+    }
+
+    private void fallbackRatingService(NotFoundException ex) {
+        throw new NotFoundException(ex.getMessage());
+    }
+
+    private void fallbackRatingService(FeignClientException ex) {
+        throw new FeignClientException(ex.getMessage());
     }
 
     private void fallbackRatingService(Exception ex) {

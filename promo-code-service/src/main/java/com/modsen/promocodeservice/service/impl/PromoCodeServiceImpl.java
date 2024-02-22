@@ -77,11 +77,10 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     @Override
     public PromoCodeResponse getPromoCodeByValue(String value) {
         Optional<PromoCode> promoCode = promoCodeRepository.findByValue(value);
-        if(promoCode.isPresent()){
+        if (promoCode.isPresent()) {
             return promoCodeMapper.fromEntityToResponse(promoCode.get());
-        }
-        else {
-            throw new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_VALUE,value));
+        } else {
+            throw new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_VALUE, value));
         }
     }
 

@@ -14,6 +14,7 @@ import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
 import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.service.*;
+import com.example.rideservice.util.Constants;
 import com.example.rideservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.rideservice.util.Constants.DEFAULT_PRICE;
+
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +44,7 @@ public class RideServiceImpl implements RideService {
     private final PaymentService paymentService;
     private final PromoCodeService promoCodeService;
 
+
     @Override
     public RideResponse startRide(Long rideId) {
         Ride ride = getOrThrow(rideId);
@@ -48,7 +52,7 @@ public class RideServiceImpl implements RideService {
         checkRideHasDriver(ride);
         ride.setStartDate(LocalDateTime.now());
         ride.setStatus(Status.ACTIVE);
-        Ride savedRide =  rideRepository.save(ride);
+        Ride savedRide = rideRepository.save(ride);
         return rideMapper.fromEntityToResponse(savedRide);
     }
 
@@ -158,12 +162,11 @@ public class RideServiceImpl implements RideService {
     }
 
     private BigDecimal reducePriceByExistingPromoCode(String value) {
-        if(value==null) {
-            return BigDecimal.valueOf(200);
-        }
-        else {
+        if (value == null) {
+            return BigDecimal.valueOf(DEFAULT_PRICE);
+        } else {
             PromoCodeResponse promoCodeResponse = promoCodeService.getPromCode(value);
-            return BigDecimal.valueOf(200L - (200L * (promoCodeResponse.getPercent() / 100)));
+            return BigDecimal.valueOf(DEFAULT_PRICE - (DEFAULT_PRICE * (promoCodeResponse.getPercent() / 100)));
         }
     }
 
