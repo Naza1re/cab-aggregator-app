@@ -20,4 +20,4 @@ databaseChangeLog:
                   type: VARCHAR(50)
               - column:
                   name: percent
-                  type: BIGINT
+                  type: DOUBLE

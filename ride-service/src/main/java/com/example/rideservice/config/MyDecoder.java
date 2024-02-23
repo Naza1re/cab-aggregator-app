@@ -15,22 +15,19 @@ public class MyDecoder implements ErrorDecoder {
         String[] responseMessageSplit = exception.getMessage().split("\"message\"");
         String[] exMessageSplit = responseMessageSplit[responseMessageSplit.length - 1].split("\"");
         String exMessage = exMessageSplit[exMessageSplit.length - 2];
-        System.out.println(status);
         if (status == 400) {
             throw new FeignClientException(exMessage);
         }
         if (status == 404) {
             throw new NotFoundException(exMessage);
         }
-        else {
-            return new RetryableException(
-                    response.status(),
-                    exception.getMessage(),
-                    response.request().httpMethod(),
-                    exception,
-                    (Long) null,
-                    response.request());
-        }
-
+        return new RetryableException(
+                response.status(),
+                exception.getMessage(),
+                response.request().httpMethod(),
+                exception,
+                (Long) null,
+                response.request());
     }
+
 }
