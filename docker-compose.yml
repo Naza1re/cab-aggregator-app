@@ -8,7 +8,7 @@ networks:
 services:
 
   api-gateway:
-    image: api-gateway-service
+    image: api-gateway
     container_name: gateway-service
     networks:
       - cab_aggregator
@@ -160,18 +160,20 @@ services:
       depends_on:
         - zookeeper
 
-  promo_code_service:
-    image: promo-code-service
-    container_name: promo-code-service
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/promocode
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
-      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
     ports:
-      - '8086:8086'
-    networks:
-      - cab_aggregator
-    depends_on:
-      - eureka-service
-      - mysql_db
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+      image: grafana/grafana:9.5.2
+      container_name: grafana
+      ports:
+        - "3000:3000"
+      restart: unless-stopped
+      volumes:
+        - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
