@@ -164,6 +164,8 @@ services:
   prometheus:
     image: prom/prometheus:v2.44.0
     container_name: prometheus
+    networks:
+      - cab_aggregator
     ports:
       - "9090:9090"
     volumes:
@@ -172,6 +174,8 @@ services:
   grafana:
       image: grafana/grafana:9.5.2
       container_name: grafana
+      networks:
+        - cab_aggregator
       ports:
         - "3000:3000"
       restart: unless-stopped
