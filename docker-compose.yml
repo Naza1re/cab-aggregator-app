@@ -181,3 +181,18 @@ services:
       restart: unless-stopped
       volumes:
         - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+  promo_code_service:
+    image: promo-code-service
+    container_name: promo-code-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/promocode
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+    ports:
+      - '8086:8086'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+      - mysql_db
