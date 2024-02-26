@@ -40,6 +40,10 @@ service:
     payment:
       name: payment
       path: /api/v1/payment
+    promo:
+      name: promo-code
+      path: /api/v1/promo-code
+
 eureka:
   client:
     service-url:

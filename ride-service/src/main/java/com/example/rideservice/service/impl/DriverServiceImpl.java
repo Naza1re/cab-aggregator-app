@@ -1,6 +1,8 @@
 package com.example.rideservice.service.impl;
 
 import com.example.rideservice.client.DriverClient;
+import com.example.rideservice.exception.FeignClientException;
+import com.example.rideservice.exception.NotFoundException;
 import com.example.rideservice.exception.ServiceUnAvailableException;
 import com.example.rideservice.service.DriverService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -22,5 +24,13 @@ public class DriverServiceImpl implements DriverService {
 
     private void fallBackDriverService(Exception ex) {
         throw new ServiceUnAvailableException(DRIVER_SERVICE_IS_NOT_AVAILABLE);
+    }
+
+    private void fallBackPaymentService(FeignClientException ex) {
+        throw new FeignClientException(ex.getMessage());
+    }
+
+    private void fallBackDriverService(NotFoundException ex) {
+        throw new NotFoundException(ex.getMessage());
     }
 }

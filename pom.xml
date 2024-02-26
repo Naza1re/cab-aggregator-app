@@ -18,6 +18,7 @@
         <module>rating-service</module>
         <module>eureka-server</module>
         <module>api-gateway</module>
+        <module>promo-code-service</module>
     </modules>
 
     <properties>

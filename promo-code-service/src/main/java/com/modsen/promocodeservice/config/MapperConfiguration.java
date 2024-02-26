@@ -1,4 +1,4 @@
-package com.example.driverservice.config;
+package com.modsen.promocodeservice.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

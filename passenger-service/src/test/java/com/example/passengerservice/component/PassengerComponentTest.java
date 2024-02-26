@@ -164,7 +164,6 @@ public class PassengerComponentTest {
         PassengerResponse expected = getPassengerResponse();
         Passenger passengerToSave = getNotSavedPassenger();
         Passenger savedPassenger = getPassenger();
-
         doReturn(false)
                 .when(passengerRepository)
                 .existsByEmail(email);

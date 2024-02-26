@@ -29,7 +29,7 @@ public class GlobalHandler {
                 .body(new AppError(errorMessage));
     }
 
-    @ExceptionHandler({ServiceUnAvailableException.class, RatingException.class, SortTypeException.class, PaginationParamException.class})
+    @ExceptionHandler({ServiceUnAvailableException.class, FeignClientException.class, RatingException.class, SortTypeException.class, PaginationParamException.class})
     public ResponseEntity<AppError> handleBadRequestException(Exception ex) {
         String errorMessage = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

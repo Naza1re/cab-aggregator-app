@@ -33,4 +33,7 @@ public class RideRequest {
     @Size(max = 50, message = "${instructions.max.length}")
     private String instructions;
 
+    @Size(max = 5, message = "${promo.max.length}")
+    private String promo;
+
 }

@@ -3,6 +3,8 @@ package com.example.driverservice.service.impl;
 import com.example.driverservice.client.RatingFeignClient;
 import com.example.driverservice.dto.request.RatingRequest;
 import com.example.driverservice.dto.response.DriverRatingListResponse;
+import com.example.driverservice.exception.FeignClientException;
+import com.example.driverservice.exception.NotFoundException;
 import com.example.driverservice.exception.ServiceUnAvailableException;
 import com.example.driverservice.service.RatingService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -39,6 +41,19 @@ public class RatingServiceImpl implements RatingService {
 
     private void fallBackRatingService(Exception ex) {
         throw new ServiceUnAvailableException(RATING_SERVICE_IS_NOT_AVAILABLE);
+    }
+
+    private DriverRatingListResponse fallBackRatingServiceGettingList(FeignClientException ex) {
+        log.error("Rating service is not available for getting list. Fallback method called.");
+        return new DriverRatingListResponse();
+    }
+
+    private void fallBackRatingService(FeignClientException ex) {
+        throw new FeignClientException(ex.getMessage());
+    }
+
+    private void fallBackRatingService(NotFoundException ex) {
+        throw new NotFoundException(ex.getMessage());
     }
 
     private DriverRatingListResponse fallBackRatingServiceGettingList(Exception ex) {
