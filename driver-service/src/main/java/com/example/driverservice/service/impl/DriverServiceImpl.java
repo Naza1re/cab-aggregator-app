@@ -196,7 +196,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverResponse changeStatus(Long driverId) {
         Driver driver = getOrThrow(driverId);
-
+        log.info("Changing status for driver with id "+ driverId);
         driver.setAvailable(!driver.isAvailable());
         if (driver.isAvailable()) {
             availableDriverProducer.sendMessage(ConstantsMessages.NEW_AVAILABLE_DRIVERS);

@@ -14,7 +14,6 @@ services:
       - cab_aggregator
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
-
     depends_on:
       - eureka-service
     ports:
@@ -180,7 +179,7 @@ services:
         - "3000:3000"
       restart: unless-stopped
       volumes:
-        - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+        - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
   promo_code_service:
     image: promo-code-service
     container_name: promo-code-service
