@@ -180,6 +180,7 @@ services:
       restart: unless-stopped
       volumes:
         - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
+        - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
   promo_code_service:
     image: promo-code-service
     container_name: promo-code-service

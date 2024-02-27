@@ -2,6 +2,25 @@ spring:
   cloud:
     gateway:
       routes:
+
+        - id: findRide
+          uri: lb://ride
+          predicates:
+            - Path=/api/v1/rides
+            - Method=POST
+
+        - id: ride-service
+          uri: lb://ride
+          predicates:
+            - Path=/api/v1/rides/**
+            - Method=POST
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: rides-service-circuit
+                fallbackUri: forward:/fallback/rides-service
+
+
         - id: driver-service
           uri: lb://driver
           predicates:
@@ -22,17 +41,6 @@ spring:
               args:
                 name: passengers-service-circuit
                 fallbackUri: forward:/fallback/passengers-service
-
-
-        - id: ride-service
-          uri: lb://ride
-          predicates:
-            - Path=/api/v1/rides/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: ride-service-circuit
-                fallbackUri: forward:/fallback/rides-service
 
 
         - id: payment-service
