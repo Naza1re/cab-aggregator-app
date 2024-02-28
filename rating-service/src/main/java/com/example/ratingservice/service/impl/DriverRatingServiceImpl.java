@@ -13,11 +13,15 @@ import com.example.ratingservice.service.DriverRatingService;
 import com.example.ratingservice.util.Constants;
 import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.ratingservice.util.ConstantsMessages.*;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DriverRatingServiceImpl implements DriverRatingService {
 
@@ -28,6 +32,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     @Override
     public DriverRatingResponse getDriverById(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
+        log.info(String.format(GET_DRIVER_BY_ID_LOG_MESSAGE, driverRating));
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
@@ -40,6 +45,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         driverRating.setRate(Constants.DEFAULT_RATING);
 
         DriverRating savedDriverRating = driverRatingRepository.save(driverRating);
+        log.info(String.format(CREATE_DRIVER_WITH_ID, savedDriverRating.getId()));
         return driverMapper.fromEntityToResponse(savedDriverRating);
     }
 
@@ -50,6 +56,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         double newRate = (driverRating.getRate() + updateRequest.getRate()) / 2;
         driverRating.setRate(newRate);
         driverRatingRepository.save(driverRating);
+        log.info(String.format(UPDATE_DRIVER_WITH_ID, updateRequest.getId()));
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
@@ -58,11 +65,13 @@ public class DriverRatingServiceImpl implements DriverRatingService {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
 
         driverRatingRepository.delete(driverRating);
+        log.info(String.format(DELETE_DRIVER_WITH_ID, driverId));
         return driverMapper.fromEntityToResponse(driverRating);
     }
 
     private void checkDriverRatingExist(Long driverId) {
         if (driverRatingRepository.existsByDriver(driverId)) {
+            log.info(String.format(DRIVER_RECORD_EXIST, driverId));
             throw new DriverRatingAlreadyExistException(String.format(ExceptionMessages.DRIVER_RATING_ALREADY_EXIST, driverId));
         }
     }
@@ -73,11 +82,15 @@ public class DriverRatingServiceImpl implements DriverRatingService {
                 .stream()
                 .map(driverMapper::fromEntityToResponse)
                 .toList();
+        log.info(GET_DRIVER_RECORD_LIST);
         return new DriverRatingListResponse(driverRatings);
     }
 
     private DriverRating getOrThrowByDriverId(Long id) {
         return driverRatingRepository.findDriverRatingByDriver(id)
-                .orElseThrow(() -> new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id)));
+                .orElseThrow(() -> {
+                    log.info(String.format(DRIVER_WITH_ID_NOT_FOUND, id));
+                    return new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id));
+                });
     }
 }

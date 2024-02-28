@@ -16,16 +16,20 @@ import com.example.paymentservice.service.PassengerService;
 import com.example.paymentservice.service.PaymentService;
 import com.example.paymentservice.service.StripeService;
 import com.example.paymentservice.util.ExceptionMessages;
-import com.example.paymentservice.util.PaymentMessages;
+import com.example.paymentservice.util.ConstantsMessages;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.Token;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import static com.example.paymentservice.util.ConstantsMessages.*;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
@@ -42,6 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
         service.createPaymentParams(customer.getId());
         saveUserToDatabase(customer.getId(), customerRequest.getPassengerId());
 
+        log.info(CREATING_CUSTOMER);
         return CustomerResponse.builder()
                 .id(customer.getId())
                 .email(customer.getEmail())
@@ -56,19 +61,23 @@ public class PaymentServiceImpl implements PaymentService {
                 .passengerId(passengerId)
                 .build();
 
+        log.info(SAVING_CUSTOMER_IN_DATABASE);
         userRepository.save(user);
     }
 
     @Override
     public CardTokenResponse generateTokenByCard(CardRequest cardRequest) {
         Token token = service.createToken(cardRequest);
+
+        log.info(String.format(TOKEN_GENERATE, token));
         return new CardTokenResponse(token.getId());
     }
 
     @Override
     public StringResponse chargeCard(ChargeRequest chargeRequest) {
         Charge charge = service.createCharge(chargeRequest);
-        return new StringResponse(String.format(PaymentMessages.SUCCESSFUL_PAYMENT_WITH_ID, charge.getId()));
+        log.info(MAKING_CHARGE);
+        return new StringResponse(String.format(ConstantsMessages.SUCCESSFUL_PAYMENT_WITH_ID, charge.getId()));
     }
 
     @Override
@@ -86,13 +95,17 @@ public class PaymentServiceImpl implements PaymentService {
 
     private void checkCustomerAlreadyExist(long passengerId) {
         if (userRepository.existsByPassengerId(passengerId)) {
+            log.info(CUSTOMER_ALREADY_EXIST);
             throw new CustomerAlreadyExistException(String.format(ExceptionMessages.CUSTOMER_ALREADY_EXIST, passengerId));
         }
     }
 
     private User getCustomerById(Long id) {
         return userRepository.findByPassengerId(id)
-                .orElseThrow(() -> new CustomerNotFoundException(String.format(ExceptionMessages.CUSTOMER_NOT_FOUND_EXCEPTION, id)));
+                .orElseThrow(() -> {
+                    log.info(String.format(CUSTOMER_ALREADY_EXIST, id));
+                    return new CustomerNotFoundException(String.format(ExceptionMessages.CUSTOMER_NOT_FOUND_EXCEPTION, id));
+                });
     }
 
     @Override
@@ -105,6 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentIntent paymentIntent = service.confirmIntent(chargeRequest, customerId);
         service.changeBalance(customerId, chargeRequest.getAmount());
 
+        log.info(String.format(MAKING_CHARGE_FROM_PASSENGER, chargeRequest.getPassengerId()));
         return ChargeResponse.builder()
                 .id(paymentIntent.getId())
                 .amount(paymentIntent.getAmount() / 100)

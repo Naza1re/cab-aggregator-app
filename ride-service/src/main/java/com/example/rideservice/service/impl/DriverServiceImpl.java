@@ -7,11 +7,13 @@ import com.example.rideservice.exception.ServiceUnAvailableException;
 import com.example.rideservice.service.DriverService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.example.rideservice.util.ExceptionMessages.DRIVER_SERVICE_IS_NOT_AVAILABLE;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
     private final DriverClient driverClient;
@@ -23,14 +25,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private void fallBackDriverService(Exception ex) {
+        log.info("Driver service is not available. Fallback method was called");
         throw new ServiceUnAvailableException(DRIVER_SERVICE_IS_NOT_AVAILABLE);
     }
 
     private void fallBackPaymentService(FeignClientException ex) {
+        log.info("Something went wrong. Fallback method was called");
         throw new FeignClientException(ex.getMessage());
     }
 
     private void fallBackDriverService(NotFoundException ex) {
+        log.info("Driver not found. Fallback method was called");
         throw new NotFoundException(ex.getMessage());
     }
 }

@@ -14,9 +14,11 @@ import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
 import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.service.*;
-import com.example.rideservice.util.Constants;
+import com.example.rideservice.util.ConstantsMessages;
 import com.example.rideservice.util.ExceptionMessages;
+import io.cucumber.java.be.I;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,9 +32,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.rideservice.util.Constants.DEFAULT_PRICE;
+import static com.example.rideservice.util.ConstantsMessages.*;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RideServiceImpl implements RideService {
 
@@ -53,17 +57,20 @@ public class RideServiceImpl implements RideService {
         ride.setStartDate(LocalDateTime.now());
         ride.setStatus(Status.ACTIVE);
         Ride savedRide = rideRepository.save(ride);
+        log.info(String.format(START_RIDE, ride));
         return rideMapper.fromEntityToResponse(savedRide);
     }
 
     @Override
     public RideResponse getRideById(Long id) {
         Ride ride = getOrThrow(id);
+        log.info(String.format(GET_RIDE, id));
         return rideMapper.fromEntityToResponse(ride);
     }
 
     private void checkRideHasDriver(Ride ride) {
         if (ride.getDriverId() == null) {
+
             throw new RideNotHaveDriverException(String.format(ExceptionMessages.RIDE_DONT_HAVE_DRIVER_TO_START, ride.getId()));
         }
     }
@@ -77,6 +84,7 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(Status.FINISHED);
         driverService.changeStatus(ride.getDriverId());
         rideRepository.save(ride);
+        log.info(String.format(END_RIDE, rideId));
         return rideMapper.fromEntityToResponse(ride);
     }
 
@@ -86,7 +94,7 @@ public class RideServiceImpl implements RideService {
                 .stream()
                 .map(rideMapper::fromEntityToResponse)
                 .toList();
-
+        log.info(String.format(GET_RIDE_LIST_BY_PASSENGER, passengerId));
         return new RideListResponse(rideList);
     }
 
@@ -96,7 +104,7 @@ public class RideServiceImpl implements RideService {
                 .stream()
                 .map(rideMapper::fromEntityToResponse)
                 .toList();
-
+        log.info(String.format(GET_RIDE_LIST_BY_DRIVER, driverId));
         return new RideListResponse(rideList);
     }
 
@@ -157,7 +165,7 @@ public class RideServiceImpl implements RideService {
 
         RideForDriver rideForDriver = createRideForDriver(ride);
         rideProducer.sendMessage(rideForDriver);
-
+        log.info(String.format(CREATE_RIDE, savedRide.getId()));
         return rideMapper.fromEntityToResponse(savedRide);
     }
 
@@ -176,6 +184,7 @@ public class RideServiceImpl implements RideService {
                 .passengerId(id)
                 .currency("USD")
                 .build();
+        log.info(String.format(CHARGING_FROM_CUSTOMER, id));
         paymentService.chargeFromCustomer(request);
 
     }
@@ -188,7 +197,10 @@ public class RideServiceImpl implements RideService {
 
     private Ride getOrThrow(Long id) {
         return rideRepository.findById(id)
-                .orElseThrow(() -> new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id)));
+                .orElseThrow(() -> {
+                    log.info(String.format(RIDE_NOT_FOUND, id));
+                    return new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id));
+                });
     }
 
     @Override
@@ -197,7 +209,7 @@ public class RideServiceImpl implements RideService {
         ride.setStatus(Status.ACCEPTED);
         driverService.changeStatus(driver.getDriverId());
         ride.setDriverId(driver.getDriverId());
-
+        log.info(String.format(SET_DRIVER_FOR_RIDE, driver.getDriverId(), driver.getRideId()));
         rideRepository.save(ride);
     }
 
