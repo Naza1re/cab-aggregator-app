@@ -1,7 +1,7 @@
-package com.example.passengerservice.config;
+package com.example.driverservice.config;
 
-import com.example.passengerservice.exception.FeignClientException;
-import com.example.passengerservice.exception.NotFoundException;
+import com.example.driverservice.exception.FeignClientException;
+import com.example.driverservice.exception.NotFoundException;
 import feign.FeignException;
 import feign.Response;
 import feign.RetryableException;
@@ -20,6 +20,15 @@ public class MyDecoder implements ErrorDecoder {
         }
         if (status == 404) {
             return new NotFoundException(exMessage);
+        }
+        if (status >= 500) {
+            return new RetryableException(
+                    response.status(),
+                    exception.getMessage(),
+                    response.request().httpMethod(),
+                    exception,
+                    (Long) null,
+                    response.request());
         }
         return exception;
     }

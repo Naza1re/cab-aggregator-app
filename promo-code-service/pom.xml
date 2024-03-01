@@ -20,9 +20,16 @@
 		<junit.jupiter.version>1.16.0</junit.jupiter.version>
 		<cucumber.version>7.15.0</cucumber.version>
 		<cucumber.spring.version>7.14.0</cucumber.spring.version>
+		<logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
+		<spring.boot.starter.logging.version>3.2.3</spring.boot.starter.logging.version>
 	</properties>
-
 	<dependencies>
+
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -39,6 +46,12 @@
 			<artifactId>cucumber-spring</artifactId>
 			<version>${cucumber.spring.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<version>${spring.boot.starter.logging.version}</version>
 		</dependency>
 
 		<dependency>
@@ -69,6 +82,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -86,6 +105,7 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -108,6 +128,7 @@
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
