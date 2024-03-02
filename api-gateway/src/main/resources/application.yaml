@@ -21,9 +21,11 @@ eureka:
       defaultZone: http://localhost:8090/eureka
   instance:
     prefer-ip-address: true
-logging:
-  pattern:
-    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
 
 resilience4j:
   circuitbreaker:

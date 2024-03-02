@@ -31,5 +31,8 @@ management:
   endpoint:
     prometheus:
       enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
 
 
