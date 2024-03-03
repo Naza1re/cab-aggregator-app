@@ -196,10 +196,7 @@ public class DriverServiceImpl implements DriverService {
 
     private Driver getOrThrow(Long id) {
         return driverRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.info(String.format(DRIVER_WITH_ID_NOT_FOUND, id));
-                    return new DriverNotFoundException(String.format(DRIVER_NOT_FOUND_EXCEPTION, id));
-                });
+                .orElseThrow(() -> new DriverNotFoundException(String.format(DRIVER_NOT_FOUND_EXCEPTION, id)));
     }
 
     @Override

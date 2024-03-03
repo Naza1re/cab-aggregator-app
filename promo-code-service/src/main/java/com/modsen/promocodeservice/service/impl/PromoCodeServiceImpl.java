@@ -9,7 +9,6 @@ import com.modsen.promocodeservice.mapper.PromoCodeMapper;
 import com.modsen.promocodeservice.model.PromoCode;
 import com.modsen.promocodeservice.repository.PromoCodeRepository;
 import com.modsen.promocodeservice.service.PromoCodeService;
-import com.modsen.promocodeservice.util.ConstantsMessages;
 import com.modsen.promocodeservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +39,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     private PromoCode getOrThrow(Long id) {
         return promoCodeRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.info(String.format(PROMO_CODE_NOT_FOUND));
-                    return new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id));
-                });
+                .orElseThrow(() -> new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override

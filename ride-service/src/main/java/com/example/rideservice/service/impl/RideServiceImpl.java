@@ -14,9 +14,7 @@ import com.example.rideservice.model.Ride;
 import com.example.rideservice.model.enums.Status;
 import com.example.rideservice.repository.RideRepository;
 import com.example.rideservice.service.*;
-import com.example.rideservice.util.ConstantsMessages;
 import com.example.rideservice.util.ExceptionMessages;
-import io.cucumber.java.be.I;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -70,7 +68,6 @@ public class RideServiceImpl implements RideService {
 
     private void checkRideHasDriver(Ride ride) {
         if (ride.getDriverId() == null) {
-
             throw new RideNotHaveDriverException(String.format(ExceptionMessages.RIDE_DONT_HAVE_DRIVER_TO_START, ride.getId()));
         }
     }
@@ -197,10 +194,7 @@ public class RideServiceImpl implements RideService {
 
     private Ride getOrThrow(Long id) {
         return rideRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.info(String.format(RIDE_NOT_FOUND, id));
-                    return new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id));
-                });
+                .orElseThrow(() -> new RideNotFoundException(String.format(ExceptionMessages.RIDE_NOT_FOUND_EXCEPTION, id)));
     }
 
     @Override

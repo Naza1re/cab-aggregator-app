@@ -170,10 +170,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     private Passenger getOrThrow(Long id) {
         return passengerRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.info(String.format(PASSENGER_NOT_FOUND, id));
-                    return new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, id));
-                });
+                .orElseThrow(() -> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, id)));
     }
 
 }

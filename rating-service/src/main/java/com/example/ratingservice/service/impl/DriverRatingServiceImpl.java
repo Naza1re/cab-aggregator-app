@@ -88,9 +88,6 @@ public class DriverRatingServiceImpl implements DriverRatingService {
 
     private DriverRating getOrThrowByDriverId(Long id) {
         return driverRatingRepository.findDriverRatingByDriver(id)
-                .orElseThrow(() -> {
-                    log.info(String.format(DRIVER_WITH_ID_NOT_FOUND, id));
-                    return new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id));
-                });
+                .orElseThrow(() -> new DriverRatingNotFoundException(String.format(ExceptionMessages.DRIVER_RATING_NOT_FOUND, id)));
     }
 }

@@ -11,7 +11,6 @@ import com.example.ratingservice.model.PassengerRating;
 import com.example.ratingservice.repository.PassengerRatingRepository;
 import com.example.ratingservice.service.PassengerRatingService;
 import com.example.ratingservice.util.Constants;
-import com.example.ratingservice.util.ConstantsMessages;
 import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,10 +89,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
 
     private PassengerRating getOrThrowByPassengerId(Long passengerId) {
         return passengerRatingRepository.findPassengerRatingByPassenger(passengerId)
-                .orElseThrow(() -> {
-                    log.info(String.format(PASSENGER_WITH_ID_NOT_FOUND, passengerId));
-                    return new PassengerRatingNotFoundException(String.format(ExceptionMessages.PASSENGER_RATING_NOT_FOUND, passengerId));
-                });
+                .orElseThrow(() -> new PassengerRatingNotFoundException(String.format(ExceptionMessages.PASSENGER_RATING_NOT_FOUND, passengerId)));
     }
 
 
