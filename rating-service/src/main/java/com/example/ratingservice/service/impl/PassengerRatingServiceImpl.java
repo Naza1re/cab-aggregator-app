@@ -13,11 +13,15 @@ import com.example.ratingservice.service.PassengerRatingService;
 import com.example.ratingservice.util.Constants;
 import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.ratingservice.util.ConstantsMessages.*;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PassengerRatingServiceImpl implements PassengerRatingService {
 
@@ -28,6 +32,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     public PassengerRatingResponse getPassengerRecordById(Long passengerId) {
 
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
+        log.info(String.format(GET_PASSENGER_BY_ID_LOG_MESSAGE, passengerId));
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
@@ -38,8 +43,9 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         PassengerRating passengerRating = new PassengerRating();
         passengerRating.setPassenger(createRequest.getId());
         passengerRating.setRate(Constants.DEFAULT_RATING);
-        PassengerRating savedPassengerRating =  passengerRatingRepository.save(passengerRating);
+        PassengerRating savedPassengerRating = passengerRatingRepository.save(passengerRating);
 
+        log.info(String.format(CREATE_PASSENGER_WITH_ID, savedPassengerRating.getId()));
         return passengerMapper.fromEntityToResponse(savedPassengerRating);
 
     }
@@ -51,6 +57,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         double newRate = (passengerRating.getRate() + updateRequest.getRate()) / 2;
         passengerRating.setRate(newRate);
         passengerRatingRepository.save(passengerRating);
+        log.info(String.format(UPDATE_PASSENGER_WITH_ID, updateRequest.getId()));
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
@@ -59,6 +66,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
 
         passengerRatingRepository.delete(passengerRating);
+        log.info(String.format(DELETE_PASSENGER_WITH_ID, passengerId));
         return passengerMapper.fromEntityToResponse(passengerRating);
     }
 
@@ -68,11 +76,13 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
                 .stream()
                 .map(passengerMapper::fromEntityToResponse)
                 .toList();
+        log.info(GET_PASSENGER_RECORD_LIST);
         return new PassengerListResponse(passengerRatings);
     }
 
     private void checkPassengerRatingExist(Long passengerId) {
         if (passengerRatingRepository.existsByPassenger(passengerId)) {
+            log.info(String.format(PASSENGER_RECORD_EXIST, passengerId));
             throw new PassengerRatingAlreadyExistException(String.format(ExceptionMessages.PASSENGER_RATING_ALREADY_EXIST, passengerId));
         }
     }

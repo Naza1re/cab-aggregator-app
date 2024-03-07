@@ -30,6 +30,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     @CircuitBreaker(name = "rating", fallbackMethod = "fallBackRatingServiceGettingList")
     public DriverRatingListResponse getDriversRateList() {
+
         return ratingFeignClient.getDriversRateList();
     }
 
@@ -40,19 +41,22 @@ public class RatingServiceImpl implements RatingService {
     }
 
     private void fallBackRatingService(Exception ex) {
+        log.error("Rating service is not available for getting list. Fallback method called.");
         throw new ServiceUnAvailableException(RATING_SERVICE_IS_NOT_AVAILABLE);
     }
 
     private DriverRatingListResponse fallBackRatingServiceGettingList(FeignClientException ex) {
-        log.error("Rating service is not available for getting list. Fallback method called.");
+        log.error("Something went wrong during getting list. Fallback method called.");
         return new DriverRatingListResponse();
     }
 
     private void fallBackRatingService(FeignClientException ex) {
+        log.error("Something went wrong. Fallback method called.");
         throw new FeignClientException(ex.getMessage());
     }
 
     private void fallBackRatingService(NotFoundException ex) {
+        log.error("NotFoundException. Fall back method was called.");
         throw new NotFoundException(ex.getMessage());
     }
 

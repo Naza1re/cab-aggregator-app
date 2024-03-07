@@ -24,7 +24,7 @@ public class RideProducer {
 
     public void sendMessage(RideForDriver ride) {
 
-        log.info("Json message sebd -> {}", ride.toString());
+        log.info("Json message send -> {}", ride.toString());
         Message<RideForDriver> message = MessageBuilder
                 .withPayload(ride)
                 .setHeader(KafkaHeaders.TOPIC, rideTopic)

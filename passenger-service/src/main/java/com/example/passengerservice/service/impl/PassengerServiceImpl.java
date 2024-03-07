@@ -13,6 +13,7 @@ import com.example.passengerservice.service.PassengerService;
 import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,9 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.passengerservice.util.ConstantsMessages.*;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
@@ -34,8 +38,8 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = getOrThrow(id);
+        log.info(String.format(GET_PASSENGER_BY_ID, id));
         return passengerMapper.fromEntityToResponse(passenger);
-
     }
 
     @Override
@@ -43,6 +47,7 @@ public class PassengerServiceImpl implements PassengerService {
         List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
                 .map(passengerMapper::fromEntityToResponse)
                 .toList();
+        log.info(GET_PASSENGER_LIST);
         return new PassengerListResponse(listOfPassengers);
     }
 
@@ -59,6 +64,7 @@ public class PassengerServiceImpl implements PassengerService {
         ratingService.createPassengerRecord(RatingRequest.builder()
                 .id(savedPassenger.getId())
                 .build());
+        log.info(String.format(CREATE_PASSENGER, savedPassenger.getId()));
         return passengerMapper.fromEntityToResponse(savedPassenger);
     }
 
@@ -72,6 +78,7 @@ public class PassengerServiceImpl implements PassengerService {
 
         passenger = passengerMapper.fromRequestToEntity(passengerRequest);
         passenger.setId(id);
+        log.info(String.format(UPDATE_PASSENGER, id));
         return passengerMapper.fromEntityToResponse(passengerRepository.save(passenger));
 
     }
@@ -82,7 +89,7 @@ public class PassengerServiceImpl implements PassengerService {
         passengerRepository.delete(passenger);
 
         ratingService.deletePassengerRecord(id);
-
+        log.info(String.format(DELETE_PASSENGER, id));
         return passengerMapper.fromEntityToResponse(passenger);
 
     }
@@ -104,6 +111,7 @@ public class PassengerServiceImpl implements PassengerService {
     private void checkEmailExist(String email) {
 
         if (passengerRepository.existsByEmail(email)) {
+            log.info(String.format(PASSENGER_WITH_MAIL_ALREADY_EXIST, email));
             throw new EmailAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_EMAIL_ALREADY_EXIST, email));
         }
     }
@@ -111,6 +119,7 @@ public class PassengerServiceImpl implements PassengerService {
     private void checkPhoneExist(String phone) {
 
         if (passengerRepository.existsByPhone(phone)) {
+            log.info(String.format(PASSENGER_WITH_PHONE_ALREADY_EXIST, phone));
             throw new PhoneAlreadyExistException(String.format(ExceptionMessages.PASSENGER_WITH_PHONE_ALREADY_EXIST, phone));
         }
     }
@@ -151,7 +160,7 @@ public class PassengerServiceImpl implements PassengerService {
         List<PassengerResponse> passengers = retrievedPassengers.stream()
                 .map(passengerMapper::fromEntityToResponse)
                 .toList();
-
+        log.info(GET_PASSENGER_PAGE);
         return PassengerPageResponse.builder()
                 .passengerList(passengers)
                 .totalPages(page)

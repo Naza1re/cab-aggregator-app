@@ -1,0 +1,55 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import:
+      - classpath:routes/services-routes.yaml
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+  instance:
+    prefer-ip-address: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 20
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 20
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 1s
+        permittedNumberOfCallsInHalfOpenState: 20
+        slidingWindowSize: 20
+        slidingWindowType: COUNT_BASED
+    instances:
+      passenger-service-circuit:
+        baseConfig: default
+      driver-service-circuit:
+        baseConfig: default
+      rides-service-circuit:
+        baseConfig: default
+      payment-service-circuit:
+        baseConfig: default
+      promo-code-service-circuit:
+        base-config: default
+      rating-service-circuit:
+        base-config: default

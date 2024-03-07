@@ -11,12 +11,16 @@ import com.modsen.promocodeservice.repository.PromoCodeRepository;
 import com.modsen.promocodeservice.service.PromoCodeService;
 import com.modsen.promocodeservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.modsen.promocodeservice.util.ConstantsMessages.*;
+
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PromoCodeServiceImpl implements PromoCodeService {
 
@@ -41,6 +45,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     @Override
     public PromoCodeResponse getPromoCodeById(Long id) {
         PromoCode promoCode = getOrThrow(id);
+        log.info(String.format(GET_PROMO_CODE_BY_ID, id));
         return promoCodeMapper.fromEntityToResponse(promoCode);
     }
 
@@ -52,6 +57,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
         PromoCode promoCode = promoCodeMapper.fromRequestToEntity(request);
         PromoCode savedPromo = promoCodeRepository.save(promoCode);
 
+        log.info(String.format(CREATE_PROMO_CODE, savedPromo.getId()));
         return promoCodeMapper.fromEntityToResponse(savedPromo);
     }
 
@@ -63,6 +69,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
         promoCode = promoCodeMapper.fromRequestToEntity(request);
         PromoCode savedPromo = promoCodeRepository.save(promoCode);
 
+        log.info(String.format(UPDATE_PROMO_CODE, id));
         return promoCodeMapper.fromEntityToResponse(savedPromo);
     }
 
@@ -71,6 +78,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
         PromoCode promoCode = getOrThrow(id);
 
         promoCodeRepository.delete(promoCode);
+        log.info(String.format(DELETE_PROMO_CODE, id));
         return promoCodeMapper.fromEntityToResponse(promoCode);
     }
 
@@ -86,6 +94,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     private void checkPromoCodeExist(String value) {
         if (promoCodeRepository.existsByValue(value)) {
+            log.info(String.format(PROMO_CODE_EXIST, value));
             throw new PromoCodeAllReadyExistException(String.format(ExceptionMessages.PROMOCODE_ALREADY_EXIST, value));
         }
     }

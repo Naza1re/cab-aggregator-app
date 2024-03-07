@@ -9,10 +9,12 @@ import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class RatingServiceImpl implements RatingService {
 
     private final RatingFeignClient ratingFeignClient;
@@ -26,17 +28,21 @@ public class RatingServiceImpl implements RatingService {
     @Override
     @CircuitBreaker(name = "rating", fallbackMethod = "fallbackRatingService")
     public void deletePassengerRecord(Long id) {
+        ratingFeignClient.deletePassengerRecord(id);
     }
 
     private void fallbackRatingService(NotFoundException ex) {
+        log.info("Ratting record not found. Fallback method was called");
         throw new NotFoundException(ex.getMessage());
     }
 
     private void fallbackRatingService(FeignClientException ex) {
+        log.info("Something went wrong. Fallback method was called");
         throw new FeignClientException(ex.getMessage());
     }
 
     private void fallbackRatingService(Exception ex) {
+        log.info("Rating service is not available. Fallback method was called");
         throw new ServiceUnAvailableException(ExceptionMessages.RATING_SERVICE_IS_NOT_AVAILABLE);
     }
 }

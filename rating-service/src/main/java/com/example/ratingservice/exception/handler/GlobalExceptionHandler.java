@@ -5,6 +5,7 @@ import com.example.ratingservice.exception.DriverRatingNotFoundException;
 import com.example.ratingservice.exception.PassengerRatingAlreadyExistException;
 import com.example.ratingservice.exception.PassengerRatingNotFoundException;
 import com.example.ratingservice.exception.appError.AppError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,19 +16,24 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({DriverRatingAlreadyExistException.class, PassengerRatingAlreadyExistException.class})
     public ResponseEntity<AppError> handleCustomBadRequestException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
-        return new ResponseEntity<>(new AppError(errorMessage), HttpStatus.CONFLICT);
+        log.info("ConflictException handler was called. Exception message : "+errorMessage);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new AppError(errorMessage));
     }
 
     @ExceptionHandler({DriverRatingNotFoundException.class, PassengerRatingNotFoundException.class})
     public ResponseEntity<AppError> handleCustomNotFoundException(RuntimeException ex) {
         String errorMessage = ex.getMessage();
-        return new ResponseEntity<>(new AppError(errorMessage), HttpStatus.NOT_FOUND);
+        log.info("NotFoundException handler was called. Exception message : "+errorMessage);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new AppError(errorMessage));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
