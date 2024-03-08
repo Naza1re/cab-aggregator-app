@@ -1,20 +1,15 @@
 version: "3.7"
 
-networks:
-  cab_aggregator:
-    name: cab_aggregator
-    driver: bridge
-
 services:
 
   api-gateway:
-    image: api-gateway-service
+    image: api-gateway
     container_name: gateway-service
     networks:
       - cab_aggregator
     environment:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
-
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     depends_on:
       - eureka-service
     ports:
@@ -28,6 +23,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8083:8083'
     networks:
@@ -35,6 +31,7 @@ services:
     depends_on:
       - eureka-service
       - mysql_db
+      - logstash
 
   payment-service:
     image: payment-service
@@ -46,6 +43,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8085:8085'
     networks:
@@ -53,6 +51,7 @@ services:
     depends_on:
       - eureka-service
       - mysql_db
+      - logstash
 
 
   ride_service:
@@ -65,6 +64,7 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8082:8082'
     networks:
@@ -73,6 +73,8 @@ services:
       - eureka-service
       - mysql_db
       - kafka
+      - logstash
+
 
   driver_service:
     image: driver-service
@@ -84,6 +86,7 @@ services:
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8084:8084'
     networks:
@@ -92,6 +95,7 @@ services:
       - eureka-service
       - mysql_db
       - kafka
+      - logstash
 
 
   mysql_db:
@@ -113,6 +117,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8081:8081'
     networks:
@@ -120,6 +125,7 @@ services:
     depends_on:
       - eureka-service
       - mysql_db
+      - logstash
 
 
   eureka-service:
@@ -141,24 +147,46 @@ services:
       - "2181:2181"
 
   kafka:
-      image: obsidiandynamics/kafka
-      container_name: kafka
-      restart: "no"
-      networks:
-        - cab_aggregator
-      ports:
-        - "9092:9092"
-      environment:
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
-        KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
-        KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
-        KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
-        KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-        KAFKA_BROKER_ID: 1
-        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      depends_on:
-        - zookeeper
+    image: obsidiandynamics/kafka
+    container_name: kafka
+    restart: "no"
+    networks:
+      - cab_aggregator
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
 
+
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    container_name: prometheus
+    networks:
+      - cab_aggregator
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    networks:
+      - cab_aggregator
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
 
   promo_code_service:
     image: promo-code-service
@@ -168,6 +196,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
     ports:
       - '8086:8086'
     networks:
@@ -175,3 +204,58 @@ services:
     depends_on:
       - eureka-service
       - mysql_db
+  elasticsearch:
+    image: elasticsearch:8.12.0
+    container_name: elasticsearch
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - cab_aggregator
+
+
+  kibana:
+    image: kibana:8.12.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    networks:
+      - cab_aggregator
+
+
+  logstash:
+    image: logstash:8.12.0
+    container_name: logstash
+    volumes:
+      - ./monitoring/logstash/config:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - cab_aggregator
+
+  zipkin:
+    image: openzipkin/zipkin:2.27
+    container_name: zipkin
+    networks:
+      - cab_aggregator
+    ports:
+      - '9411:9411'
+
+
+networks:
+  cab_aggregator:
+    driver: bridge
+
+volumes:
+  elasticsearch_data:
+    driver: local
