@@ -38,6 +38,7 @@ public class PassengerController {
         PassengerRequest passengerRequest = passengerService.getPassengerRequestFromOauth2User(user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(passengerService.createPassenger(passengerRequest));
+
     }
     @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @DeleteMapping("/{id}")
