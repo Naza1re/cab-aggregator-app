@@ -9,6 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class DriverController {
 
     private final DriverService driverService;
-
     @GetMapping("/{id}")
     public ResponseEntity<DriverResponse> getDriverById(@PathVariable Long id) {
         return ResponseEntity.ok(driverService.getDriverById(id));
@@ -28,6 +30,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getListOfDrivers());
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping("/{id}")
     public ResponseEntity<DriverResponse> updateDriver(
             @PathVariable Long id,
@@ -35,6 +38,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.updateDriver(id, driverRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<DriverResponse> deleteDriver(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -42,10 +46,12 @@ public class DriverController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     public ResponseEntity<DriverResponse> createDriver(
-            @Valid @RequestBody DriverRequest driverRequest) {
+            @AuthenticationPrincipal OAuth2User user) {
+        DriverRequest request = driverService.getDriverRequestFromOauth2User(user);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(driverService.createDriver(driverRequest));
+                .body(driverService.createDriver(request));
     }
 
     @GetMapping("/page")

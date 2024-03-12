@@ -21,15 +21,7 @@ public class MyDecoder implements ErrorDecoder {
         if (status == 404) {
             return new NotFoundException(exMessage);
         }
-        if (status >= 500) {
-            return new RetryableException(
-                    response.status(),
-                    exception.getMessage(),
-                    response.request().httpMethod(),
-                    exception,
-                    (Long) null,
-                    response.request());
-        }
+
         return exception;
     }
 }

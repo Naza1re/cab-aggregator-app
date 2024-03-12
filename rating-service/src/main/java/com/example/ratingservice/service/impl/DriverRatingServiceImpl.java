@@ -1,5 +1,7 @@
 package com.example.ratingservice.service.impl;
 
+import brave.Span;
+import brave.Tracer;
 import com.example.ratingservice.dto.request.CreateRequest;
 import com.example.ratingservice.dto.request.UpdateRequest;
 import com.example.ratingservice.dto.responce.DriverRatingListResponse;
@@ -14,6 +16,7 @@ import com.example.ratingservice.util.Constants;
 import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +28,8 @@ import static com.example.ratingservice.util.ConstantsMessages.*;
 @RequiredArgsConstructor
 public class DriverRatingServiceImpl implements DriverRatingService {
 
+    @Autowired
+    private Tracer tracer;
     private final DriverRatingRepository driverRatingRepository;
 
     private final DriverMapper driverMapper;
@@ -39,7 +44,9 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     @Override
     public DriverRatingResponse createDriver(CreateRequest request) {
         checkDriverRatingExist(request.getId());
-
+        Span span = tracer.currentSpan();
+        log.info("Trace ID {}", span.context().traceId());
+        log.info("Span ID {}", span.context().spanId());
         DriverRating driverRating = new DriverRating();
         driverRating.setDriver(request.getId());
         driverRating.setRate(Constants.DEFAULT_RATING);
