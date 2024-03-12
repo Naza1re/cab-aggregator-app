@@ -9,6 +9,7 @@ import com.example.passengerservice.exception.*;
 import com.example.passengerservice.mapper.PassengerMapper;
 import com.example.passengerservice.model.Passenger;
 import com.example.passengerservice.repository.PassengerRepository;
+import com.example.passengerservice.security.User;
 import com.example.passengerservice.service.PassengerService;
 import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
@@ -17,13 +18,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
+import static com.example.passengerservice.security.SecurityConstants.*;
 import static com.example.passengerservice.util.ConstantsMessages.*;
 
 @Slf4j
@@ -171,6 +176,26 @@ public class PassengerServiceImpl implements PassengerService {
     private Passenger getOrThrow(Long id) {
         return passengerRepository.findById(id)
                 .orElseThrow(() -> new PassengerNotFoundException(String.format(ExceptionMessages.PASSENGER_NOT_FOUND_EXCEPTION, id)));
+    }
+
+    public PassengerRequest getPassengerRequestFromOauth2User(OAuth2User oAuth2User) {
+        return PassengerRequest.builder()
+                .name(oAuth2User.getAttribute(NAME))
+                .surname(oAuth2User.getAttribute(SURNAME))
+                .email(oAuth2User.getAttribute(EMAIL))
+                .phone(oAuth2User.getAttribute(PHONE))
+                .build();
+    }
+
+    public User extractUserInfo(Jwt jwt) {
+        return User.builder()
+                .phone(jwt.getClaim(PHONE))
+                .surname(jwt.getClaim(FAMILY_NAME))
+                .name(jwt.getClaim(GIVEN_NAME))
+                .id(UUID.fromString(jwt.getClaim(ID)))
+                .email(jwt.getClaim(EMAIL))
+                .username(jwt.getClaim(USERNAME))
+                .build();
     }
 
 }

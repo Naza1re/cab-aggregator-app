@@ -9,6 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,21 +31,22 @@ public class PassengerController {
     public ResponseEntity<PassengerListResponse> getAllPassengers(){
         return ResponseEntity.ok(passengerService.getAllPassengers());
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PostMapping
     public ResponseEntity<PassengerResponse> createPassenger(
-           @Valid @RequestBody PassengerRequest passengerRequest)  {
+            @AuthenticationPrincipal OAuth2User user)  {
+        PassengerRequest passengerRequest = passengerService.getPassengerRequestFromOauth2User(user);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(passengerService.createPassenger(passengerRequest));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<PassengerResponse> deletePassenger(
             @PathVariable Long id){
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(passengerService.deletePassenger(id));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PutMapping("/{id}")
     public ResponseEntity<PassengerResponse> updatePassenger(
             @Valid @RequestBody PassengerRequest passengerRequest,
