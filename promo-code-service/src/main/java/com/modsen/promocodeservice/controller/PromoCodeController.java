@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,21 +35,21 @@ public class PromoCodeController {
         return ResponseEntity.ok()
                 .body(promoCodeService.getPromoCodeById(id));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<PromoCodeResponse> createPromoCode(
             @Valid @RequestBody PromoCodeRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(promoCodeService.createPromoCode(request));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> updatePromoCode(
             @Valid @RequestBody PromoCodeRequest request, @PathVariable Long id) {
         return ResponseEntity.ok()
                 .body(promoCodeService.updatePromoCode(id, request));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> deletePromoCode(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
