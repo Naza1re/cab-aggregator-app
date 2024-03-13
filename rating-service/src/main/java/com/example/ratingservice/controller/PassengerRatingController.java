@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,20 +28,20 @@ public class PassengerRatingController {
     public ResponseEntity<PassengerRatingResponse> getPassengerRateById(@PathVariable Long passengerId) {
         return ResponseEntity.ok(passengerRatingService.getPassengerRecordById(passengerId));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PostMapping
     public ResponseEntity<PassengerRatingResponse> creatingPassenger(
             @Valid @RequestBody CreateRequest createRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(passengerRatingService.createPassenger(createRequest));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping
     public ResponseEntity<PassengerRatingResponse> updatePassengerRate(
             @Valid @RequestBody UpdateRequest updateRequest) {
         return ResponseEntity.ok(passengerRatingService.updatePassengerRating(updateRequest));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @DeleteMapping("/{passengerId}")
     public ResponseEntity<PassengerRatingResponse> deletePassengerRecord(
             @PathVariable Long passengerId) {
