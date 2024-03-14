@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 import static com.example.ratingservice.security.SecurityConstants.ACTUATOR;
+import static com.example.ratingservice.security.SecurityConstants.RATING_LIST;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +29,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.GET, ACTUATOR,"/api/v1/rating/driver/list")
+                        .requestMatchers(HttpMethod.GET, ACTUATOR,RATING_LIST)
                         .permitAll()
                         .anyRequest()
                         .authenticated()

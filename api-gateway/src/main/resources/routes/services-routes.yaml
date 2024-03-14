@@ -20,7 +20,6 @@ spring:
                 name: rides-service-circuit
                 fallbackUri: forward:/fallback/rides-service
 
-
         - id: driver-service
           uri: lb://driver
           predicates:
@@ -30,7 +29,6 @@ spring:
               args:
                 name: driver-service-fallback
                 fallbackUri: forward:/fallback/drivers-service
-
 
         - id: passenger-service
           uri: lb://passenger
@@ -56,7 +54,6 @@ spring:
               args:
                 name: payment-service-circuit
                 fallbackUri: forward:/fallback/rating-service
-
 
         - id: promo-code-service
           uri: lb://promo-code

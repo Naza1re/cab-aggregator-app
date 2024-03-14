@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class DriverRatingController {
 
     private final DriverRatingService driverRatingService;
+
     @GetMapping("/list")
     public ResponseEntity<DriverRatingListResponse> getListOfDrivers() {
         return ResponseEntity.ok(driverRatingService.getAllDriversRecords());
@@ -27,18 +28,21 @@ public class DriverRatingController {
     public ResponseEntity<DriverRatingResponse> getRateOfDriverById(@PathVariable Long driverId) {
         return ResponseEntity.ok(driverRatingService.getDriverById(driverId));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PostMapping
     public ResponseEntity<DriverRatingResponse> createDriverRecord(@Valid @RequestBody CreateRequest createRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(driverRatingService.createDriver(createRequest));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PutMapping
     public ResponseEntity<DriverRatingResponse> updateDriverRating(
             @Valid @RequestBody UpdateRequest driverRequest) {
         return ResponseEntity.ok(driverRatingService.updateDriverRate(driverRequest));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @DeleteMapping("/{driverID}")
     public ResponseEntity<DriverRatingResponse> deleteDriver(@PathVariable Long driverID) {

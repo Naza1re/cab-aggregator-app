@@ -29,7 +29,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.GET, ACTUATOR,"/api/v1/drivers/{id}/status")
+                        .requestMatchers(HttpMethod.GET, ACTUATOR)
                         .permitAll()
                         .anyRequest()
                         .authenticated()

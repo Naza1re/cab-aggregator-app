@@ -20,6 +20,7 @@ public class SecurityConstants {
     public static final String USER_NAME = "username";
     public static final String RESOURCES_ACCESS = "resource_access";
     public static final String ROLES = "roles";
+    public static final String RATING_LIST = "/api/v1/rating/driver/list";
 
 
 }
