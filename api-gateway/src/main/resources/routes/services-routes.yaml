@@ -42,17 +42,10 @@ spring:
                 name: passengers-service-circuit
                 fallbackUri: forward:/fallback/passengers-service
 
-
         - id: payment-service
           uri: lb://payment
           predicates:
             - Path=/api/v1/payment/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: payment-service-circuit
-                fallbackUri: forward:/fallback/payment-service
-
 
         - id: rating-service
           uri: lb://rating

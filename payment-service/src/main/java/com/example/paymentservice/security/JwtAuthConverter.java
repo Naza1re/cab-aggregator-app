@@ -1,4 +1,4 @@
-package com.modsen.promocodeservice.security;
+package com.example.paymentservice.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.modsen.promocodeservice.security.SecurityConstants.*;
+import static com.example.paymentservice.security.SecurityConstants.*;
 
 @RequiredArgsConstructor
 @Component

@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class RideController {
 
     private final RideService rideService;
 
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PostMapping
     public ResponseEntity<RideResponse> findRide(
             @Valid @RequestBody RideRequest rideRequest) {
@@ -25,11 +27,13 @@ public class RideController {
                 .body(rideService.findRide(rideRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping("/{rideId}/start")
     public ResponseEntity<RideResponse> startRide(@PathVariable Long rideId) {
         return ResponseEntity.ok(rideService.startRide(rideId));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<RideResponse> getRideById(@PathVariable Long id) {
         return ResponseEntity.ok(rideService.getRideById(id));
@@ -44,16 +48,19 @@ public class RideController {
         return ResponseEntity.ok(rideService.getRidePage(offset, limit, type));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping("/{rideId}/end")
     public ResponseEntity<RideResponse> endRide(@PathVariable Long rideId) {
         return ResponseEntity.ok(rideService.endRide(rideId));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @GetMapping("/passenger/{passengerId}")
     public ResponseEntity<RideListResponse> getListOfRidesByPassengerId(@PathVariable Long passengerId) {
         return ResponseEntity.ok(rideService.getListOfRidesByPassengerId(passengerId));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<RideListResponse> getListOfRidesByDriverId(@PathVariable Long driverId) {
         return ResponseEntity.ok(rideService.getListOfRidesByDriverId(driverId));

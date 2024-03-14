@@ -35,6 +35,7 @@ public class PromoCodeController {
         return ResponseEntity.ok()
                 .body(promoCodeService.getPromoCodeById(id));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping()
     public ResponseEntity<PromoCodeResponse> createPromoCode(
@@ -42,6 +43,7 @@ public class PromoCodeController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(promoCodeService.createPromoCode(request));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> updatePromoCode(
@@ -49,6 +51,7 @@ public class PromoCodeController {
         return ResponseEntity.ok()
                 .body(promoCodeService.updatePromoCode(id, request));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> deletePromoCode(@PathVariable Long id) {

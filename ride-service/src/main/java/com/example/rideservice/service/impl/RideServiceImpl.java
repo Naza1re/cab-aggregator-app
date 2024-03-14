@@ -201,7 +201,7 @@ public class RideServiceImpl implements RideService {
     public void setDriver(DriverForRide driver) {
         Ride ride = getOrThrow(driver.getRideId());
         ride.setStatus(Status.ACCEPTED);
-        driverService.changeStatus(driver.getDriverId());
+
         ride.setDriverId(driver.getDriverId());
         log.info(String.format(SET_DRIVER_FOR_RIDE, driver.getDriverId(), driver.getRideId()));
         rideRepository.save(ride);

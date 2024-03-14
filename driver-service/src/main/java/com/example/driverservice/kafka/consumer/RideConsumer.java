@@ -25,9 +25,6 @@ import java.util.Optional;
 @Service
 public class RideConsumer {
 
-    private final DriverProducer driverProducer;
-    private final RatingFeignClient ratingFeignClient;
-    private final DriverRepository driverRepository;
     private final DriverService driverService;
 
     @KafkaListener(topics = "${topic.name.ride}")

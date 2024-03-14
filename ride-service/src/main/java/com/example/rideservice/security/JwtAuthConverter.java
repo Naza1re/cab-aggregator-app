@@ -1,4 +1,4 @@
-package com.modsen.promocodeservice.security;
+package com.example.rideservice.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -18,12 +18,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.modsen.promocodeservice.security.SecurityConstants.*;
+import static com.example.rideservice.security.SecurityConstants.*;
 
 @RequiredArgsConstructor
 @Component
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
     private final JwtAuthConverterProperties properties;
@@ -49,11 +48,13 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                 .surname(jwt.getClaim(FAMILY_NAME))
                 .name(jwt.getClaim(GIVEN_NAME))
                 .id(UUID.fromString(jwt.getClaim(ID)))
+                .carNumber(jwt.getClaim(CAR_NUMBER))
+                .model(jwt.getClaim(MODEL))
+                .color(jwt.getClaim(COLOR))
                 .email(jwt.getClaim(EMAIL))
                 .username(jwt.getClaim(USERNAME))
                 .build();
     }
-
 
     private Collection<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
         Map<String, Object> resourceAccess = jwt.getClaim(RESOURCES_ACCESS);

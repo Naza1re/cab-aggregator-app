@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class DriverConsumer {
     private final RideService rideService;
 
-    @KafkaListener(topics = "${topic.name.driver}")
+    @KafkaListener(topics = "${spring.kafka.topic.name.driver}")
     public void consume(DriverForRide driver) {
         log.info("Json message recieved -> {}", driver);
         rideService.setDriver(driver);

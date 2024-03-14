@@ -217,6 +217,7 @@ public class DriverServiceImpl implements DriverService {
         if (driver == null) {
             log.info(DRIVERS_NOT_AVAILABLE);
         } else {
+            changeStatus(driver.getDriverId());
             driverProducer.sendMessage(driver);
         }
 

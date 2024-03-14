@@ -1,4 +1,4 @@
-package com.example.ratingservice.security;
+package com.example.rideservice.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.example.ratingservice.security.SecurityConstants.ACTUATOR;
+import static com.example.rideservice.security.SecurityConstants.ACTUATOR;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +28,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(HttpMethod.GET, ACTUATOR,"/api/v1/rating/driver/list")
+                        .requestMatchers(HttpMethod.GET, ACTUATOR)
                         .permitAll()
                         .anyRequest()
                         .authenticated()

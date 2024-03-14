@@ -13,23 +13,35 @@ spring:
       ddl-auto: none
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/cab-aggregator-realm
+          jwk-set-uri: http://localhost:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
   application:
     name: ride
   kafka:
     consumer:
-      group-id: driver-creation-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      bootstrap-servers: kafka:29092
+      bootstrap-servers: localhost:9092
+      group-id: driver-creation-group
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      bootstrap-servers: kafka:29092
-topic:
-  name:
-    ride: ride
-    driver: driver
-    available: available
+      bootstrap-servers: localhost:9092
+    topic:
+      name:
+        ride: ride
+        driver: driver
+        available: available
+        status : status
+kafka:
+  partitions:
+    count: 1
+  replicas:
+    count: 1
 service:
     passenger:
       name: passenger
@@ -63,5 +75,10 @@ management:
       probability: 1.0
 server:
   port: 8082
+jwt:
+  auth:
+    converter:
+      resource-id: cab-aggregator-client
+      principal-attribute: sub
 
 
