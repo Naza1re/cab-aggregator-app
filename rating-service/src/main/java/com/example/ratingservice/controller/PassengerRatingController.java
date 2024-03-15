@@ -28,20 +28,23 @@ public class PassengerRatingController {
     public ResponseEntity<PassengerRatingResponse> getPassengerRateById(@PathVariable Long passengerId) {
         return ResponseEntity.ok(passengerRatingService.getPassengerRecordById(passengerId));
     }
-    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
+
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER','ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<PassengerRatingResponse> creatingPassenger(
             @Valid @RequestBody CreateRequest createRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(passengerRatingService.createPassenger(createRequest));
     }
+
     @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping
     public ResponseEntity<PassengerRatingResponse> updatePassengerRate(
             @Valid @RequestBody UpdateRequest updateRequest) {
         return ResponseEntity.ok(passengerRatingService.updatePassengerRating(updateRequest));
     }
-    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
+
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER','ROLE_ADMIN')")
     @DeleteMapping("/{passengerId}")
     public ResponseEntity<PassengerRatingResponse> deletePassengerRecord(
             @PathVariable Long passengerId) {

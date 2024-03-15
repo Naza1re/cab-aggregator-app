@@ -16,7 +16,7 @@ public class RideConsumer {
 
     @KafkaListener(topics = "${topic.name.ride}")
     public void consume(RideForDriver ride) {
-        log.info("Json message recieved -> {}", ride);
+        log.info("Json message received -> {}", ride);
         driverService.handleDriver(ride.getRideId());
     }
 

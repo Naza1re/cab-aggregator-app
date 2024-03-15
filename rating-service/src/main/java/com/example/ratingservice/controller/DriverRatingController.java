@@ -29,7 +29,7 @@ public class DriverRatingController {
         return ResponseEntity.ok(driverRatingService.getDriverById(driverId));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<DriverRatingResponse> createDriverRecord(@Valid @RequestBody CreateRequest createRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -43,7 +43,7 @@ public class DriverRatingController {
         return ResponseEntity.ok(driverRatingService.updateDriverRate(driverRequest));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @DeleteMapping("/{driverID}")
     public ResponseEntity<DriverRatingResponse> deleteDriver(@PathVariable Long driverID) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

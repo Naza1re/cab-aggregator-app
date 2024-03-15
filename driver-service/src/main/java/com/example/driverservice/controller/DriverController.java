@@ -39,7 +39,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getListOfDrivers());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<DriverResponse> updateDriver(
             @PathVariable Long id,
@@ -47,7 +47,7 @@ public class DriverController {
         return ResponseEntity.ok(driverService.updateDriver(id, driverRequest));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<DriverResponse> deleteDriver(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
@@ -55,7 +55,7 @@ public class DriverController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     public ResponseEntity<DriverResponse> createDriver(
             @AuthenticationPrincipal OAuth2User user) {
         DriverRequest request = driverService.getDriverRequestFromOauth2User(user);

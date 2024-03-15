@@ -11,13 +11,15 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 @Configuration
 public class DriverProducerConfig {
 
+    @Value("${topic.name.driver}")
+    private String topic;
     @Value("${kafka.partitions.count}")
     private int partitions;
     @Value("${kafka.replicas.count}")
     private int replicas;
     @Bean
     public NewTopic topic(){
-        return TopicBuilder.name("driver")
+        return TopicBuilder.name(topic)
                 .partitions(partitions)
                 .replicas(replicas)
                 .build();

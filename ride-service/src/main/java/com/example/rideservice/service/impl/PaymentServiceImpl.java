@@ -34,4 +34,9 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("Payment service is not available. Fall back method was called");
         throw new ServiceUnAvailableException(PAYMENT_SERVICE_IS_NOT_AVAILABLE);
     }
+
+    private void fallBackPaymentService(NotFoundException ex) {
+        log.info("Customer not found. Fall back method was called");
+        throw new NotFoundException(ex.getMessage());
+    }
 }

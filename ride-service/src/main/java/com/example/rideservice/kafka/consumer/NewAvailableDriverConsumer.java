@@ -14,7 +14,7 @@ public class NewAvailableDriverConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.name.available}")
     public void consume(String message) {
-        log.info("Json message recieved -> {}", message);
+        log.info("Json message received -> {}", message);
         rideService.handleRideForAvailableDriver();
     }
 }

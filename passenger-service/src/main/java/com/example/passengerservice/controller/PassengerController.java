@@ -40,7 +40,7 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getAllPassengers());
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER','ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<PassengerResponse> createPassenger(
             @AuthenticationPrincipal OAuth2User user) {
@@ -50,7 +50,7 @@ public class PassengerController {
 
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER','ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<PassengerResponse> deletePassenger(
             @PathVariable Long id) {
@@ -58,7 +58,7 @@ public class PassengerController {
                 .body(passengerService.deletePassenger(id));
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER','ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PassengerResponse> updatePassenger(
             @Valid @RequestBody PassengerRequest passengerRequest,
