@@ -13,7 +13,6 @@ spring:
           uri: lb://ride
           predicates:
             - Path=/api/v1/rides/**
-            - Method=POST
           filters:
             - name: CircuitBreaker
               args:
