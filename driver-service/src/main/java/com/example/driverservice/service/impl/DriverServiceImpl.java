@@ -3,13 +3,18 @@ package com.example.driverservice.service.impl;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
-import com.example.driverservice.dto.response.*;
+import com.example.driverservice.dto.response.DriverResponse;
+import com.example.driverservice.dto.response.DriverRatingListResponse;
+import com.example.driverservice.dto.response.DriverListResponse;
+import com.example.driverservice.dto.response.DriverRatingResponse;
+import com.example.driverservice.dto.response.DriverPageResponse;
 import com.example.driverservice.exception.*;
 import com.example.driverservice.kafka.producer.AvailableDriverProducer;
 import com.example.driverservice.kafka.producer.DriverProducer;
 import com.example.driverservice.mapper.DriverMapper;
 import com.example.driverservice.model.Driver;
 import com.example.driverservice.repository.DriverRepository;
+import com.example.driverservice.security.User;
 import com.example.driverservice.service.DriverService;
 import com.example.driverservice.service.RatingService;
 import com.example.driverservice.util.Constants;
@@ -20,15 +25,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import static com.example.driverservice.security.SecurityConstants.USERNAME;
+import static com.example.driverservice.security.SecurityConstants.PHONE;
+import static com.example.driverservice.security.SecurityConstants.COLOR;
+import static com.example.driverservice.security.SecurityConstants.CAR_NUMBER;
+import static com.example.driverservice.security.SecurityConstants.MODEL;
+import static com.example.driverservice.security.SecurityConstants.SURNAME;
+import static com.example.driverservice.security.SecurityConstants.FAMILY_NAME;
+import static com.example.driverservice.security.SecurityConstants.NAME;
+import static com.example.driverservice.security.SecurityConstants.EMAIL;
+import static com.example.driverservice.security.SecurityConstants.GIVEN_NAME;
+import static com.example.driverservice.security.SecurityConstants.ID;
 import static com.example.driverservice.util.ConstantsMessages.*;
 import static com.example.driverservice.util.ExceptionMessages.*;
 
@@ -77,7 +92,7 @@ public class DriverServiceImpl implements DriverService {
     public DriverResponse createDriver(DriverRequest driverRequest) {
 
         preCreateDriverCheck(driverRequest);
-
+        System.out.println(driverRequest);
         Driver driver = driverMapper.fromRequestToEntity(driverRequest);
         driver.setAvailable(false);
 
@@ -216,6 +231,7 @@ public class DriverServiceImpl implements DriverService {
         if (driver == null) {
             log.info(DRIVERS_NOT_AVAILABLE);
         } else {
+            changeStatus(driver.getDriverId());
             driverProducer.sendMessage(driver);
         }
 
@@ -241,6 +257,32 @@ public class DriverServiceImpl implements DriverService {
                 .mapToDouble(DriverRatingResponse::getRate)
                 .findFirst()
                 .orElse(Constants.DEFAULT_RATE);
+    }
+
+    public DriverRequest getDriverRequestFromOauth2User(OAuth2User oAuth2User) {
+        return DriverRequest.builder()
+                .name(oAuth2User.getAttribute(NAME))
+                .surname(oAuth2User.getAttribute(SURNAME))
+                .email(oAuth2User.getAttribute(EMAIL))
+                .phone(oAuth2User.getAttribute(PHONE))
+                .color(oAuth2User.getAttribute(COLOR))
+                .number(oAuth2User.getAttribute(CAR_NUMBER))
+                .model(oAuth2User.getAttribute(MODEL))
+                .build();
+    }
+
+    public User extractUserInfo(Jwt jwt) {
+        return User.builder()
+                .phone(jwt.getClaim(PHONE))
+                .surname(jwt.getClaim(FAMILY_NAME))
+                .name(jwt.getClaim(GIVEN_NAME))
+                .id(UUID.fromString(jwt.getClaim(ID)))
+                .carNumber(jwt.getClaim(CAR_NUMBER))
+                .model(jwt.getClaim(MODEL))
+                .color(jwt.getClaim(COLOR))
+                .email(jwt.getClaim(EMAIL))
+                .username(jwt.getClaim(USERNAME))
+                .build();
     }
 
 }

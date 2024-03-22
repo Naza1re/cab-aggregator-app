@@ -1,6 +1,10 @@
 package com.example.passengerservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;

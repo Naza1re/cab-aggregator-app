@@ -24,6 +24,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
     ports:
       - '8083:8083'
     networks:
@@ -44,6 +46,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
     ports:
       - '8085:8085'
     networks:
@@ -65,6 +69,8 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
     ports:
       - '8082:8082'
     networks:
@@ -87,6 +93,8 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
     ports:
       - '8084:8084'
     networks:
@@ -118,6 +126,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
     ports:
       - '8081:8081'
     networks:
@@ -140,9 +150,9 @@ services:
   zookeeper:
     image: zookeeper:3.7.0
     container_name: zookeeper
+    restart: "no"
     networks:
       - cab_aggregator
-    restart: "no"
     ports:
       - "2181:2181"
 
@@ -162,6 +172,7 @@ services:
         KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
         KAFKA_BROKER_ID: 1
         KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       depends_on:
         - zookeeper
 
@@ -177,16 +188,16 @@ services:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   grafana:
-      image: grafana/grafana:9.5.2
-      container_name: grafana
-      networks:
-        - cab_aggregator
-      ports:
-        - "3000:3000"
-      restart: unless-stopped
-      volumes:
-        - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
-        - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+    image: grafana/grafana:9.5.2
+    container_name: grafana
+    networks:
+      - cab_aggregator
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
 
   promo_code_service:
     image: promo-code-service
@@ -197,6 +208,9 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+
+
     ports:
       - '8086:8086'
     networks:
@@ -251,11 +265,25 @@ services:
     ports:
       - '9411:9411'
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    ports:
+      - '8080:8080'
+    networks:
+      - cab_aggregator
+    command:
+      - start-dev
 
 networks:
-    cab_aggregator:
-      driver: bridge
+  cab_aggregator:
+    driver: bridge
 
 volumes:
-    elasticsearch_data:
-      driver: local
+  elasticsearch_data:
+    driver: local

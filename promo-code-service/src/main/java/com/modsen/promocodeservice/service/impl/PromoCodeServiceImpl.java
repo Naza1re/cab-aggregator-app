@@ -67,6 +67,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
         PromoCode promoCode = getOrThrow(id);
 
         promoCode = promoCodeMapper.fromRequestToEntity(request);
+        promoCode.setId(id);
         PromoCode savedPromo = promoCodeRepository.save(promoCode);
 
         log.info(String.format(UPDATE_PROMO_CODE, id));
@@ -98,6 +99,5 @@ public class PromoCodeServiceImpl implements PromoCodeService {
             throw new PromoCodeAllReadyExistException(String.format(ExceptionMessages.PROMOCODE_ALREADY_EXIST, value));
         }
     }
-
 
 }

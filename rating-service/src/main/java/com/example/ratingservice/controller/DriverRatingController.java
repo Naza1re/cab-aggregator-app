@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class DriverRatingController {
 
     private final DriverRatingService driverRatingService;
+
     @GetMapping("/list")
     public ResponseEntity<DriverRatingListResponse> getListOfDrivers() {
         return ResponseEntity.ok(driverRatingService.getAllDriversRecords());
@@ -27,18 +29,21 @@ public class DriverRatingController {
         return ResponseEntity.ok(driverRatingService.getDriverById(driverId));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<DriverRatingResponse> createDriverRecord(@Valid @RequestBody CreateRequest createRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(driverRatingService.createDriver(createRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_PASSENGER')")
     @PutMapping
     public ResponseEntity<DriverRatingResponse> updateDriverRating(
             @Valid @RequestBody UpdateRequest driverRequest) {
         return ResponseEntity.ok(driverRatingService.updateDriverRate(driverRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
     @DeleteMapping("/{driverID}")
     public ResponseEntity<DriverRatingResponse> deleteDriver(@PathVariable Long driverID) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)

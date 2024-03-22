@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RideProducer {
 
-    @Value("${topic.name.ride}")
+    @Value("${spring.kafka.topic.name.ride}")
     private String rideTopic;
 
     private final KafkaTemplate<String, RideForDriver> kafkaTemplate;

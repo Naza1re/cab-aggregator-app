@@ -21,11 +21,6 @@ public class FallBackController {
         return "Rides service is down. Please try again later.";
     }
 
-    @RequestMapping("/fallback/payment-service")
-    public String ratingServiceFallback() {
-        return "Payment service is down. Please try again later.";
-    }
-
     @RequestMapping("/fallback/promo-code-service")
     public String promoCodeServiceFallback() {
         return "Promo-code service is down. Please try again later.";

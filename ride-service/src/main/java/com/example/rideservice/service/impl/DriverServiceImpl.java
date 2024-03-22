@@ -25,6 +25,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private void fallBackDriverService(Exception ex) {
+        System.out.println(ex.getMessage());
         log.info("Driver service is not available. Fallback method was called");
         throw new ServiceUnAvailableException(DRIVER_SERVICE_IS_NOT_AVAILABLE);
     }

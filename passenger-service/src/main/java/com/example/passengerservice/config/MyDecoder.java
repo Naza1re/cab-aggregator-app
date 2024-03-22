@@ -4,7 +4,6 @@ import com.example.passengerservice.exception.FeignClientException;
 import com.example.passengerservice.exception.NotFoundException;
 import feign.FeignException;
 import feign.Response;
-import feign.RetryableException;
 import feign.codec.ErrorDecoder;
 
 public class MyDecoder implements ErrorDecoder {

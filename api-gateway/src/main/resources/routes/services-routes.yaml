@@ -13,13 +13,11 @@ spring:
           uri: lb://ride
           predicates:
             - Path=/api/v1/rides/**
-            - Method=POST
           filters:
             - name: CircuitBreaker
               args:
                 name: rides-service-circuit
                 fallbackUri: forward:/fallback/rides-service
-
 
         - id: driver-service
           uri: lb://driver
@@ -31,7 +29,6 @@ spring:
                 name: driver-service-fallback
                 fallbackUri: forward:/fallback/drivers-service
 
-
         - id: passenger-service
           uri: lb://passenger
           predicates:
@@ -42,17 +39,10 @@ spring:
                 name: passengers-service-circuit
                 fallbackUri: forward:/fallback/passengers-service
 
-
         - id: payment-service
           uri: lb://payment
           predicates:
             - Path=/api/v1/payment/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: payment-service-circuit
-                fallbackUri: forward:/fallback/payment-service
-
 
         - id: rating-service
           uri: lb://rating
@@ -63,7 +53,6 @@ spring:
               args:
                 name: payment-service-circuit
                 fallbackUri: forward:/fallback/rating-service
-
 
         - id: promo-code-service
           uri: lb://promo-code

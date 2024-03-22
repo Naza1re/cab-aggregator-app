@@ -1,6 +1,11 @@
 package com.example.paymentservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;

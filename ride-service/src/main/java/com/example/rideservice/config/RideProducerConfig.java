@@ -9,13 +9,17 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 @Configuration
 public class RideProducerConfig {
-    @Value("${topic.name.ride}")
-    private String ride;
+
+    @Value("${kafka.partitions.count}")
+    private int partitions;
+    @Value("${kafka.replicas.count}")
+    private int replicas;
+
     @Bean
     public NewTopic topic() {
-        return TopicBuilder.name(ride)
-                .partitions(1)
-                .replicas(1)
+        return TopicBuilder.name("ride")
+                .partitions(partitions)
+                .replicas(replicas)
                 .build();
     }
 
