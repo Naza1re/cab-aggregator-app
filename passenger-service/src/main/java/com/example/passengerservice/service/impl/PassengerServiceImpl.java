@@ -15,6 +15,8 @@ import com.example.passengerservice.service.RatingService;
 import com.example.passengerservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,6 +43,7 @@ public class PassengerServiceImpl implements PassengerService {
     private final PassengerMapper passengerMapper;
 
     @Override
+    @Cacheable(cacheNames = "passenger",key = "#id")
     public PassengerResponse getPassengerById(Long id) {
         Passenger passenger = getOrThrow(id);
         log.info(String.format(GET_PASSENGER_BY_ID, id));
@@ -48,6 +51,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    @Cacheable(cacheNames = "passenger")
     public PassengerListResponse getAllPassengers() {
         List<PassengerResponse> listOfPassengers = passengerRepository.findAll().stream()
                 .map(passengerMapper::fromEntityToResponse)
@@ -58,6 +62,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Transactional
     @Override
+    @CacheEvict(cacheNames = "restaurant", allEntries = true)
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
 
         checkEmailExist(passengerRequest.getEmail());
@@ -74,6 +79,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "restaurant", allEntries = true)
     public PassengerResponse updatePassenger(Long id, PassengerRequest passengerRequest) {
 
         Passenger passenger = getOrThrow(id);
@@ -89,6 +95,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "restaurant", allEntries = true)
     public PassengerResponse deletePassenger(Long id) {
         Passenger passenger = getOrThrow(id);
         passengerRepository.delete(passenger);
