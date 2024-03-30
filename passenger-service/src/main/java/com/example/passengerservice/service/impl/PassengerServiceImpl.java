@@ -62,7 +62,7 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Transactional
     @Override
-    @CacheEvict(cacheNames = "restaurant", allEntries = true)
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerResponse createPassenger(PassengerRequest passengerRequest) {
 
         checkEmailExist(passengerRequest.getEmail());
@@ -79,7 +79,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "restaurant", allEntries = true)
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerResponse updatePassenger(Long id, PassengerRequest passengerRequest) {
 
         Passenger passenger = getOrThrow(id);
@@ -95,7 +95,7 @@ public class PassengerServiceImpl implements PassengerService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "restaurant", allEntries = true)
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerResponse deletePassenger(Long id) {
         Passenger passenger = getOrThrow(id);
         passengerRepository.delete(passenger);
