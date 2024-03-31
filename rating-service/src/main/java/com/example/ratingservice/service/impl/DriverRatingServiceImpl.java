@@ -17,6 +17,8 @@ import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +37,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     private final DriverMapper driverMapper;
 
     @Override
+    @Cacheable(cacheNames = "driver", key = "#driverId")
     public DriverRatingResponse getDriverById(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
         log.info(String.format(GET_DRIVER_BY_ID_LOG_MESSAGE, driverRating));
@@ -42,6 +45,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverRatingResponse createDriver(CreateRequest request) {
         checkDriverRatingExist(request.getId());
         Span span = tracer.currentSpan();
@@ -57,6 +61,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverRatingResponse updateDriverRate(UpdateRequest updateRequest) {
         DriverRating driverRating = getOrThrowByDriverId(updateRequest.getId());
 
@@ -68,6 +73,7 @@ public class DriverRatingServiceImpl implements DriverRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverRatingResponse deleteDriverRecord(Long driverId) {
         DriverRating driverRating = getOrThrowByDriverId(driverId);
 

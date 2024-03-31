@@ -14,6 +14,8 @@ import com.example.ratingservice.util.Constants;
 import com.example.ratingservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     private final PassengerMapper passengerMapper;
 
     @Override
+    @Cacheable(cacheNames = "passenger",key = "#passengerId")
     public PassengerRatingResponse getPassengerRecordById(Long passengerId) {
 
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
@@ -37,6 +40,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerRatingResponse createPassenger(CreateRequest createRequest) {
         checkPassengerRatingExist(createRequest.getId());
 
@@ -51,6 +55,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerRatingResponse updatePassengerRating(UpdateRequest updateRequest) {
         PassengerRating passengerRating = getOrThrowByPassengerId(updateRequest.getId());
 
@@ -62,6 +67,7 @@ public class PassengerRatingServiceImpl implements PassengerRatingService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "passenger", allEntries = true)
     public PassengerRatingResponse deletePassengerRecord(Long passengerId) {
         PassengerRating passengerRating = getOrThrowByPassengerId(passengerId);
 
