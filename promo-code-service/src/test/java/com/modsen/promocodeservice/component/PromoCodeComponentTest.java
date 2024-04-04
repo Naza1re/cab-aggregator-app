@@ -75,22 +75,22 @@ public class PromoCodeComponentTest {
 
     }
 
-    @Given("PromoCode with id {long} doesn't exist")
+    @Given("PromoCode with id {string} doesn't exist")
     public void promoCodeWithIdExistNotExist(String id) {
         Optional<PromoCode> promoCode = promoCodeRepository.findById(id);
         assertFalse(promoCode.isPresent());
     }
 
-    @When("The id {long} is passed to the delete method")
+    @When("The id {string} is passed to the delete method")
     public void theIdIsPassedToTheDeleteMethod(String id) {
         try {
             promoCodeService.deletePromoCodeById(id);
-        }catch (PromoCodeNotFoundException e) {
+        } catch (PromoCodeNotFoundException e) {
             exception = e;
         }
     }
 
-    @Then("The PromoCodeNotFoundException should be thrown with id {long}")
+    @Then("The PromoCodeNotFoundException should be thrown with id {string}")
     public void thePromoCodeNotFoundExceptionShouldBeThrown(String id) {
         String expected = String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id);
         String actual = exception.getMessage();
@@ -123,7 +123,7 @@ public class PromoCodeComponentTest {
         PromoCodeRequest request = getPromoCodeRequestWithValue(value);
         try {
             promoCodeResponse = promoCodeService.createPromoCode(request);
-        }catch (PromoCodeNotFoundException ex) {
+        } catch (PromoCodeNotFoundException ex) {
             exception = ex;
         }
     }
@@ -134,17 +134,17 @@ public class PromoCodeComponentTest {
         assertThat(promoCodeResponse).isEqualTo(expected);
     }
 
-    @When("PromoCode request is passed with id {long} to update method")
+    @When("PromoCode request is passed with id {string} to update method")
     public void promoCodeRequestIsPassedWithIdToUpdateMethod(String id) {
         PromoCodeRequest request = getPromoCodeRequestForUpdate();
         try {
-            promoCodeResponse = promoCodeService.updatePromoCode(id,request);
-        }catch (PromoCodeNotFoundException ex) {
+            promoCodeResponse = promoCodeService.updatePromoCode(id, request);
+        } catch (PromoCodeNotFoundException ex) {
             exception = ex;
         }
     }
 
-    @Given("PromoCode with id {long} exist to update")
+    @Given("PromoCode with id {string} exist to update")
     public void promoCodeWithIdExistToUpdate(String id) {
         PromoCodeRequest updateRequest = getPromoCodeRequestForUpdate();
         PromoCodeResponse expected = getUpdatedPromoCodeResponse();
@@ -169,7 +169,7 @@ public class PromoCodeComponentTest {
 
     }
 
-    @Then("The response should contain update promoCode with id {long}")
+    @Then("The response should contain update promoCode with id {string}")
     public void theResponseShouldContainUpdatePromoCodeWithId(String id) {
         PromoCodeResponse expected = getUpdatedPromoCodeResponse();
 
