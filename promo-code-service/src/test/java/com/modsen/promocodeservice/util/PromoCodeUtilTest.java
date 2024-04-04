@@ -11,13 +11,13 @@ import java.util.List;
 @UtilityClass
 public class PromoCodeUtilTest {
 
-    public final Long DEFAULT_ID = 1L;
-    public final Long NOT_FOUND_ID = 1L;
+    public final String DEFAULT_ID = "1";
+    public final String NOT_FOUND_ID = "2";
     public final String DEFAULT_NAME = "STUDENT";
     public final String DEFAULT_VALUE = "1222";
     public final int DEFAULT_PERCENT = 20;
 
-    public final Long SECOND_ID = 1L;
+    public final String SECOND_ID = "3";
     public final String SECOND_NAME = "DRIVERS";
     public final String SECOND_VALUE = "4645";
     public final int SECOND_PERCENT = 20;

@@ -1,25 +1,19 @@
 package com.modsen.promocodeservice.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
 @ToString
-@Table(name = "promocode")
-@Entity
+@Document(collection = "promo")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PromoCode {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String name;
     private String value;
     private double percent;

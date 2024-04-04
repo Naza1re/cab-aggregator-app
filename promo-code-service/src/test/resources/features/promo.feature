@@ -5,7 +5,7 @@ Feature: PromoCode test
     Then The response should contain promoCode with id 1
 
   Scenario: Delete promoCode by id when PromoCode exist
-    Given PromoCode with id 1 doesn't exist
+    Given PromoCode with id "" doesn't exist
     When The id 1 is passed to the delete method
     Then The PromoCodeNotFoundException should be thrown with id 1
 

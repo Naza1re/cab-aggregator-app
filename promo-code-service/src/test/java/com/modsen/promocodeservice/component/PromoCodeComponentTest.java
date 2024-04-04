@@ -38,8 +38,8 @@ public class PromoCodeComponentTest {
     private Exception exception;
 
 
-    @Given("PromoCode with id {long} exist")
-    public void PromoCodeWithIdExist(long id) {
+    @Given("PromoCode with id {string} exist")
+    public void PromoCodeWithIdExist(String id) {
         PromoCodeResponse expected = getDefaultPromoCodeResponse();
         PromoCode retrievedPromoCode = getDefaultSavedPromoCode();
 
@@ -57,8 +57,8 @@ public class PromoCodeComponentTest {
         assertTrue(promoCode.isPresent());
     }
 
-    @Then("The response should contain promoCode with id {long}")
-    public void theResponseShouldContainPromoCodeWithId(long id) {
+    @Then("The response should contain promoCode with id {string}")
+    public void theResponseShouldContainPromoCodeWithId(String id) {
         PromoCode promoCode = promoCodeRepository.findById(id).get();
         PromoCodeResponse expected = promoCodeMapper.fromEntityToResponse(promoCode);
 
@@ -66,7 +66,7 @@ public class PromoCodeComponentTest {
     }
 
     @When("The id {long} is passed to the findById method")
-    public void theIdIsPassedToTheFindByIdMethod(long id) {
+    public void theIdIsPassedToTheFindByIdMethod(String id) {
         try {
             promoCodeResponse = promoCodeService.getPromoCodeById(id);
         } catch (PromoCodeNotFoundException e) {
@@ -76,13 +76,13 @@ public class PromoCodeComponentTest {
     }
 
     @Given("PromoCode with id {long} doesn't exist")
-    public void promoCodeWithIdExistNotExist(long id) {
+    public void promoCodeWithIdExistNotExist(String id) {
         Optional<PromoCode> promoCode = promoCodeRepository.findById(id);
         assertFalse(promoCode.isPresent());
     }
 
     @When("The id {long} is passed to the delete method")
-    public void theIdIsPassedToTheDeleteMethod(long id) {
+    public void theIdIsPassedToTheDeleteMethod(String id) {
         try {
             promoCodeService.deletePromoCodeById(id);
         }catch (PromoCodeNotFoundException e) {
@@ -91,7 +91,7 @@ public class PromoCodeComponentTest {
     }
 
     @Then("The PromoCodeNotFoundException should be thrown with id {long}")
-    public void thePromoCodeNotFoundExceptionShouldBeThrown(long id) {
+    public void thePromoCodeNotFoundExceptionShouldBeThrown(String id) {
         String expected = String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id);
         String actual = exception.getMessage();
 
@@ -135,7 +135,7 @@ public class PromoCodeComponentTest {
     }
 
     @When("PromoCode request is passed with id {long} to update method")
-    public void promoCodeRequestIsPassedWithIdToUpdateMethod(long id) {
+    public void promoCodeRequestIsPassedWithIdToUpdateMethod(String id) {
         PromoCodeRequest request = getPromoCodeRequestForUpdate();
         try {
             promoCodeResponse = promoCodeService.updatePromoCode(id,request);
@@ -145,7 +145,7 @@ public class PromoCodeComponentTest {
     }
 
     @Given("PromoCode with id {long} exist to update")
-    public void promoCodeWithIdExistToUpdate(long id) {
+    public void promoCodeWithIdExistToUpdate(String id) {
         PromoCodeRequest updateRequest = getPromoCodeRequestForUpdate();
         PromoCodeResponse expected = getUpdatedPromoCodeResponse();
         PromoCode promoCodeToSave = getUpdatePromoCodeNotSaved();
@@ -170,7 +170,7 @@ public class PromoCodeComponentTest {
     }
 
     @Then("The response should contain update promoCode with id {long}")
-    public void theResponseShouldContainUpdatePromoCodeWithId(long id) {
+    public void theResponseShouldContainUpdatePromoCodeWithId(String id) {
         PromoCodeResponse expected = getUpdatedPromoCodeResponse();
 
         assertThat(promoCodeResponse).isEqualTo(expected);

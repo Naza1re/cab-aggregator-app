@@ -39,14 +39,14 @@ public class PromoCodeServiceImpl implements PromoCodeService {
         return new PromoCodeResponseList(promoCodeResponseList);
     }
 
-    private PromoCode getOrThrow(Long id) {
+    private PromoCode getOrThrow(String id) {
         return promoCodeRepository.findById(id)
                 .orElseThrow(() -> new PromoCodeNotFoundException(String.format(ExceptionMessages.PROMOCODE_NOT_FOUND_BY_ID, id)));
     }
 
     @Override
     @Cacheable(cacheNames = "promo-code",key = "#id")
-    public PromoCodeResponse getPromoCodeById(Long id) {
+    public PromoCodeResponse getPromoCodeById(String id) {
         PromoCode promoCode = getOrThrow(id);
         log.info(String.format(GET_PROMO_CODE_BY_ID, id));
         return promoCodeMapper.fromEntityToResponse(promoCode);
@@ -67,7 +67,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     @Override
     @CacheEvict(cacheNames = "promo-code",allEntries = true)
-    public PromoCodeResponse updatePromoCode(Long id, PromoCodeRequest request) {
+    public PromoCodeResponse updatePromoCode(String id, PromoCodeRequest request) {
         checkPromoCodeExist(request.getValue());
         PromoCode promoCode = getOrThrow(id);
 
@@ -81,7 +81,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
 
     @Override
     @CacheEvict(cacheNames = "promo-code",allEntries = true)
-    public PromoCodeResponse deletePromoCodeById(Long id) {
+    public PromoCodeResponse deletePromoCodeById(String id) {
         PromoCode promoCode = getOrThrow(id);
 
         promoCodeRepository.delete(promoCode);
