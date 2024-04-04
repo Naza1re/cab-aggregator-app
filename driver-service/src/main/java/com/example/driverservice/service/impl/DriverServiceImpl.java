@@ -3,11 +3,7 @@ package com.example.driverservice.service.impl;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
-import com.example.driverservice.dto.response.DriverResponse;
-import com.example.driverservice.dto.response.DriverRatingListResponse;
-import com.example.driverservice.dto.response.DriverListResponse;
-import com.example.driverservice.dto.response.DriverRatingResponse;
-import com.example.driverservice.dto.response.DriverPageResponse;
+import com.example.driverservice.dto.response.*;
 import com.example.driverservice.exception.*;
 import com.example.driverservice.kafka.producer.AvailableDriverProducer;
 import com.example.driverservice.kafka.producer.DriverProducer;
@@ -22,6 +18,8 @@ import com.example.driverservice.util.ConstantsMessages;
 import com.example.driverservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -33,17 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.example.driverservice.security.SecurityConstants.USERNAME;
-import static com.example.driverservice.security.SecurityConstants.PHONE;
-import static com.example.driverservice.security.SecurityConstants.COLOR;
-import static com.example.driverservice.security.SecurityConstants.CAR_NUMBER;
-import static com.example.driverservice.security.SecurityConstants.MODEL;
-import static com.example.driverservice.security.SecurityConstants.SURNAME;
-import static com.example.driverservice.security.SecurityConstants.FAMILY_NAME;
-import static com.example.driverservice.security.SecurityConstants.NAME;
-import static com.example.driverservice.security.SecurityConstants.EMAIL;
-import static com.example.driverservice.security.SecurityConstants.GIVEN_NAME;
-import static com.example.driverservice.security.SecurityConstants.ID;
+import static com.example.driverservice.security.SecurityConstants.*;
 import static com.example.driverservice.util.ConstantsMessages.*;
 import static com.example.driverservice.util.ExceptionMessages.*;
 
@@ -59,6 +47,7 @@ public class DriverServiceImpl implements DriverService {
     private final RatingService ratingService;
 
     @Override
+    @Cacheable(cacheNames = "driver", key = "#id")
     public DriverResponse getDriverById(Long id) {
         Driver driver = getOrThrow(id);
         log.info(String.format(GET_DRIVER_BY_ID_LOG_MESSAGE, id));
@@ -66,6 +55,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Cacheable(cacheNames = "driver")
     public DriverListResponse getListOfDrivers() {
         List<DriverResponse> driverResponseList = driverRepository.findAll().stream()
                 .map(driverMapper::fromEntityToResponse)
@@ -75,6 +65,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverResponse updateDriver(Long id, DriverRequest driverRequest) {
 
         Driver driver = getOrThrow(id);
@@ -87,8 +78,9 @@ public class DriverServiceImpl implements DriverService {
         return driverMapper.fromEntityToResponse(driverRepository.save(driver));
     }
 
-    @Transactional
     @Override
+    @Transactional
+    @Cacheable(cacheNames = "driver")
     public DriverResponse createDriver(DriverRequest driverRequest) {
 
         preCreateDriverCheck(driverRequest);
@@ -106,6 +98,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverResponse deleteDriver(Long id) {
         Driver driver = getOrThrow(id);
         driverRepository.delete(driver);
@@ -156,6 +149,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Cacheable(cacheNames = "driver")
     public DriverListResponse getAvailableDrivers() {
         List<Driver> listOfAvailableDrivers = driverRepository.getAllByAvailable(true);
         List<DriverResponse> listOfAvailable = listOfAvailableDrivers.stream()
@@ -215,6 +209,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "driver", allEntries = true)
     public DriverResponse changeStatus(Long driverId) {
         Driver driver = getOrThrow(driverId);
         log.info(String.format(CHANGING_STATUS_DRIVER_WITH_ID, driverId));

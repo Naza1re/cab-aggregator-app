@@ -279,6 +279,10 @@ services:
       - cab_aggregator
     command:
       - start-dev
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
 
 networks:
   cab_aggregator:

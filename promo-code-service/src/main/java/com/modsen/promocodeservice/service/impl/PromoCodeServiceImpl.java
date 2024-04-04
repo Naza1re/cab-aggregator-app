@@ -12,6 +12,8 @@ import com.modsen.promocodeservice.service.PromoCodeService;
 import com.modsen.promocodeservice.util.ExceptionMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +45,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     }
 
     @Override
+    @Cacheable(cacheNames = "promo-code",key = "#id")
     public PromoCodeResponse getPromoCodeById(Long id) {
         PromoCode promoCode = getOrThrow(id);
         log.info(String.format(GET_PROMO_CODE_BY_ID, id));
@@ -50,6 +53,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "promo-code",allEntries = true)
     public PromoCodeResponse createPromoCode(PromoCodeRequest request) {
 
         checkPromoCodeExist(request.getValue());
@@ -62,6 +66,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "promo-code",allEntries = true)
     public PromoCodeResponse updatePromoCode(Long id, PromoCodeRequest request) {
         checkPromoCodeExist(request.getValue());
         PromoCode promoCode = getOrThrow(id);
@@ -75,6 +80,7 @@ public class PromoCodeServiceImpl implements PromoCodeService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "promo-code",allEntries = true)
     public PromoCodeResponse deletePromoCodeById(Long id) {
         PromoCode promoCode = getOrThrow(id);
 
