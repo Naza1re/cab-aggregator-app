@@ -38,7 +38,7 @@ public class PromoCodeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PromoCodeResponse> getPromoCodeById(@PathVariable Long id) {
+    public ResponseEntity<PromoCodeResponse> getPromoCodeById(@PathVariable String id) {
         return ResponseEntity.ok()
                 .body(promoCodeService.getPromoCodeById(id));
     }
@@ -54,14 +54,14 @@ public class PromoCodeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PromoCodeResponse> updatePromoCode(
-            @Valid @RequestBody PromoCodeRequest request, @PathVariable Long id) {
+            @Valid @RequestBody PromoCodeRequest request, @PathVariable String id) {
         return ResponseEntity.ok()
                 .body(promoCodeService.updatePromoCode(id, request));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<PromoCodeResponse> deletePromoCode(@PathVariable Long id) {
+    public ResponseEntity<PromoCodeResponse> deletePromoCode(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(promoCodeService.deletePromoCodeById(id));
     }

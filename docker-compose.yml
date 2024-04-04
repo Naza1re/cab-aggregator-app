@@ -198,26 +198,29 @@ services:
     volumes:
       - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasource
       - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+  mongo_db:
+    image: mongo
+    container_name: mongo-db
+    networks:
+      - cab_aggregator
+    ports:
+      - "27017:27017"
 
   promo_code_service:
     image: promo-code-service
     container_name: promo-code-service
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/promocode
-      - SPRING_DATASOURCE_USERNAME=${MYSQL_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo_db:27017/promo
       - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
-
-
     ports:
       - '8086:8086'
     networks:
       - cab_aggregator
     depends_on:
       - eureka-service
-      - mysql_db
+      - mongo_db
   elasticsearch:
     image: elasticsearch:8.12.0
     container_name: elasticsearch

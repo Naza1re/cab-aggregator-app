@@ -9,13 +9,13 @@ public interface PromoCodeService {
 
     PromoCodeResponseList getAllPromoCodes();
 
-    PromoCodeResponse getPromoCodeById(Long id);
+    PromoCodeResponse getPromoCodeById(String id);
 
     PromoCodeResponse createPromoCode(PromoCodeRequest request);
 
-    PromoCodeResponse updatePromoCode(Long id, PromoCodeRequest request);
+    PromoCodeResponse updatePromoCode(String id, PromoCodeRequest request);
 
-    PromoCodeResponse deletePromoCodeById(Long id);
+    PromoCodeResponse deletePromoCodeById(String id);
 
     PromoCodeResponse getPromoCodeByValue(String value);
 }
