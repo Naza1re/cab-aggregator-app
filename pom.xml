@@ -19,6 +19,7 @@
         <module>eureka-server</module>
         <module>api-gateway</module>
         <module>promo-code-service</module>
+        <module>car-park-service</module>
     </modules>
 
     <properties>
