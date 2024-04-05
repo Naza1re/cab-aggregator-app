@@ -14,7 +14,9 @@ class CarMapperImpl : CarMapper {
             model = carRequest.model,
             mark = carRequest.mark,
             year = carRequest.year,
-            type = carRequest.type
+            type = carRequest.type,
+            color = carRequest.color,
+            number = carRequest.number
         )
     }
 
@@ -24,7 +26,9 @@ class CarMapperImpl : CarMapper {
             model = car.model,
             mark = car.mark,
             year = car.year,
-            type = car.type
+            type = car.type,
+            color = car.color,
+            number = car.number
         )
     }
 }

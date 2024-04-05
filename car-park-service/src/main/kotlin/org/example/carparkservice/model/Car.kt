@@ -12,7 +12,9 @@ data class Car(
     var model: String,
     var mark: String,
     var year: Int,
-    var type: String
-    ) {
+    var type: String,
+    var color: String,
+    var number: String
+) {
 
 }
