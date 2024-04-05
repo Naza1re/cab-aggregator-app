@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
-@RequestMapping("/api/v1/car-park-service")
+@RequestMapping("/api/v1/car-park")
 @RestController
 class CarParkController(private var carParkService: CarParkService) {
 
@@ -28,6 +28,7 @@ class CarParkController(private var carParkService: CarParkService) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(carParkService.deleteCarById(id))
     }
+
 
 
 }
