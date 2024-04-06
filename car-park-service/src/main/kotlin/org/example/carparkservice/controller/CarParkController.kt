@@ -7,6 +7,7 @@ import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.service.CarParkService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 
@@ -31,6 +32,7 @@ class CarParkController(private var carParkService: CarParkService) {
             .body(carParkService.deleteCarById(id))
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping
     fun list(): ResponseEntity<CarListResponse> {
         return ResponseEntity.ok(carParkService.findAllCars())
@@ -40,7 +42,6 @@ class CarParkController(private var carParkService: CarParkService) {
     fun setOwner(@RequestBody carOwnerRequest: CarOwnerRequest): ResponseEntity<CarResponse> {
         return ResponseEntity.ok(carParkService.setDriverToCar(carOwnerRequest))
     }
-
 
 
 }

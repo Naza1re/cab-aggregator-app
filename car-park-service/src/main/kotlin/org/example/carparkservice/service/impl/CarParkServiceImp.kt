@@ -9,9 +9,18 @@ import org.example.carparkservice.exception.CarNotFoundException
 import org.example.carparkservice.mapper.CarMapper
 import org.example.carparkservice.model.Car
 import org.example.carparkservice.repository.CarParkRepository
+import org.example.carparkservice.security.SecurityConstants.EMAIL
+import org.example.carparkservice.security.SecurityConstants.FAMILY_NAME
+import org.example.carparkservice.security.SecurityConstants.GIVEN_NAME
+import org.example.carparkservice.security.SecurityConstants.ID
+import org.example.carparkservice.security.SecurityConstants.PHONE
+import org.example.carparkservice.security.SecurityConstants.USERNAME
+import org.example.carparkservice.security.User
 import org.example.carparkservice.service.CarParkService
 import org.example.carparkservice.util.ExceptionMessages
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class CarParkServiceImp(
@@ -45,6 +54,17 @@ class CarParkServiceImp(
         val car = getOrThrow(carOwnerRequest.carId)
         car.owner = carOwnerRequest.owner
         return carMapper.toCarResponse(carParkRepository.save(car))
+    }
+
+    override fun extractUserInfo(jwt: Jwt): User {
+        return User(
+            phone = jwt.getClaimAsString(PHONE),
+            surname = jwt.getClaimAsString(FAMILY_NAME),
+            name1 = jwt.getClaimAsString(GIVEN_NAME),
+            id = UUID.fromString(jwt.getClaimAsString(ID)),
+            email = jwt.getClaimAsString(EMAIL),
+            username1 = jwt.getClaimAsString(USERNAME)
+        )
     }
 
     private fun getOrThrow(id: Long): Car {
