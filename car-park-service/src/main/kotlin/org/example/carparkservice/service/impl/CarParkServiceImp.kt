@@ -1,5 +1,6 @@
 package org.example.carparkservice.service.impl
 
+import org.example.carparkservice.dto.CarListResponse
 import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.exception.CarAlreadyExistException
@@ -9,7 +10,6 @@ import org.example.carparkservice.model.Car
 import org.example.carparkservice.repository.CarParkRepository
 import org.example.carparkservice.service.CarParkService
 import org.example.carparkservice.util.ExceptionMessages
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager
 import org.springframework.stereotype.Service
 
 @Service
@@ -32,6 +32,12 @@ class CarParkServiceImp(
         val car = getOrThrow(id)
         carParkRepository.deleteById(id)
         return carMapper.toCarResponse(car);
+    }
+
+    override fun findAllCars(): CarListResponse? {
+        val cars = carParkRepository.findAll()
+        val carResponseList: List<CarResponse> = cars.map { car -> carMapper.toCarResponse(car) }
+        return CarListResponse(carResponseList)
     }
 
     private fun getOrThrow(id: Long): Car {

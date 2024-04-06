@@ -1,5 +1,6 @@
 package org.example.carparkservice.controller
 
+import org.example.carparkservice.dto.CarListResponse
 import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.service.CarParkService
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 class CarParkController(private var carParkService: CarParkService) {
 
     @GetMapping("/{id}")
-    fun getcarById(@PathVariable id: Long): ResponseEntity<CarResponse> {
+    fun getCarById(@PathVariable id: Long): ResponseEntity<CarResponse> {
         return ResponseEntity.ok(carParkService.getCarById(id))
     }
 
@@ -27,6 +28,11 @@ class CarParkController(private var carParkService: CarParkService) {
     fun delete(@PathVariable id: Long): ResponseEntity<CarResponse> {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(carParkService.deleteCarById(id))
+    }
+
+    @GetMapping
+    fun list(): ResponseEntity<CarListResponse> {
+        return ResponseEntity.ok(carParkService.findAllCars())
     }
 
 
