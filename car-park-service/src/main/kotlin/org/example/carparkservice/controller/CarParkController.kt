@@ -1,6 +1,7 @@
 package org.example.carparkservice.controller
 
 import org.example.carparkservice.dto.CarListResponse
+import org.example.carparkservice.dto.CarOwnerRequest
 import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.service.CarParkService
@@ -33,6 +34,11 @@ class CarParkController(private var carParkService: CarParkService) {
     @GetMapping
     fun list(): ResponseEntity<CarListResponse> {
         return ResponseEntity.ok(carParkService.findAllCars())
+    }
+
+    @PutMapping("/set/owner")
+    fun setOwner(@RequestBody carOwnerRequest: CarOwnerRequest): ResponseEntity<CarResponse> {
+        return ResponseEntity.ok(carParkService.setDriverToCar(carOwnerRequest))
     }
 
 

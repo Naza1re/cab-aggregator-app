@@ -1,6 +1,7 @@
 package org.example.carparkservice.service
 
 import org.example.carparkservice.dto.CarListResponse
+import org.example.carparkservice.dto.CarOwnerRequest
 import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 
@@ -10,6 +11,7 @@ interface CarParkService {
     fun createCar(car: CarRequest): CarResponse?
     fun deleteCarById(id: Long): CarResponse?
     fun findAllCars(): CarListResponse?
+    fun setDriverToCar(carOwnerRequest: CarOwnerRequest): CarResponse?
 
 
 }

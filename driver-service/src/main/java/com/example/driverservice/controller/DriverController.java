@@ -63,6 +63,15 @@ public class DriverController {
                 .body(driverService.createDriver(request));
     }
 
+    @PostMapping("/park/car")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER','ROLE_ADMIN')")
+    public ResponseEntity<DriverResponse> createDriverWithoutCar(
+            @AuthenticationPrincipal OAuth2User user,@RequestParam("carId") Long carId) {
+        DriverRequest request = driverService.getDriverRequestFromOauth2User(user);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(driverService.createDriverWithoutCar(request,carId));
+    }
+
     @GetMapping("/page")
     public ResponseEntity<DriverPageResponse> getSortedListOfDrivers(
             @RequestParam("offset") Integer offset,

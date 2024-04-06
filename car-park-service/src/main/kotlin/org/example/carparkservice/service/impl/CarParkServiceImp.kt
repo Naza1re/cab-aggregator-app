@@ -1,6 +1,7 @@
 package org.example.carparkservice.service.impl
 
 import org.example.carparkservice.dto.CarListResponse
+import org.example.carparkservice.dto.CarOwnerRequest
 import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.exception.CarAlreadyExistException
@@ -38,6 +39,12 @@ class CarParkServiceImp(
         val cars = carParkRepository.findAll()
         val carResponseList: List<CarResponse> = cars.map { car -> carMapper.toCarResponse(car) }
         return CarListResponse(carResponseList)
+    }
+
+    override fun setDriverToCar(carOwnerRequest: CarOwnerRequest): CarResponse? {
+        val car = getOrThrow(carOwnerRequest.carId)
+        car.owner = carOwnerRequest.owner
+        return carMapper.toCarResponse(carParkRepository.save(car))
     }
 
     private fun getOrThrow(id: Long): Car {
