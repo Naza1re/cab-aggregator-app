@@ -49,7 +49,9 @@ databaseChangeLog:
                   type: varchar(15)
                   constraints:
                     nullable: false
-
+              - column:
+                  name: owner
+                  type: bigint
       rollback:
         - dropTable:
             tableName: car

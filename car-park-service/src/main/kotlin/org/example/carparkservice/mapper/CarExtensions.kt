@@ -16,7 +16,8 @@ class CarMapperImpl : CarMapper {
             year = carRequest.year,
             type = carRequest.type,
             color = carRequest.color,
-            number = carRequest.number
+            number = carRequest.number,
+            owner = 0L
         )
     }
 
@@ -28,7 +29,8 @@ class CarMapperImpl : CarMapper {
             year = car.year,
             type = car.type,
             color = car.color,
-            number = car.number
+            number = car.number,
+            owner = car.owner
         )
     }
 }

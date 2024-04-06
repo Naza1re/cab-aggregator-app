@@ -7,6 +7,7 @@ data class CarResponse(
     var year: Int,
     var type: String,
     var color: String,
-    var number: String
+    var number: String,
+    var owner: Long
 ) {
 }

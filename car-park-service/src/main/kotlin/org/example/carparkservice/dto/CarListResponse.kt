@@ -1,6 +1,6 @@
 package org.example.carparkservice.dto
 
-class CarListResponse(
+data class CarListResponse(
     var carResponses: List<CarResponse>
 ) {
 }
