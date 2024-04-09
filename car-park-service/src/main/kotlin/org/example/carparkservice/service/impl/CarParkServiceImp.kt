@@ -73,7 +73,7 @@ class CarParkServiceImp(
     }
 
     private fun checkCarExists(number: String) {
-        if (carParkRepository.findCarByNumber(number).isPresent) {
+        if (carParkRepository.existsByNumber(number)) {
             throw CarAlreadyExistException(ExceptionMessages.CAR_ALREADY_EXIST.format(number))
         }
     }

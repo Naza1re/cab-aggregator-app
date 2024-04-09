@@ -1,6 +1,7 @@
 package org.example.carparkservice.util
 
 import lombok.experimental.UtilityClass
+import org.example.carparkservice.dto.CarRequest
 import org.example.carparkservice.dto.CarResponse
 import org.example.carparkservice.model.Car
 
@@ -23,6 +24,10 @@ class CarTestUtil {
 
         fun getDefaultCar(): Car {
             return Car(id, model, mark, year, type, color, number, owner)
+        }
+
+        fun getDefaultCarRequest(): CarRequest {
+            return CarRequest(model, mark, year, type, color, number)
         }
     }
 }
