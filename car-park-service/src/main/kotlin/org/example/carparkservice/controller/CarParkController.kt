@@ -20,24 +20,26 @@ class CarParkController(private var carParkService: CarParkService) {
         return ResponseEntity.ok(carParkService.getCarById(id))
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping
     fun save(@RequestBody car: CarRequest): ResponseEntity<CarResponse> {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(carParkService.createCar(car))
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): ResponseEntity<CarResponse> {
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(carParkService.deleteCarById(id))
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping
     fun list(): ResponseEntity<CarListResponse> {
         return ResponseEntity.ok(carParkService.findAllCars())
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     @PutMapping("/set/owner")
     fun setOwner(@RequestBody carOwnerRequest: CarOwnerRequest): ResponseEntity<CarResponse> {
         return ResponseEntity.ok(carParkService.setDriverToCar(carOwnerRequest))
