@@ -1,0 +1,84 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rides
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/cab-aggregator-realm
+          jwk-set-uri: http://localhost:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+  application:
+    name: ride
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      bootstrap-servers: kafka:29092
+      group-id: driver-creation-group
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      bootstrap-servers: kafka:29092
+    topic:
+      name:
+        ride: ride
+        driver: driver
+        available: available
+        status : status
+kafka:
+  partitions:
+    count: 1
+  replicas:
+    count: 1
+service:
+    passenger:
+      name: passenger
+      path: /api/v1/passengers
+    driver:
+      name: driver
+      path: /api/v1/drivers
+    payment:
+      name: payment
+      path: /api/v1/payment
+    promo:
+      name: promo-code
+      path: /api/v1/promo-code
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+server:
+  port: 8082
+jwt:
+  auth:
+    converter:
+      resource-id: cab-aggregator-client
+      principal-attribute: sub
+
+

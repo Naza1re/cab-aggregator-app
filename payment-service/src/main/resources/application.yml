@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/cab-aggregator-realm
+          jwk-set-uri: http://localhost:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+  application:
+    name: payment
+stripe:
+  public: ${STRIPE_PUBLIC_KEY}
+  secret: ${SECRET_KEY}
+server:
+  port: 8085
+service:
+    passenger:
+      name: passenger
+      path: /api/v1/passengers
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+jwt:
+  auth:
+    converter:
+      resource-id: cab-aggregator-client
+      principal-attribute: sub

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-driver
+      author: Nazar
+      preConditions:
+        - onFail: MARK_RAN
+          or:
+            - not:
+                tableExists:
+                  tableName: drivers
+      changes:
+        - createTable:
+            tableName: drivers
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: surname
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: available
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: varchar(50)
+              - column:
+                  name: model
+                  type: varchar(50)
+              - column:
+                  name: number
+                  type: varchar(50)
+      rollback:
+        - dropTable:
+            tableName: drivers

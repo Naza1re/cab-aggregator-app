@@ -1,0 +1,38 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: promo
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/cab-aggregator-realm
+          jwk-set-uri: http://localhost:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+  application:
+    name: promo-code
+server:
+  port: 8086
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+jwt:
+  auth:
+    converter:
+      resource-id: cab-aggregator-client
+      principal-attribute: sub
