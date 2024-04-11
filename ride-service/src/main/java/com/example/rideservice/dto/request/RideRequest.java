@@ -36,4 +36,7 @@ public class RideRequest {
     @Size(max = 5, message = "${promo.max.length}")
     private String promo;
 
+    @NotBlank(message = "${city.location.not.blank}")
+    private String city;
+
 }

@@ -6,4 +6,6 @@ import lombok.experimental.UtilityClass;
 public class Constants {
 
     public final static long DEFAULT_PRICE = 200L;
+    public final static double TEMPERATURE_BORDER = 10;
+
 }
