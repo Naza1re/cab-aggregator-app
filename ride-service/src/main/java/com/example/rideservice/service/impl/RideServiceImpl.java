@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.rideservice.util.Constants.DEFAULT_PRICE;
+import static com.example.rideservice.util.Constants.TEMPERATURE_BORDER;
 import static com.example.rideservice.util.ConstantsMessages.*;
 
 
@@ -45,6 +46,7 @@ public class RideServiceImpl implements RideService {
     private final RideProducer rideProducer;
     private final PaymentService paymentService;
     private final PromoCodeService promoCodeService;
+    private final TemperatureService temperatureService;
 
 
     @Override
@@ -152,9 +154,9 @@ public class RideServiceImpl implements RideService {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
         PassengerResponse passenger = passengerService.getPassenger(rideRequest.getPassengerId());
+        generatePriceByCityName(ride, rideRequest.getCity());
 
-
-        ride.setPrice(reducePriceByExistingPromoCode(rideRequest.getPromo()));
+        ride.setPrice(reducePriceByExistingPromoCode(rideRequest.getPromo(), ride.getPrice().doubleValue()));
 
         createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
@@ -166,12 +168,12 @@ public class RideServiceImpl implements RideService {
         return rideMapper.fromEntityToResponse(savedRide);
     }
 
-    private BigDecimal reducePriceByExistingPromoCode(String value) {
+    private BigDecimal reducePriceByExistingPromoCode(String value, double price) {
         if (value == null) {
-            return BigDecimal.valueOf(DEFAULT_PRICE);
+            return BigDecimal.valueOf(price);
         } else {
             PromoCodeResponse promoCodeResponse = promoCodeService.getPromCode(value);
-            return BigDecimal.valueOf(DEFAULT_PRICE - (DEFAULT_PRICE * (promoCodeResponse.getPercent() / 100)));
+            return BigDecimal.valueOf(price - (price * (promoCodeResponse.getPercent() / 100)));
         }
     }
 
@@ -218,6 +220,16 @@ public class RideServiceImpl implements RideService {
                 .rideId(ride.getId())
                 .build();
         rideProducer.sendMessage(rideForDriver);
+    }
+
+    private void generatePriceByCityName(Ride ride, String cityName) {
+        double temp = temperatureService.calculatePrice(cityName);
+        if (temp < TEMPERATURE_BORDER) {
+            ride.setPrice(BigDecimal.valueOf(DEFAULT_PRICE + (DEFAULT_PRICE * 0.2)));
+        } else {
+            ride.setPrice(BigDecimal.valueOf(DEFAULT_PRICE - (DEFAULT_PRICE * 0.2)));
+        }
+
     }
 
 }
