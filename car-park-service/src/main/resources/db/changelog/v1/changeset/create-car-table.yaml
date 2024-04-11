@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-car
+      author: Nazar
+      preConditions:
+        - onFail: MARK_RAN
+          or:
+            - not:
+                tableExists:
+                  tableName: car
+      changes:
+        - createTable:
+            tableName: car
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: mark
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: model
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: year
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: varchar(15)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: owner
+                  type: bigint
+      rollback:
+        - dropTable:
+            tableName: car

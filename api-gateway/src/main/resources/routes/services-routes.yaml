@@ -29,6 +29,11 @@ spring:
                 name: driver-service-fallback
                 fallbackUri: forward:/fallback/drivers-service
 
+        - id: park
+          uri: lb://park
+          predicates:
+            - Path=/api/v1/car-park/**
+
         - id: passenger-service
           uri: lb://passenger
           predicates:
