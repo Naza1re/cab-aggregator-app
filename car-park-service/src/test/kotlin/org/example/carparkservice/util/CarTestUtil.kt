@@ -17,6 +17,38 @@ class CarTestUtil {
         private const val type: String = "testType"
         private const val color: String = "testColor"
         private const val number: String = "testNumber"
+        private const val model_update: String = "newModel"
+        private const val mark_update: String = "newMark"
+        private const val year_update: Int = 31213
+        private const val type_update: String = "sport_type"
+        private const val color_update: String = "newColor"
+        private const val number_update: String = "newNumber"
+
+        fun getNewCarResponse(): CarResponse {
+            return CarResponse(
+                id, model_update, mark_update, year_update, type_update, color_update, number_update,
+                owner
+            )
+        }
+
+        fun getNewCar(): Car {
+            return Car(
+                id,
+                model_update,
+                mark_update,
+                year_update,
+                type_update,
+                color_update,
+                number_update,
+                owner
+            )
+        }
+
+        fun getCarRequest(): CarRequest {
+            return CarRequest(
+                model_update, mark_update, year_update, type_update, color_update, number_update
+            )
+        }
 
         fun getDefaultCarResponse(): CarResponse {
             return CarResponse(id, model, mark, year, type, color, number, owner)

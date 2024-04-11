@@ -45,5 +45,11 @@ class CarParkController(private var carParkService: CarParkService) {
         return ResponseEntity.ok(carParkService.setDriverToCar(carOwnerRequest))
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    fun update(@PathVariable id: Long, @RequestBody carRequest: CarRequest): ResponseEntity<CarResponse> {
+        return ResponseEntity.ok(carParkService.updateCarById(id, carRequest))
+    }
+
 
 }

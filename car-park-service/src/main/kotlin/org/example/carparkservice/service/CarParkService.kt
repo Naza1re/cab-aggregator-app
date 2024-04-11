@@ -14,6 +14,7 @@ interface CarParkService {
     fun findAllCars(): CarListResponse?
     fun setDriverToCar(carOwnerRequest: CarOwnerRequest): CarResponse?
     fun extractUserInfo(jwt: Jwt): Any?
+    fun updateCarById(id: Long, carRequest: CarRequest): CarResponse?
 
 
 }

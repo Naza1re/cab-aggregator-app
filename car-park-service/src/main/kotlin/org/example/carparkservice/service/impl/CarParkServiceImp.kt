@@ -44,6 +44,7 @@ class CarParkServiceImp(
         return carMapper.toCarResponse(car);
     }
 
+
     override fun findAllCars(): CarListResponse? {
         val cars = carParkRepository.findAll()
         val carResponseList: List<CarResponse> = cars.map { car -> carMapper.toCarResponse(car) }
@@ -65,6 +66,14 @@ class CarParkServiceImp(
             email = jwt.getClaimAsString(EMAIL),
             username1 = jwt.getClaimAsString(USERNAME)
         )
+    }
+
+    override fun updateCarById(id: Long, carRequest: CarRequest): CarResponse? {
+        val car = getOrThrow(id)
+        val carToSave = carMapper.toCar(carRequest)
+        carToSave.id = car.id
+        carToSave.owner = car.owner
+        return carMapper.toCarResponse(carParkRepository.save(carToSave))
     }
 
     private fun getOrThrow(id: Long): Car {
