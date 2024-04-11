@@ -32,4 +32,5 @@ public interface DriverService {
 
     User extractUserInfo(Jwt jwt);
 
+    DriverResponse createDriverWithoutCar(DriverRequest request, Long carId);
 }

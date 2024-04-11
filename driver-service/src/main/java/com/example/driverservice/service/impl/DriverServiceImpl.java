@@ -1,5 +1,7 @@
 package com.example.driverservice.service.impl;
 
+import com.example.driverservice.client.CarParkClient;
+import com.example.driverservice.dto.request.CarOwnerRequest;
 import com.example.driverservice.dto.request.DriverForRide;
 import com.example.driverservice.dto.request.DriverRequest;
 import com.example.driverservice.dto.request.RatingRequest;
@@ -45,6 +47,7 @@ public class DriverServiceImpl implements DriverService {
     private final AvailableDriverProducer availableDriverProducer;
     private final DriverProducer driverProducer;
     private final RatingService ratingService;
+    private final CarParkClient carParkClient;
 
     @Override
     @Cacheable(cacheNames = "driver", key = "#id")
@@ -121,6 +124,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private void checkEmailExist(String email) {
+        if (Objects.equals(email, "")) {
+            log.info("Driver without email");
+        }
         if (driverRepository.existsByEmail(email)) {
             log.info(String.format(DRIVER_WITH_MAIL_ALREADY_EXIST, email));
             throw new EmailAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_EMAIL_ALREADY_EXIST, email));
@@ -128,16 +134,24 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private void checkPhoneExist(String phone) {
-        if (driverRepository.existsByPhone(phone)) {
-            log.info(String.format(ConstantsMessages.DRIVER_WITH_PHONE_ALREADY_EXIST, phone));
-            throw new PhoneAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_PHONE_ALREADY_EXIST, phone));
+        if (Objects.equals(phone, "")) {
+            log.info("Driver without phone number");
+        } else {
+            if (driverRepository.existsByPhone(phone)) {
+                log.info(String.format(ConstantsMessages.DRIVER_WITH_PHONE_ALREADY_EXIST, phone));
+                throw new PhoneAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_PHONE_ALREADY_EXIST, phone));
+            }
         }
     }
 
     private void checkCarNumberExist(String carNum) {
-        if (driverRepository.existsByNumber(carNum)) {
-            log.info(String.format(DRIVER_WITH_NUMBER_ALREADY_EXIST, carNum));
-            throw new CarNumberAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_CAR_NUMBER_ALREADY_EXIST, carNum));
+        if (Objects.equals(carNum, "")) {
+            log.info("Driver without car number");
+        } else {
+            if (driverRepository.existsByNumber(carNum)) {
+                log.info(String.format(DRIVER_WITH_NUMBER_ALREADY_EXIST, carNum));
+                throw new CarNumberAlreadyExistException(String.format(ExceptionMessages.DRIVER_WITH_CAR_NUMBER_ALREADY_EXIST, carNum));
+            }
         }
     }
 
@@ -272,12 +286,42 @@ public class DriverServiceImpl implements DriverService {
                 .surname(jwt.getClaim(FAMILY_NAME))
                 .name(jwt.getClaim(GIVEN_NAME))
                 .id(UUID.fromString(jwt.getClaim(ID)))
-                .carNumber(jwt.getClaim(CAR_NUMBER))
-                .model(jwt.getClaim(MODEL))
-                .color(jwt.getClaim(COLOR))
+                .carNumber(jwt.getClaim(CAR_NUMBER) != null ? jwt.getClaim(CAR_NUMBER) : "")
+                .model(jwt.getClaim(MODEL) != null ? jwt.getClaim(MODEL) : "")
+                .color(jwt.getClaim(COLOR) != null ? jwt.getClaim(COLOR) : "")
                 .email(jwt.getClaim(EMAIL))
                 .username(jwt.getClaim(USERNAME))
                 .build();
+    }
+
+    @Override
+    public DriverResponse createDriverWithoutCar(DriverRequest request, Long carId) {
+        preCreateDriverCheck(request);
+
+        Driver driver = driverMapper.fromRequestToEntity(request);
+        driver.setAvailable(false);
+
+        CarResponse carResponse = carParkClient.getCarById(carId);
+        setCarParamToDriver(driver, carResponse);
+
+        Driver savedDriver = driverRepository.save(driver);
+
+        carParkClient.setOwner(CarOwnerRequest.builder()
+                .ownerId(savedDriver.getId())
+                .carId(carId)
+                .build());
+
+        ratingService.createDriverRecord(RatingRequest.builder()
+                .id(savedDriver.getId())
+                .build());
+        log.info(String.format(CREATE_DRIVER_WITH_ID, savedDriver.getId()));
+        return driverMapper.fromEntityToResponse(savedDriver);
+    }
+
+    private void setCarParamToDriver(Driver driver, CarResponse carResponse) {
+        driver.setModel(carResponse.getModel());
+        driver.setColor(carResponse.getColor());
+        driver.setNumber(carResponse.getNumber());
     }
 
 }
