@@ -30,3 +30,4 @@ jwt:
     converter:
       resource-id: cab-aggregator-client
       principal-attribute: sub
+
