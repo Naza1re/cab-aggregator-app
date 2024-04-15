@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: passenger-service
+spec:
+  selector:
+    matchLabels:
+      app: passenger-service
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: passenger-service
+    spec:
+      containers:
+        - name: passenger-service
+          image: naza1re/passenger-service:1.0
+          ports:
+            - containerPort: 8081
+          env:
+            - name: DATASOURCE
+              value: "mysql"
+            - name: DB_USERNAME
+              value: "root"
+            - name: DB_PASSWORD
+              value: "root"
+            - name: EUREKA_URL
+              value: "eureka"
+            - name: DATABASE
+              value: "passengers"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: passenger-service
+spec:
+  selector:
+    app: passenger-service
+  ports:
+    - protocol: "TCP"
+      port: 8081
+      targetPort: 8081
+  type: NodePort
