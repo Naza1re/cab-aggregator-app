@@ -1,9 +1,11 @@
 package org.example.pricecalculatorservice.service
 
+import java.math.BigDecimal
+
 interface TemperatureService {
 
 
-    fun reducePriceByWeather(city: String): Double
+    fun getTemperatureByWeather(city: String): Double
 
 
 }

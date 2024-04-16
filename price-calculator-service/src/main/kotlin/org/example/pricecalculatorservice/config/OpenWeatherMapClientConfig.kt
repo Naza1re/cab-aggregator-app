@@ -1,4 +1,4 @@
-package com.example.rideservice.config
+package org.example.pricecalculatorservice.config
 
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient
 import org.springframework.beans.factory.annotation.Value

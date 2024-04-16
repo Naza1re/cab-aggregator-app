@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class TemperatureServiceImpl(private val openweathermapClient: OpenWeatherMapClient) : TemperatureService {
-    override fun reducePriceByWeather(city: String): Double {
+    override fun getTemperatureByWeather(city: String): Double {
 
         val requester: CurrentWeatherRequester = openweathermapClient.currentWeather()
         val terminator = requester.single()

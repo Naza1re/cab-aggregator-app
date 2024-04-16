@@ -6,6 +6,4 @@ import org.example.pricecalculatorservice.dto.PriceCalculateResponse
 
 interface PriceService {
     fun calculatePrice(priceRequest: PriceCalculateRequest): PriceCalculateResponse?
-
-
 }

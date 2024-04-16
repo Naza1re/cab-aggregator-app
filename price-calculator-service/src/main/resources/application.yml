@@ -1,3 +1,11 @@
+spring:
+  application:
+    name: price-calculator
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
 
 openweather:
   key: bd5e378503939ddaee76f12ad7a97608
