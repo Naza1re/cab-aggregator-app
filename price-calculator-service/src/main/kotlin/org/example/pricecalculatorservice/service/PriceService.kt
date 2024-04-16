@@ -1,5 +1,11 @@
 package org.example.pricecalculatorservice.service
 
-class PriceService() {
+import org.example.pricecalculatorservice.dto.PriceCalculateRequest
+import org.example.pricecalculatorservice.dto.PriceCalculateResponse
+
+
+interface PriceService {
+    fun calculatePrice(priceRequest: PriceCalculateRequest): PriceCalculateResponse?
+
 
 }
