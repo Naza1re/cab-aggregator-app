@@ -240,6 +240,20 @@ services:
     depends_on:
       - eureka-service
       - mysql_db
+  price-calculator-service:
+    image: price-calculator-service
+    container_name: price-calculator-service
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-service:8090/eureka
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/cab-aggregator-realm/protocol/openid-connect/certs
+    ports:
+      - '8088:8088'
+    networks:
+      - cab_aggregator
+    depends_on:
+      - eureka-service
+
 
   elasticsearch:
     image: elasticsearch:8.12.0

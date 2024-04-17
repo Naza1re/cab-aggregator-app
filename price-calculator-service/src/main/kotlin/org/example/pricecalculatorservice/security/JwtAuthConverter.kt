@@ -1,7 +1,7 @@
 package org.example.pricecalculatorservice.security
 
-import org.example.carparkservice.service.CarParkService
 import org.example.pricecalculatorservice.security.SecurityConstants.RESOURCES_ACCESS
+import org.example.pricecalculatorservice.service.PriceService
 import org.springframework.core.convert.converter.Converter
 import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtAuthConverter(
-    private val carParkService: CarParkService,
+    private val priceService: PriceService,
     private val properties: JwtAuthConverterProperties
 ) : Converter<Jwt, AbstractAuthenticationToken> {
 
@@ -23,7 +23,7 @@ class JwtAuthConverter(
     override fun convert(jwt: Jwt): AbstractAuthenticationToken {
         val authorities = jwtGrantedAuthoritiesConverter.convert(jwt).orEmpty() +
                 extractResourceRoles(jwt)
-        val user = carParkService.extractUserInfo(jwt)
+        val user = priceService.extractUserInfo(jwt)
         val authToken = UsernamePasswordAuthenticationToken(
             user,
             null,
