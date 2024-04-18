@@ -55,6 +55,9 @@ service:
     promo:
       name: promo-code
       path: /api/v1/promo-code
+    price:
+      name: price
+      path: /api/v1/price
 
 eureka:
   client:
