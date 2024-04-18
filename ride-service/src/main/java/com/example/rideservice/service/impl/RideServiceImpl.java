@@ -1,6 +1,7 @@
 package com.example.rideservice.service.impl;
 
 import com.example.rideservice.dto.request.CustomerChargeRequest;
+import com.example.rideservice.dto.request.PriceCalculateRequest;
 import com.example.rideservice.dto.request.RideForDriver;
 import com.example.rideservice.dto.request.RideRequest;
 import com.example.rideservice.dto.response.*;
@@ -29,8 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.rideservice.util.Constants.DEFAULT_PRICE;
-import static com.example.rideservice.util.Constants.TEMPERATURE_BORDER;
 import static com.example.rideservice.util.ConstantsMessages.*;
 
 
@@ -46,7 +45,7 @@ public class RideServiceImpl implements RideService {
     private final RideProducer rideProducer;
     private final PaymentService paymentService;
     private final PromoCodeService promoCodeService;
-    private final TemperatureService temperatureService;
+    private final PriceService priceService;
 
 
     @Override
@@ -154,9 +153,11 @@ public class RideServiceImpl implements RideService {
         Ride ride = rideMapper.fromRequestToEntity(rideRequest);
 
         PassengerResponse passenger = passengerService.getPassenger(rideRequest.getPassengerId());
-        generatePriceByCityName(ride, rideRequest.getCity());
+        BigDecimal price = priceService.getCalculatePrice(PriceCalculateRequest.builder()
+                .city("Vitebsk")
+                .build()).getPrice();
 
-        ride.setPrice(reducePriceByExistingPromoCode(rideRequest.getPromo(), ride.getPrice().doubleValue()));
+        ride.setPrice(reducePriceByExistingPromoCode(rideRequest.getPromo(), price.doubleValue()));
 
         createChargeFromCustomer(passenger.getId(), ride.getPrice());
         ride.setStatus(Status.CREATED);
@@ -222,14 +223,5 @@ public class RideServiceImpl implements RideService {
         rideProducer.sendMessage(rideForDriver);
     }
 
-    private void generatePriceByCityName(Ride ride, String cityName) {
-        double temp = temperatureService.calculatePrice(cityName);
-        if (temp < TEMPERATURE_BORDER) {
-            ride.setPrice(BigDecimal.valueOf(DEFAULT_PRICE + (DEFAULT_PRICE * 0.2)));
-        } else {
-            ride.setPrice(BigDecimal.valueOf(DEFAULT_PRICE - (DEFAULT_PRICE * 0.2)));
-        }
-
-    }
 
 }
