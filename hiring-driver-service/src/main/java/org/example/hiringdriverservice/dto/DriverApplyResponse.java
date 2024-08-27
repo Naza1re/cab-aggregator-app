@@ -10,9 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class DriverApplyResponse {
+    private Long id;
+    private Long requesterId;
     private String firstName;
     private String lastName;
     private String email;
     private String phone;
     private String driverLicenseNumber;
+    private String approver;
+    private Boolean isApproved;
 }

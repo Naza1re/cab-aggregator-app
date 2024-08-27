@@ -54,7 +54,7 @@
       <bpmn:outgoing>SequenceFlow_02a2hfx</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_02a2hfx" sourceRef="StartEvent_1" targetRef="Task_0j2zdc2" />
-    <bpmn:serviceTask id="Task_0j2zdc2" name="Сохранить запрос в базе данных" camunda:expression="${true}">
+    <bpmn:serviceTask id="Task_0j2zdc2" name="Сохранить запрос в базе данных" camunda:delegateExpression="${ createAccessRequest}">
       <bpmn:incoming>SequenceFlow_02a2hfx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0kdl7xq</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -73,13 +73,14 @@
           <camunda:formField id="phone" label="Телфон водителя" type="string" />
           <camunda:formField id="email" label="email водителя" type="string" />
           <camunda:formField id="isApproved" label="ПРинять водителя" type="boolean" />
+          <camunda:formField id="approver" type="string" defaultValue="${currentUser()}" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0v59vq9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1vstue2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1vstue2" sourceRef="Task_057mdbv" targetRef="Task_0npmy5a" />
-    <bpmn:serviceTask id="Task_0npmy5a" name="Принять водителя на работу/отказать" camunda:expression="${true}">
+    <bpmn:serviceTask id="Task_0npmy5a" name="Принять водителя на работу/отказать" camunda:delegateExpression="${ approveApplyRequest}">
       <bpmn:incoming>SequenceFlow_1vstue2</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1kv1u4g</bpmn:outgoing>
     </bpmn:serviceTask>
