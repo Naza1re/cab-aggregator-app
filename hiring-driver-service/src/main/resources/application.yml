@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bid
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+camunda:
+  bpm:
+    admin-user:
+      password: demo
+      id: demo
+      first-name: demo
+      last-name: demo
+      email: nazar@mail.ru
+    database:
+      schema-update: true
+      type: mysql
+    auto-deployment-enabled: true
+    generic-properties:
+      properties:
+        historyTimeToLive: P1D
+server:
+  port: 8092
