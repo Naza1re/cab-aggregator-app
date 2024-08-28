@@ -21,6 +21,7 @@
         <module>promo-code-service</module>
         <module>car-park-service</module>
         <module>hiring-driver-service</module>
+        <module>price-calculator-service</module>
     </modules>
 
     <properties>
